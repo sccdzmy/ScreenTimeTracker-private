@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 using ScreenTimeTracker.ScreenTime.Domain.Aggregates.UserSettings;
@@ -5,7 +6,7 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 
 namespace ScreenTimeTracker.ScreenTime.Features.UserSettingsManagement.GetUserSettings;
 
-public class GetUserSettingsHandler(ScreenTimeDbContext context)
+public class GetUserSettingsHandler(UserSettingsSnapshot settingsSnapshot)
     : IRequestHandler<GetUserSettingsQuery, GetUserSettingsResponse>
 {
     public async ValueTask<GetUserSettingsResponse> Handle(
@@ -13,9 +14,7 @@ public class GetUserSettingsHandler(ScreenTimeDbContext context)
         CancellationToken cancellationToken
     )
     {
-        UserSettings userSettings = await context
-            .UserSettings.AsNoTracking()
-            .SingleAsync(cancellationToken);
+        var userSettings = await settingsSnapshot.GetAsync(cancellationToken);
 
         return new GetUserSettingsResponse(
             new AppTrackingSettingsDto(

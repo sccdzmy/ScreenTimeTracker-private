@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using ScreenTimeTracker.BuildingBlocks.Security;
 using ErrorOr;
 using Mediator;
@@ -7,7 +8,8 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 
 namespace ScreenTimeTracker.ScreenTime.Features.Websites.RefreshWebsiteMetadata;
 
-public class RefreshWebsiteMetadataHandler(ScreenTimeDbContext context, TimeProvider timeProvider)
+public class RefreshWebsiteMetadataHandler(TrackingCoordinator coordinator,
+    ScreenTimeDbContext context, TimeProvider timeProvider)
     : IRequestHandler<RefreshWebsiteMetadataCommand, ErrorOr<Updated>>
 {
     public async ValueTask<ErrorOr<Updated>> Handle(
@@ -15,6 +17,7 @@ public class RefreshWebsiteMetadataHandler(ScreenTimeDbContext context, TimeProv
         CancellationToken cancellationToken
     )
     {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
         Website? website = await context.Websites.FindAsync([request.Id], cancellationToken);
         if (website is null)
             return Error.NotFound(
@@ -29,6 +32,7 @@ public class RefreshWebsiteMetadataHandler(ScreenTimeDbContext context, TimeProv
         website.RefreshMetadata(timeProvider.GetUtcNow(), iconPath);
 
         await context.SaveChangesAsync(cancellationToken);
+        mutation.Complete();
         return Result.Updated;
     }
 

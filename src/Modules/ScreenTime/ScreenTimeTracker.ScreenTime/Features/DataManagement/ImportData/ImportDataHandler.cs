@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using ScreenTimeTracker.BuildingBlocks.Security;
 using System.Text.Json;
 using ErrorOr;
@@ -15,6 +16,8 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 namespace ScreenTimeTracker.ScreenTime.Features.DataManagement.ImportData;
 
 public class ImportDataHandler(
+    TrackingCoordinator coordinator,
+    UserSettingsSnapshot settingsSnapshot, TrackingIdentityCache identityCache,
     ScreenTimeDbContext context,
     TimeProvider timeProvider,
     ActiveAppUsageSessionStore activeAppUsageSessionStore,
@@ -112,11 +115,15 @@ public class ImportDataHandler(
         ValidateData(v4Data);
         var createdIcons = new List<string>();
         using var iconScope = ManagedIcons.TrackWrites(createdIcons);
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
         try
         {
             var result = await SaveDataAsync(v4Data, cancellationToken);
             await transaction.CommitAsync(cancellationToken);
+            settingsSnapshot.Invalidate(); identityCache.InvalidateAll();
+            activeWebsiteUsageSessionStore.LastSaved = null;
+            mutation.Complete();
             return result;
         }
         catch

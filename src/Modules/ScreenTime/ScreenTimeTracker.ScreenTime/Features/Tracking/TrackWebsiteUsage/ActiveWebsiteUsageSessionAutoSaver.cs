@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -7,6 +9,9 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 namespace ScreenTimeTracker.ScreenTime.Features.Tracking.TrackWebsiteUsage;
 
 public partial class ActiveWebsiteUsageSessionAutoSaver(
+    UserSettingsSnapshot settingsSnapshot,
+    TrackingCoordinator coordinator,
+    Microsoft.Extensions.Logging.ILogger<ActiveWebsiteUsageSessionAutoSaver> logger,
     IServiceScopeFactory scopeFactory,
     ActiveWebsiteUsageSessionStore activeSessionStore
 ) : BackgroundService
@@ -26,28 +31,34 @@ public partial class ActiveWebsiteUsageSessionAutoSaver(
                     timer.Period = interval;
                 }
 
-                if (activeSessionStore.Current is null)
-                    continue;
-
-                using var scope = scopeFactory.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<ScreenTimeDbContext>();
-                await context.PersistActiveSessionAsync(
-                    activeSessionStore.Current,
-                    activeSessionStore.Current.LastActiveAt,
-                    cancellationToken: stoppingToken
-                );
-                await context.SaveChangesAsync(stoppingToken);
+                try { await SaveOnceAsync(stoppingToken); }
+                catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested) { throw; }
+                catch (Exception ex) { LogSaveFailed(logger, ex.GetType().Name); }
             }
         }
         catch (OperationCanceledException) { }
     }
 
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Session save failed ({ErrorType}); retrying next interval.")]
+    private static partial void LogSaveFailed(ILogger logger, string errorType);
+
+    public async Task SaveOnceAsync(CancellationToken cancellationToken)
+    {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
+        var session = activeSessionStore.Current;
+        if (session is null) return;
+        if (session.LastActiveAt <= session.StartTime || session == activeSessionStore.LastSaved) return;
+        using var scope = scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ScreenTimeDbContext>();
+        await context.PersistActiveSessionAsync(session, session.LastActiveAt, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+        activeSessionStore.LastSaved = session;
+        mutation.Complete();
+    }
+
     private async Task<TimeSpan> GetAutoSaveIntervalAsync(CancellationToken cancellationToken)
     {
-        using var scope = scopeFactory.CreateScope();
-        ScreenTimeDbContext context =
-            scope.ServiceProvider.GetRequiredService<ScreenTimeDbContext>();
-        var userSettings = await context.UserSettings.AsNoTracking().SingleAsync(cancellationToken);
+        var userSettings = await settingsSnapshot.GetAsync(cancellationToken);
         return userSettings.WebsiteTracking.ActiveUsageSessionAutoSaveInterval;
     }
 }

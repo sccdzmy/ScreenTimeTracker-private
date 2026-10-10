@@ -14,6 +14,8 @@
     <Project Path="src/Modules/ScreenTime/ScreenTimeTracker.ScreenTime/ScreenTimeTracker.ScreenTime.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/ScreenTimeTracker.OptimizationTests/ScreenTimeTracker.OptimizationTests.csproj" />
+    <Project Path="tests/ScreenTimeTracker.PerformanceTests/ScreenTimeTracker.PerformanceTests.csproj" />
     <Project Path="tests/ScreenTimeTracker.SecurityTests/ScreenTimeTracker.SecurityTests.csproj" />
     <Project Path="tests/ScreenTimeTracker.ArchitectureTests/ScreenTimeTracker.ArchitectureTests.csproj" />
     <Project Path="tests/ScreenTimeTracker.Testing/ScreenTimeTracker.Testing.csproj" />

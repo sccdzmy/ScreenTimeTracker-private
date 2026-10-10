@@ -37,6 +37,10 @@ public static class ServiceCollectionExtensions
         );
         services.AddHostedService<ScreenTimeDbMigrationService>();
 
+        services.AddSingleton<TrackingCoordinator>();
+        services.AddSingleton<TrackingIdentityCache>();
+        services.AddSingleton<UserSettingsSnapshot>();
+
         // 处理器服务
         services.AddSingleton<ForegroundWindowProcessor>();
         services.AddHostedService(sp => sp.GetRequiredService<ForegroundWindowProcessor>());

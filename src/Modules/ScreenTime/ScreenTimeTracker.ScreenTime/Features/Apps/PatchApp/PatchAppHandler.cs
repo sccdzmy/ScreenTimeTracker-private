@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using ErrorOr;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,8 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 
 namespace ScreenTimeTracker.ScreenTime.Features.Apps.PatchApp;
 
-public class PatchAppHandler(ScreenTimeDbContext context, TimeProvider timeProvider)
+public class PatchAppHandler(TrackingCoordinator coordinator,
+    ScreenTimeDbContext context, TimeProvider timeProvider)
     : IRequestHandler<PatchAppCommand, ErrorOr<Updated>>
 {
     public async ValueTask<ErrorOr<Updated>> Handle(
@@ -14,6 +16,7 @@ public class PatchAppHandler(ScreenTimeDbContext context, TimeProvider timeProvi
         CancellationToken cancellationToken
     )
     {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
         App? app = await context.Apps.FindAsync([request.AppId], cancellationToken);
 
         if (app is null)
@@ -58,6 +61,7 @@ public class PatchAppHandler(ScreenTimeDbContext context, TimeProvider timeProvi
         );
 
         await context.SaveChangesAsync(cancellationToken);
+        mutation.Complete();
         return Result.Updated;
     }
 }

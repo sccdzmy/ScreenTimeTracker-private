@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 using ScreenTimeTracker.ScreenTime.Domain.ValueObjects;
@@ -5,7 +6,8 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 
 namespace ScreenTimeTracker.ScreenTime.Features.Websites.GetWebsiteUsage;
 
-public class GetWebsiteUsageHandler(ScreenTimeDbContext context)
+public class GetWebsiteUsageHandler(UserSettingsSnapshot settingsSnapshot,
+    ScreenTimeDbContext context)
     : IRequestHandler<GetWebsiteUsageQuery, List<GetWebsiteUsageResponseItem>>
 {
     public async ValueTask<List<GetWebsiteUsageResponseItem>> Handle(
@@ -13,7 +15,7 @@ public class GetWebsiteUsageHandler(ScreenTimeDbContext context)
         CancellationToken cancellationToken
     )
     {
-        var settings = await context.UserSettings.AsNoTracking().SingleAsync(cancellationToken);
+        var settings = await settingsSnapshot.GetAsync(cancellationToken);
         var timeRange = LogicalDay.CalculateUtcWindow(
             request.StartDate,
             request.EndDate,

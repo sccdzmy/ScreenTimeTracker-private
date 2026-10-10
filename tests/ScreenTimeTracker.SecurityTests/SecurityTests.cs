@@ -65,6 +65,9 @@ public sealed class SecurityTests : IAsyncLifetime
         builder.Services.AddDbContext<ScreenTimeDbContext>(o => o.UseSqlite(_connection));
         builder.Services.AddSingleton<ActiveAppUsageSessionStore>();
         builder.Services.AddSingleton<ActiveWebsiteUsageSessionStore>();
+        builder.Services.AddSingleton<TrackingCoordinator>();
+        builder.Services.AddSingleton<TrackingIdentityCache>();
+        builder.Services.AddSingleton<UserSettingsSnapshot>();
         builder.Services.AddSingleton<UserIdleStore>();
         builder.Services.AddSingleton<SystemSuspendStore>();
         builder.Services.AddSingleton<WebsiteActivityProcessor>(); // Deliberately no real OS collector.
@@ -352,7 +355,7 @@ public sealed class SecurityTests : IAsyncLifetime
         var retained = await ManagedIcons.SaveAsync(Png(), TestContext.Current.CancellationToken);
         var options = new DbContextOptionsBuilder<ScreenTimeDbContext>().UseSqlite(_connection).AddInterceptors(new FailSave()).Options;
         await using var db = new ScreenTimeDbContext(options);
-        var handler = new ImportDataHandler(db, _clock, new ActiveAppUsageSessionStore(), new ActiveWebsiteUsageSessionStore());
+        var handler = new ImportDataHandler(_app.Services.GetRequiredService<TrackingCoordinator>(), _app.Services.GetRequiredService<UserSettingsSnapshot>(), _app.Services.GetRequiredService<TrackingIdentityCache>(), db, _clock, new ActiveAppUsageSessionStore(), new ActiveWebsiteUsageSessionStore());
         var json = ExportDocument([FictionalApp(new { extension = "png", data = Convert.ToBase64String(Png()) })]);
         await Assert.ThrowsAsync<InvalidOperationException>(() => handler.Handle(new ImportDataCommand(json), TestContext.Current.CancellationToken).AsTask());
         Assert.Equal(retained, Directory.GetFiles(ManagedIcons.Root).Single());

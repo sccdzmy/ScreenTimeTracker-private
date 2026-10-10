@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,6 +9,8 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 namespace ScreenTimeTracker.ScreenTime.Features.Tracking.TrackAppUsage;
 
 public partial class AppUsageSessionOptimizationWorker(
+    UserSettingsSnapshot settingsSnapshot,
+    TrackingCoordinator coordinator,
     ActiveAppUsageSessionStore activeSessionStore,
     TimeProvider timeProvider,
     IServiceScopeFactory scopeFactory
@@ -30,6 +33,7 @@ public partial class AppUsageSessionOptimizationWorker(
 
                 settings = latestSettings;
 
+                using var mutation = await coordinator.EnterAsync(stoppingToken);
                 using var scope = scopeFactory.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<ScreenTimeDbContext>();
 
@@ -89,17 +93,15 @@ public partial class AppUsageSessionOptimizationWorker(
                     context.AppUsageSessions.RemoveRange(result.SessionsToRemove);
 
                 await context.SaveChangesAsync(stoppingToken);
+                mutation.Complete();
             }
         }
         catch (OperationCanceledException) { }
     }
 
-    private async Task<UserSettings> GetUserSettingsAsync(CancellationToken cancellationToken)
+    private async Task<TrackingSettings> GetUserSettingsAsync(CancellationToken cancellationToken)
     {
-        using var scope = scopeFactory.CreateScope();
-        ScreenTimeDbContext context =
-            scope.ServiceProvider.GetRequiredService<ScreenTimeDbContext>();
-        var userSettings = await context.UserSettings.AsNoTracking().SingleAsync(cancellationToken);
+        var userSettings = await settingsSnapshot.GetAsync(cancellationToken);
         return userSettings;
     }
 }

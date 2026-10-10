@@ -13,6 +13,7 @@ public record UserBecameIdleEvent(DateTimeOffset IdleStartedAt) : INotification;
 public record UserBecameActiveEvent : INotification;
 
 public partial class UserIdleMonitor(
+    UserSettingsSnapshot settingsSnapshot,
     ILogger<UserIdleMonitor> logger,
     UserIdleStore userIdleStore,
     TimeProvider timeProvider,
@@ -62,7 +63,6 @@ public partial class UserIdleMonitor(
                             new UserBecameIdleEvent(idleStartedAt),
                             stoppingToken
                         );
-                        await publisher.Publish(new UserBecameActiveEvent(), stoppingToken);
                     }
                 }
                 // 处于活跃状态
@@ -92,12 +92,9 @@ public partial class UserIdleMonitor(
     [LoggerMessage(Level = LogLevel.Information, Message = "User became active.")]
     private static partial void LogUserBecameActive(ILogger logger);
 
-    private async Task<UserSettings> GetUserSettingsAsync(CancellationToken stoppingToken)
+    private async Task<TrackingSettings> GetUserSettingsAsync(CancellationToken stoppingToken)
     {
-        using var scope = scopeFactory.CreateScope();
-        ScreenTimeDbContext context =
-            scope.ServiceProvider.GetRequiredService<ScreenTimeDbContext>();
-        var userSettings = await context.UserSettings.AsNoTracking().SingleAsync(stoppingToken);
+        var userSettings = await settingsSnapshot.GetAsync(stoppingToken);
         return userSettings;
     }
 }

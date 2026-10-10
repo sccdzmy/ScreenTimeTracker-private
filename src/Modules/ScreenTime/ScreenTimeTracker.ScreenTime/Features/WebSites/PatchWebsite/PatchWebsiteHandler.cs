@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using ErrorOr;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,8 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 
 namespace ScreenTimeTracker.ScreenTime.Features.Websites.PatchWebsite;
 
-public class PatchWebsiteHandler(ScreenTimeDbContext context, TimeProvider timeProvider)
+public class PatchWebsiteHandler(TrackingCoordinator coordinator,
+    ScreenTimeDbContext context, TimeProvider timeProvider)
     : IRequestHandler<PatchWebsiteCommand, ErrorOr<Updated>>
 {
     public async ValueTask<ErrorOr<Updated>> Handle(
@@ -14,6 +16,7 @@ public class PatchWebsiteHandler(ScreenTimeDbContext context, TimeProvider timeP
         CancellationToken cancellationToken
     )
     {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
         Website? website = await context.Websites.FindAsync([request.WebsiteId], cancellationToken);
 
         if (website is null)
@@ -58,6 +61,7 @@ public class PatchWebsiteHandler(ScreenTimeDbContext context, TimeProvider timeP
         );
 
         await context.SaveChangesAsync(cancellationToken);
+        mutation.Complete();
         return Result.Updated;
     }
 }

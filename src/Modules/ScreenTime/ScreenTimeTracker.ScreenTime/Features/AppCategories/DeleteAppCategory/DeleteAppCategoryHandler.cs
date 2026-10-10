@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using ErrorOr;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,8 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 
 namespace ScreenTimeTracker.ScreenTime.Features.AppCategories.DeleteAppCategory;
 
-public class DeleteAppCategoryHandler(ScreenTimeDbContext context)
+public class DeleteAppCategoryHandler(TrackingCoordinator coordinator,
+    ScreenTimeDbContext context)
     : IRequestHandler<DeleteAppCategoryCommand, ErrorOr<Deleted>>
 {
     public async ValueTask<ErrorOr<Deleted>> Handle(
@@ -14,6 +16,7 @@ public class DeleteAppCategoryHandler(ScreenTimeDbContext context)
         CancellationToken cancellationToken
     )
     {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
         AppCategory? appCategory = await context.AppCategories.FindAsync(
             [request.AppCategoryId],
             cancellationToken
@@ -43,6 +46,7 @@ public class DeleteAppCategoryHandler(ScreenTimeDbContext context)
         context.AppCategories.Remove(appCategory);
 
         await context.SaveChangesAsync(cancellationToken);
+        mutation.Complete();
         return Result.Deleted;
     }
 }
