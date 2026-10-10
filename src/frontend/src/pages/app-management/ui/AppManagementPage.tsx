@@ -1,3 +1,4 @@
+import { IconUpload } from "@/shared/ui/IconUpload";
 import { AppIcon, appQueries, useDeleteApp, usePatchApp, type App } from "@/entities/app";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { LazyColorField } from "@/shared/ui/LazyColorField";
@@ -151,7 +152,7 @@ export const AppManagementPage = () => {
         <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
           <AppIcon
             id={params.row.id}
-            iconPath={params.row.iconPath}
+            iconId={params.row.iconId}
             iconPathLastUpdatedAt={params.row.iconPathLastUpdatedAt}
             sx={{
               width: "2rem",
@@ -162,26 +163,23 @@ export const AppManagementPage = () => {
       ),
     },
     {
-      field: "iconPath",
-      headerName: t(($) => $.page_appManagement.columns.iconPath),
+      field: "iconId",
+      headerName: t(($) => $.page_appManagement.columns.iconId),
       width: 150,
       renderCell: (params: GridRenderCellParams<App, string>) => (
         <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
-          <LazyTextField
-            fullWidth
-            size="small"
+          <IconUpload
             value={params.value || ""}
-            onKeyDown={stopGridKeyboardEvent}
             onValueChange={async (value) => {
               try {
                 await patchAppAsync({
                   id: params.row.id,
-                  body: { iconPath: value === "" ? null : value },
+                  body: { iconId: value === "" ? null : value },
                 });
               } catch {
                 enqueueSnackbar(
                   t(($) => $.page_appManagement.errors.updateFailed, {
-                    field: t(($) => $.page_appManagement.columns.iconPath),
+                    field: t(($) => $.page_appManagement.columns.iconId),
                   }),
                   { variant: "error" },
                 );

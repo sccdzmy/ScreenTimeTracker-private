@@ -11,7 +11,7 @@ import { AppCategoryIcon } from "./AppCategoryIcon";
 import type { AppCategory } from "../model/schemas";
 import { appCategoryQueries } from "../api/queries";
 
-type Item = Pick<AppCategory, "id" | "name" | "iconPath" | "iconPathLastUpdatedAt">;
+type Item = Pick<AppCategory, "id" | "name" | "iconId" | "iconPathLastUpdatedAt">;
 
 export type AppCategoryPickerProps = {
   className?: string;
@@ -57,7 +57,7 @@ export const AppCategoryPicker = (props: AppCategoryPickerProps) => {
   const { mode, value, onValueChange, placeholder, ...autocompleteProps } = commonProps;
   const { data: appCategoriesData, isLoading: isappCategoriesDataLoading } = useQuery(
     appCategoryQueries.appCategories({
-      fields: "id,name,iconPath,iconPathLastUpdatedAt",
+      fields: "id,name,iconId,iconPathLastUpdatedAt",
     }),
   ) as {
     data?: Item[];
@@ -150,7 +150,7 @@ export const AppCategoryPicker = (props: AppCategoryPickerProps) => {
                 mr: 1,
               }}
               id={option.id}
-              iconPath={option.iconPath}
+              iconId={option.iconId}
               iconPathLastUpdatedAt={option.iconPathLastUpdatedAt}
             />
             <Typography>{option.name}</Typography>

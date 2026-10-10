@@ -115,7 +115,7 @@ export const UsageDistributionList = ({
                       height: "2rem",
                     }}
                     id={item.id}
-                    iconPath={item.iconPath}
+                    iconId={item.iconId}
                     iconPathLastUpdatedAt={item.iconPathLastUpdatedAt}
                   />
                 ) : type === "app-category" ? (
@@ -125,7 +125,7 @@ export const UsageDistributionList = ({
                       height: "2rem",
                     }}
                     id={item.id}
-                    iconPath={item.iconPath}
+                    iconId={item.iconId}
                     iconPathLastUpdatedAt={item.iconPathLastUpdatedAt}
                   />
                 ) : type === "website" ? (
@@ -135,7 +135,7 @@ export const UsageDistributionList = ({
                       height: "2rem",
                     }}
                     id={item.id}
-                    iconPath={item.iconPath}
+                    iconId={item.iconId}
                     iconPathLastUpdatedAt={item.iconPathLastUpdatedAt}
                   />
                 ) : (
@@ -145,7 +145,7 @@ export const UsageDistributionList = ({
                       height: "2rem",
                     }}
                     id={item.id}
-                    iconPath={item.iconPath}
+                    iconId={item.iconId}
                     iconPathLastUpdatedAt={item.iconPathLastUpdatedAt}
                   />
                 )}

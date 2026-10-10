@@ -369,3 +369,25 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Local usage history, credentials and exports must never enter source control.
+[Dd]ata/
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.lic
+[Ee]xports/
+export-*.json
+*.har
+*.dmp
+.pnpm-store/
+.wxt/
+.output/
+dist/
+security-test-output/

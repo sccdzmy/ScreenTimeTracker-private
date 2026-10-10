@@ -1,3 +1,4 @@
+import { ExtensionPairing } from "@/shared/ui/ExtensionPairing";
 import { localSettingsQueries, usePatchLocalSettings } from "@/entities/local-settings";
 import { usePatchUserSettings, userSettingsQueries } from "@/entities/user-settings";
 import Box from "@mui/material/Box";
@@ -17,7 +18,6 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import { LazyTextField } from "@/shared/ui/LazyTextField";
 import { LazyNumberField } from "@/shared/ui/LazyNumberField";
 import { SUPPORTED_LANGUAGES, type LanguageCode } from "@/shared/i18n";
 import { useTranslation } from "react-i18next";
@@ -61,6 +61,7 @@ export const SettingsManagementPage = () => {
 
   return (
     <Grid container spacing={2}>
+      <Grid size={12}><ExtensionPairing /></Grid>
       {/* 第一列 */}
       <Grid size={{ xs: 12, lg: 6 }}>
         <Stack spacing={2} direction="column">
@@ -441,41 +442,6 @@ export const SettingsManagementPage = () => {
               {t(($) => $.page_settingsManagement.appTrackingSettings.title)}
             </Typography>
             <Stack spacing={1} direction="column" sx={{ mt: 2 }}>
-              {/* 图标目录设置 */}
-              <Stack
-                direction="row"
-                sx={{
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Stack direction="row" sx={{ alignItems: "center" }}>
-                  <Typography>
-                    {t(($) => $.page_settingsManagement.appTrackingSettings.iconDirectory.label)}
-                  </Typography>
-                  <Tooltip
-                    title={t(
-                      ($) => $.page_settingsManagement.appTrackingSettings.iconDirectory.tooltip,
-                    )}
-                  >
-                    <IconButton size="small">
-                      <HelpIcon fontSize="inherit" />
-                    </IconButton>
-                  </Tooltip>
-                </Stack>
-                <LazyTextField
-                  size="small"
-                  value={userSettingsDtoData.appTracking.iconDirectory}
-                  onValueChange={async (value) => {
-                    await patchUserSettingsAsync({
-                      appTracking: {
-                        ...userSettingsDtoData.appTracking,
-                        iconDirectory: value,
-                      },
-                    });
-                  }}
-                />
-              </Stack>
               {/* 元数据过期阈值设置 */}
               <Stack
                 direction="row"
@@ -714,44 +680,6 @@ export const SettingsManagementPage = () => {
               {t(($) => $.page_settingsManagement.websiteTrackingSettings.title)}
             </Typography>
             <Stack spacing={1} direction="column" sx={{ mt: 2 }}>
-              {/* 图标目录设置 */}
-              <Stack
-                direction="row"
-                sx={{
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Stack direction="row" sx={{ alignItems: "center" }}>
-                  <Typography>
-                    {t(
-                      ($) => $.page_settingsManagement.websiteTrackingSettings.iconDirectory.label,
-                    )}
-                  </Typography>
-                  <Tooltip
-                    title={t(
-                      ($) =>
-                        $.page_settingsManagement.websiteTrackingSettings.iconDirectory.tooltip,
-                    )}
-                  >
-                    <IconButton size="small">
-                      <HelpIcon fontSize="inherit" />
-                    </IconButton>
-                  </Tooltip>
-                </Stack>
-                <LazyTextField
-                  size="small"
-                  value={userSettingsDtoData.websiteTracking.iconDirectory}
-                  onValueChange={async (value) => {
-                    await patchUserSettingsAsync({
-                      websiteTracking: {
-                        ...userSettingsDtoData.websiteTracking,
-                        iconDirectory: value,
-                      },
-                    });
-                  }}
-                />
-              </Stack>
               {/* 活跃网站会话自动保存设置 */}
               <Stack
                 direction="row"

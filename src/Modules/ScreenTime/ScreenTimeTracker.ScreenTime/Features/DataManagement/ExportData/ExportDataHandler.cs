@@ -1,3 +1,4 @@
+using ScreenTimeTracker.BuildingBlocks.Security;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -214,18 +215,18 @@ public partial class ExportDataHandler(
         CancellationToken cancellationToken
     )
     {
-        if (iconPath is null || (!File.Exists(iconPath)))
+        if (!ManagedIcons.IsSafePath(iconPath) || (!File.Exists(iconPath)))
             return null;
 
         try
         {
             string extension = Path.GetExtension(iconPath);
-            byte[] fileBytes = await File.ReadAllBytesAsync(iconPath, cancellationToken);
+            byte[] fileBytes = await ManagedIcons.ReadAsync(iconPath!, cancellationToken);
             return new ExportDataResponse.Icon(extension, fileBytes);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            LogReadIconFileFailed(logger, iconPath);
+            LogReadIconFileFailed(logger, "managed icon");
             return null;
         }
     }

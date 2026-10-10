@@ -16,7 +16,7 @@ public class RecordActivityEndpoint(
 
     public override async Task HandleAsync(RecordActivityRequest req, CancellationToken ct)
     {
-        websiteActivityProcessor.Enqueue(
+        var accepted = websiteActivityProcessor.Enqueue(
             new(
                 req.Host,
                 req.Name,
@@ -24,6 +24,7 @@ public class RecordActivityEndpoint(
                 timeProvider.GetUtcNow()
             )
         );
+        if (!accepted) { HttpContext.Response.StatusCode = 429; return; }
         await Send.NoContentAsync(ct);
     }
 }

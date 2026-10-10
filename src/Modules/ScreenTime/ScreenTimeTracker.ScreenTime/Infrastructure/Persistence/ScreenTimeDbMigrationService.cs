@@ -39,6 +39,7 @@ public partial class ScreenTimeDbMigrationService(
             context.UserSettings.Add(userSettings);
             await context.SaveChangesAsync(cancellationToken);
         }
+        await ManagedIconMigration.RunAsync(context, cancellationToken);
     }
 
     [LoggerMessage(Level = LogLevel.Information, Message = "New ScreenTime database detected.")]

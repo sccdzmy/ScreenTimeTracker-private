@@ -1,3 +1,4 @@
+using ScreenTimeTracker.BuildingBlocks.Security;
 using System.Threading.Channels;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -194,94 +195,18 @@ public partial class ForegroundWindowProcessor(
         CancellationToken cancellationToken
     )
     {
-        if (metadata.IconStream is null)
+        if (metadata.IconStream is null) return null;
+        using var output = new MemoryStream();
+        var buffer = new byte[8192]; int read;
+        while ((read = await metadata.IconStream.ReadAsync(buffer, cancellationToken)) != 0)
         {
-            CleanUpManagedIcon(app.IconPath, iconDir);
-            return null;
+            if (output.Length + read > ManagedIcons.MaxBytes) return null;
+            output.Write(buffer, 0, read);
         }
-
-        string newIconPath = Path.Combine(
-            iconDir,
-            $"{app.ProcessName}.{metadata.IconFileExtension}"
-        );
-
-        StringComparison pathComparison =
-            OperatingSystem.IsWindows() || OperatingSystem.IsMacOS()
-                ? StringComparison.OrdinalIgnoreCase
-                : StringComparison.Ordinal;
-        bool isSamePath = string.Equals(app.IconPath, newIconPath, pathComparison);
-
-        // 如果新旧路径不一致，且旧图标属于受管理目录，则清理旧图标
-        if (!isSamePath)
-            CleanUpManagedIcon(app.IconPath, iconDir);
-        // 简单校验，如果路径一致且新旧图标大小相同，跳过 IO 操作
-        else if (
-            File.Exists(newIconPath)
-            && new FileInfo(newIconPath).Length == metadata.IconStream.Length
-        )
-            return newIconPath;
-
-        // 确保目录存在
-        Directory.CreateDirectory(iconDir);
-
-        // 使用 FileMode.Create 自动覆盖旧文件
-        await using (
-            var fileStream = new FileStream(
-                newIconPath,
-                FileMode.Create,
-                FileAccess.Write,
-                FileShare.None
-            )
-        )
-            await metadata.IconStream.CopyToAsync(fileStream, cancellationToken);
-
-        return newIconPath;
+        try { return await ManagedIcons.SaveAsync(output.ToArray(), cancellationToken); }
+        catch (ArgumentException) { return null; }
     }
 
-    /// 仅清理在受管理目录（managedDirectory）下的旧文件
-    private static void CleanUpManagedIcon(string? filePath, string managedDirectory)
-    {
-        if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
-            return;
-
-        // 只有文件确实在软件管理的图标目录下时，才允许删除
-        if (IsFileInDirectory(filePath, managedDirectory))
-        {
-            try
-            {
-                File.Delete(filePath);
-            }
-            catch
-            {
-                // 忽略删除失败的异常（如文件被占用）
-            }
-        }
-    }
-
-    // 判断文件路径是否位于指定目录下
-    private static bool IsFileInDirectory(string filePath, string directoryPath)
-    {
-        if (string.IsNullOrWhiteSpace(filePath) || string.IsNullOrWhiteSpace(directoryPath))
-            return false;
-
-        try
-        {
-            // 获取相对路径（Path.GetRelativePath 会自动处理 Windows/macOS/Linux 的大小写规则）
-            string relativePath = Path.GetRelativePath(directoryPath, filePath);
-
-            // 满足以下条件说明 filePath 确实在 directoryPath 目录（或子目录）下：
-            //    - 相对路径不等于 "." (代表就是目录本身)
-            //    - 相对路径不以 ".." 开头 (代表不在父级或平级目录)
-            //    - 相对路径不是根绝对路径 (代表没有跨驱动器，比如从 C:\ 到 D:\)
-            return relativePath != "."
-                && !relativePath.StartsWith("..", StringComparison.Ordinal)
-                && !Path.IsPathRooted(relativePath);
-        }
-        catch
-        {
-            return false;
-        }
-    }
 }
 
 public interface IExecutableMetadataProvider

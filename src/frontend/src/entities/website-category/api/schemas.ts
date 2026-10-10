@@ -5,7 +5,7 @@ export const websiteCategoryDtoSchema = z.object({
   id: z.string(),
   name: z.string(),
   color: z.string(),
-  iconPath: z.string().nullable(),
+  iconId: z.string().nullable(),
   iconPathLastUpdatedAt: z.coerce.date(),
   isSystem: z.boolean(),
 });
@@ -20,12 +20,12 @@ export type GetWebsiteCategoriesParams = z.infer<typeof getWebsiteCategoriesPara
 export const createWebsiteCategorySchema = websiteCategorySchema.pick({
   name: true,
   color: true,
-  iconPath: true,
+  iconId: true,
 });
 export type CreateWebsiteCategoryParams = z.infer<typeof createWebsiteCategorySchema>;
 
 export const patchWebsiteCategorySchema = z.object({
   id: z.string(),
-  body: websiteCategorySchema.pick({ name: true, color: true, iconPath: true }).partial(),
+  body: websiteCategorySchema.pick({ name: true, color: true, iconId: true }).partial(),
 });
 export type PatchWebsiteCategoryParams = z.infer<typeof patchWebsiteCategorySchema>;

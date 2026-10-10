@@ -7,20 +7,20 @@ export const WebsiteCategoryIcon = ({
   sx,
   className,
   id,
-  iconPath,
+  iconId,
   iconPathLastUpdatedAt,
 }: {
   sx?: SxProps<Theme>;
   className?: string;
   id: string;
-  iconPath: string | null;
+  iconId: string | null;
   iconPathLastUpdatedAt: Date;
 }) => {
   return (
     <Box
       component="img"
       src={
-        iconPath === null ? UnknownCategory : getWebsiteCategoryIconUrl(id, iconPathLastUpdatedAt)
+        iconId === null ? UnknownCategory : getWebsiteCategoryIconUrl(id, iconPathLastUpdatedAt)
       }
       className={className}
       sx={[{}, ...(Array.isArray(sx) ? sx : [sx])]}

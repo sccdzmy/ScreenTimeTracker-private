@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using ScreenTimeTracker.BuildingBlocks.Security;
 namespace ScreenTimeTracker.ScreenTime.Features.Websites.GetWebsiteUsageDistribution;
 
 public record GetWebsiteUsageDistributionResponse(
@@ -12,7 +14,7 @@ public record WebsiteUsageDistributionItem(
     Guid Id,
     string Name,
     string Color,
-    string? IconPath,
+    [property: JsonPropertyName("iconId"), JsonConverter(typeof(IconReferenceConverter))] string? IconPath,
     DateTimeOffset IconPathLastUpdatedAt,
     long DurationSeconds
 );

@@ -11,7 +11,7 @@ import type { WebsiteCategory } from "../model/schemas";
 import { websiteCategoryQueries } from "../api/queries";
 import { WebsiteCategoryIcon } from "./WebsiteCategoryIcon";
 
-type Item = Pick<WebsiteCategory, "id" | "name" | "iconPath" | "iconPathLastUpdatedAt">;
+type Item = Pick<WebsiteCategory, "id" | "name" | "iconId" | "iconPathLastUpdatedAt">;
 
 export type WebsiteCategoryPickerProps = {
   className?: string;
@@ -57,7 +57,7 @@ export const WebsiteCategoryPicker = (props: WebsiteCategoryPickerProps) => {
   const { mode, value, onValueChange, placeholder, ...autocompleteProps } = commonProps;
   const { data: websiteCategoriesData, isLoading: iswebsiteCategoriesDataLoading } = useQuery(
     websiteCategoryQueries.websiteCategories({
-      fields: "id,name,iconPath,iconPathLastUpdatedAt",
+      fields: "id,name,iconId,iconPathLastUpdatedAt",
     }),
   ) as {
     data?: Item[];
@@ -150,7 +150,7 @@ export const WebsiteCategoryPicker = (props: WebsiteCategoryPickerProps) => {
                 mr: 1,
               }}
               id={option.id}
-              iconPath={option.iconPath}
+              iconId={option.iconId}
               iconPathLastUpdatedAt={option.iconPathLastUpdatedAt}
             />
             <Typography>{option.name}</Typography>

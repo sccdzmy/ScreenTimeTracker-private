@@ -1,3 +1,4 @@
+import { escapeHtml } from "@/shared/lib/escape-html";
 import { useQuery } from "@tanstack/react-query";
 import ReactECharts from "echarts-for-react";
 import {
@@ -132,7 +133,7 @@ export const UsageDistributionPieChart = ({
                     : UnknownCategory;
             acc[toRichKey(v.id)] = {
               backgroundColor: {
-                image: v.iconPath ? iconUrl : fallbackIconUrl,
+                image: v.iconId ? iconUrl : fallbackIconUrl,
               },
               width: 15,
               height: 15,
@@ -159,7 +160,7 @@ export const UsageDistributionPieChart = ({
           };
         }) => {
           const duration = formatSecondsDuration(params.data.durationSeconds);
-          return `${params.data.name}<br/>${duration} (${params.percent}%)`;
+          return `${escapeHtml(params.data.name)}<br/>${duration} (${params.percent}%)`;
         },
       },
       series: [
@@ -171,7 +172,7 @@ export const UsageDistributionPieChart = ({
               name: v.name,
               value: v.durationSeconds,
               id: v.id,
-              iconPath: v.iconPath,
+              iconId: v.iconId,
               durationSeconds: v.durationSeconds,
               itemStyle: {
                 color: v.color,

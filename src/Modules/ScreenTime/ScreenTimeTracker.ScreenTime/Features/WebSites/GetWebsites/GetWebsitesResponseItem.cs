@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using ScreenTimeTracker.BuildingBlocks.Security;
 namespace ScreenTimeTracker.ScreenTime.Features.Websites.GetWebsites;
 
 public record GetWebsitesResponseItem(
@@ -8,7 +10,7 @@ public record GetWebsitesResponseItem(
     bool AllowMetadataAutoRefresh,
     DateTimeOffset MetadataLastRefreshedAt,
     Guid WebsiteCategoryId,
-    string? IconPath,
+    [property: JsonPropertyName("iconId"), JsonConverter(typeof(IconReferenceConverter))] string? IconPath,
     DateTimeOffset IconPathLastUpdatedAt,
     bool IsSystem
 );

@@ -1,19 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STT WE Options</title>
-
-    <meta name="manifest.open_in_tab" content="true" />
-</head>
-
-<body>
-    <label for="baseUrl">Base Url: </label>
-    <input id="baseUrl" type="text" value="default">
-
-    <script type="module" src="./main.ts"></script>
-</body>
-
-</html>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="manifest.open_in_tab" content="true"><title>STT Extension Pairing</title></head><body>
+<h1>Pair with the local app / 与本机应用配对</h1>
+<p>Open the interface from the desktop or tray. Generate a code in Settings, then paste it here. 请从桌面或托盘打开界面，在设置中生成配对码。</p>
+<label>Local server <input id="baseUrl" value="http://127.0.0.1:5124" readonly></label>
+<label>Pairing code <input id="code" autocomplete="off" maxlength="16"></label><button id="pair">Pair / 配对</button><p id="status" role="status"></p>
+<script type="module" src="./main.ts"></script></body></html>

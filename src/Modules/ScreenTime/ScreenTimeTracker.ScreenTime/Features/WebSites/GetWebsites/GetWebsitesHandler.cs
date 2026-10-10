@@ -1,3 +1,4 @@
+using ScreenTimeTracker.BuildingBlocks.Security;
 using System.Linq.Expressions;
 using System.Text.Json;
 using Mediator;
@@ -28,7 +29,7 @@ public class GetWebsitesHandler(ScreenTimeDbContext context)
             [nameof(Website.MetadataLastRefreshedAt)]
         },
         { nameof(GetWebsitesResponseItem.WebsiteCategoryId), [nameof(Website.WebsiteCategoryId)] },
-        { nameof(GetWebsitesResponseItem.IconPath), [nameof(Website.IconPath)] },
+        { "IconId", [nameof(Website.IconPath)] },
         {
             nameof(GetWebsitesResponseItem.IconPathLastUpdatedAt),
             [nameof(Website.IconPathLastUpdatedAt)]
@@ -49,7 +50,7 @@ public class GetWebsitesHandler(ScreenTimeDbContext context)
             e.AllowMetadataAutoRefresh,
         [nameof(GetWebsitesResponseItem.MetadataLastRefreshedAt)] = e => e.MetadataLastRefreshedAt,
         [nameof(GetWebsitesResponseItem.WebsiteCategoryId)] = e => e.WebsiteCategoryId,
-        [nameof(GetWebsitesResponseItem.IconPath)] = e => e.IconPath,
+        ["IconId"] = e => ManagedIcons.Id(e.IconPath),
         [nameof(GetWebsitesResponseItem.IconPathLastUpdatedAt)] = e => e.IconPathLastUpdatedAt,
         [nameof(GetWebsitesResponseItem.IsSystem)] = e => e.IsSystem,
     };

@@ -1,3 +1,4 @@
+import { IconUpload } from "@/shared/ui/IconUpload";
 import {
   AppCategoryIcon,
   appCategoryQueries,
@@ -120,7 +121,7 @@ export const AppCategoryManagementPage = () => {
         <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
           <AppCategoryIcon
             id={params.row.id}
-            iconPath={params.row.iconPath}
+            iconId={params.row.iconId}
             iconPathLastUpdatedAt={params.row.iconPathLastUpdatedAt}
             sx={{
               width: "2rem",
@@ -131,26 +132,23 @@ export const AppCategoryManagementPage = () => {
       ),
     },
     {
-      field: "iconPath",
-      headerName: t(($) => $.page_appCategoryManagement.columns.iconPath),
+      field: "iconId",
+      headerName: t(($) => $.page_appCategoryManagement.columns.iconId),
       width: 200,
       renderCell: (params: GridRenderCellParams<AppCategory, string>) => (
         <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
-          <LazyTextField
-            fullWidth
-            size="small"
+          <IconUpload
             value={params.value || ""}
-            onKeyDown={stopGridKeyboardEvent}
             onValueChange={async (value) => {
               try {
                 await patchAppCategoryAsync({
                   id: params.row.id,
-                  body: { iconPath: value === "" ? null : value },
+                  body: { iconId: value === "" ? null : value },
                 });
               } catch {
                 enqueueSnackbar(
                   t(($) => $.page_appCategoryManagement.errors.updateFailed, {
-                    field: t(($) => $.page_appCategoryManagement.fields.iconPath),
+                    field: t(($) => $.page_appCategoryManagement.fields.iconId),
                   }),
                   { variant: "error" },
                 );
@@ -276,9 +274,9 @@ export const AppCategoryManagementPage = () => {
               const data = Object.fromEntries(formData.entries()) as {
                 name: string;
                 color: string;
-                iconPath: string | null;
+                iconId: string | null;
               };
-              if (data.iconPath === "") data.iconPath = null;
+              if (data.iconId === "") data.iconId = null;
               try {
                 await createAppCategoryAsync(data);
                 setCreateAppCategoryDialogOpen(false);
@@ -318,14 +316,7 @@ export const AppCategoryManagementPage = () => {
                 },
               }}
             />
-            <TextField
-              margin="dense"
-              variant="outlined"
-              id="iconPath"
-              name="iconPath"
-              label={t(($) => $.page_appCategoryManagement.fields.iconPath)}
-              fullWidth
-            />
+            <IconUpload name="iconId" />
           </form>
         </DialogContent>
         <DialogActions>

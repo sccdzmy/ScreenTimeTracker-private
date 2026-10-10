@@ -11,7 +11,8 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare",
+    "test": "node --test tests/messages.test.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
@@ -19,8 +20,5 @@
     "web-ext": "^10.5.0",
     "wxt": "^0.20.27"
   },
-  "dependencies": {
-    "@microsoft/signalr": "^10.0.0",
-    "file-type": "^22.0.1"
-  }
+  "dependencies": {}
 }

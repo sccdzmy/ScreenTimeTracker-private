@@ -1,11 +1,14 @@
 using System.Globalization;
+using ScreenTimeTracker.Desktop.Security;
 using System.Text.Json.Serialization;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Hosting;
 using ScreenTimeTracker.BuildingBlocks.Types;
 using ScreenTimeTracker.Desktop;
 using ScreenTimeTracker.Desktop.Hosting;
@@ -53,6 +56,9 @@ TaskScheduler.UnobservedTaskException += (sender, e) =>
 try
 {
     var builder = WebApplication.CreateBuilder();
+    builder.WebHost.UseUrls("http://127.0.0.1:5124");
+    builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 64 * 1024 * 1024);
+    builder.Services.AddSingleton<LocalAccessService>();
     // 通用服务
     builder.Services.AddSerilog(
         (services, loggerConfig) =>
@@ -142,11 +148,11 @@ try
 
     // 中间件
     app.UseExceptionHandler();
+    app.UseMiddleware<LocalSecurityMiddleware>();
     app.UseStaticFiles();
-    app.UseCors(cors =>
-    {
-        cors.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin();
-    });
+    if (app.Environment.IsDevelopment())
+        app.UseCors(cors => cors.WithOrigins("http://127.0.0.1:5173").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+    app.MapLocalSecurity();
     app.UseFastEndpoints(config =>
     {
         config.Endpoints.RoutePrefix = "api";
@@ -158,7 +164,7 @@ try
         // OptionalValue<T> JSON 转换器
         config.Serializer.Options.Converters.Add(new OptionalValueJsonConverterFactory());
     });
-    app.UseSwaggerGen(); // 文档url: /swagger/v1/swagger.json
+    if (app.Environment.IsDevelopment()) app.UseSwaggerGen(); // 文档url: /swagger/v1/swagger.json
     app.MapFallbackToFile("index.html"); // SPA回退
 
     app.Lifetime.ApplicationStopped.Register(() =>

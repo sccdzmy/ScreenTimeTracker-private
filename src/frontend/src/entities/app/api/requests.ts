@@ -17,7 +17,7 @@ export const getApps = async (params: GetAppsParams): Promise<Partial<App>[]> =>
       metadataLastRefreshedAt: validated.metadataLastRefreshedAt,
       appCategoryId: validated.appCategoryId,
       executablePath: validated.executablePath,
-      iconPath: validated.iconPath,
+      iconId: validated.iconId,
       iconPathLastUpdatedAt: validated.iconPathLastUpdatedAt,
       isSystem: validated.isSystem,
     };

@@ -9,7 +9,7 @@ import Chip from "@mui/material/Chip";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
-type Item = Pick<App, "id" | "name" | "iconPath" | "iconPathLastUpdatedAt">;
+type Item = Pick<App, "id" | "name" | "iconId" | "iconPathLastUpdatedAt">;
 
 export type AppPickerProps = {
   placeholder?: string;
@@ -53,7 +53,7 @@ export const AppPicker = (props: AppPickerProps) => {
   const { mode, value, onValueChange, placeholder, ...autocompleteProps } = commonProps;
 
   const { data: appsData, isLoading: isAppsDataLoading } = useQuery(
-    appQueries.apps({ fields: "id,name,iconPath,iconPathLastUpdatedAt" }),
+    appQueries.apps({ fields: "id,name,iconId,iconPathLastUpdatedAt" }),
   ) as {
     data?: Item[];
     isLoading: boolean;
@@ -137,7 +137,7 @@ export const AppPicker = (props: AppPickerProps) => {
                 mr: 1,
               }}
               id={option.id}
-              iconPath={option.iconPath}
+              iconId={option.iconId}
               iconPathLastUpdatedAt={option.iconPathLastUpdatedAt}
             />
             <Typography>{option.name}</Typography>

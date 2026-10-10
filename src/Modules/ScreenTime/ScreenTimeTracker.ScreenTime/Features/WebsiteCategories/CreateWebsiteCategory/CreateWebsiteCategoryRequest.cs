@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
 namespace ScreenTimeTracker.ScreenTime.Features.WebsiteCategories.CreateWebsiteCategory;
 
-public record CreateWebsiteCategoryRequest(string Name, string Color, string? IconPath);
+[JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]
+public record CreateWebsiteCategoryRequest(string Name, string Color, string? IconId);

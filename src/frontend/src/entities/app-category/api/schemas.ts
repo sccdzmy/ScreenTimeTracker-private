@@ -5,7 +5,7 @@ export const appCategoryDtoSchema = z.object({
   id: z.string(),
   name: z.string(),
   color: z.string(),
-  iconPath: z.string().nullable(),
+  iconId: z.string().nullable(),
   iconPathLastUpdatedAt: z.coerce.date(),
   isSystem: z.boolean(),
 });
@@ -22,14 +22,14 @@ export type GetAppCategoriesParams = z.infer<
 export const createAppCategorySchema = appCategorySchema.pick({
   name: true,
   color: true,
-  iconPath: true,
+  iconId: true,
 });
 export type CreateAppCategoryParams = z.infer<typeof createAppCategorySchema>;
 
 export const patchAppCategorySchema = z.object({
   id: z.string(),
   body: appCategorySchema
-    .pick({ name: true, color: true, iconPath: true })
+    .pick({ name: true, color: true, iconId: true })
     .partial(),
 });
 export type PatchAppCategoryParams = z.infer<typeof patchAppCategorySchema>;

@@ -1,3 +1,4 @@
+using ScreenTimeTracker.BuildingBlocks.Security;
 using ErrorOr;
 using FastEndpoints;
 using Mediator;
@@ -23,7 +24,7 @@ public class PatchWebsiteEndpoint(IMediator mediator) : Endpoint<PatchWebsiteReq
                 req.Color,
                 req.AllowMetadataAutoRefresh,
                 req.WebsiteCategoryId,
-                req.IconPath
+                ManagedIcons.Resolve(req.IconId)
             ),
             ct
         );

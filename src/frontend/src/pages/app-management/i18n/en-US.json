@@ -5,7 +5,7 @@
     "color": "Color",
     "category": "Category",
     "icon": "Icon",
-    "iconPath": "Icon Path",
+    "iconId": "Icon",
     "allowMetadataAutoRefresh": "Auto Update Metadata",
     "metadataLastRefreshedAt": "Last Metadata Auto Updated",
     "processName": "Process Name",

@@ -23,16 +23,28 @@ public partial class WebsiteActivityProcessor(
     SystemSuspendStore systemSuspendStore
 ) : BackgroundService
 {
-    private static readonly TimeSpan AllowedNetworkJitter = TimeSpan.FromSeconds(5);
+    private static readonly TimeSpan AllowedNetworkJitter = TimeSpan.FromMilliseconds(250);
 
     private readonly Channel<WebsiteActivityReport> _channel =
-        Channel.CreateUnbounded<WebsiteActivityReport>(
-            new UnboundedChannelOptions { SingleReader = true }
+        Channel.CreateBounded<WebsiteActivityReport>(
+            new BoundedChannelOptions(256) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait }
         );
 
-    public void Enqueue(WebsiteActivityReport report)
+    private readonly object _enqueueGate = new();
+    private DateTimeOffset? _lastAcceptedAt;
+    public bool Enqueue(WebsiteActivityReport report)
     {
-        _channel.Writer.TryWrite(report);
+        lock (_enqueueGate)
+        {
+            if (userIdleStore.Current.IsUserIdle || systemSuspendStore.Current.IsSystemSuspendActive) { _lastAcceptedAt = null; return true; }
+            if (report.Duration <= TimeSpan.Zero || report.Duration > TimeSpan.FromSeconds(5)) return false;
+            var elapsed = _lastAcceptedAt is { } last ? report.ReportedAt - last : TimeSpan.FromMilliseconds(1500);
+            if (elapsed <= TimeSpan.Zero) return false;
+            report = report with { Duration = report.Duration < elapsed ? report.Duration : elapsed };
+            if (!_channel.Writer.TryWrite(report)) return false;
+            _lastAcceptedAt = report.ReportedAt;
+            return true;
+        }
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -54,7 +66,7 @@ public partial class WebsiteActivityProcessor(
                 }
                 catch (Exception ex)
                 {
-                    LogProcessActivityFailed(logger, report.Host, ex);
+                    LogProcessActivityFailed(logger, "website", ex);
                 }
             }
         }

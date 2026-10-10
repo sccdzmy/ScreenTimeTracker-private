@@ -1,3 +1,4 @@
+import { escapeHtml, safeColor } from "@/shared/lib/escape-html";
 import { useQuery } from "@tanstack/react-query";
 import { dateOnlyToDate, type DateOnly } from "@/shared/lib/date-only";
 import { type CustomSeriesRenderItem, graphic } from "echarts";
@@ -140,7 +141,7 @@ export const UsageTimeline = ({
         acc[item.name].push(item);
         return acc;
       },
-      {} as Record<string, AppUsageTimelineItemDto[] | AppCategoryUsageTimelineItemDto[]>,
+      Object.create(null) as Record<string, AppUsageTimelineItemDto[] | AppCategoryUsageTimelineItemDto[]>,
     );
 
     const series = Object.entries(groupedData).map(([name, items]) => {
@@ -229,8 +230,8 @@ export const UsageTimeline = ({
 
           return `
             <div>
-              <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${color};"></span>
-              <b>${seriesName}</b><br/>
+              <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${safeColor(color)};"></span>
+              <b>${escapeHtml(seriesName)}</b><br/>
               <span style="color:#888;">${startStr} ~ ${endStr}</span>
             </div>
           `;

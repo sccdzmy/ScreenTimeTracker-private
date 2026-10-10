@@ -7,20 +7,20 @@ export const AppIcon = ({
   sx,
   className,
   id,
-  iconPath,
+  iconId,
   iconPathLastUpdatedAt,
 }: {
   sx?: SxProps<Theme>;
   className?: string;
   id: string;
-  iconPath: string | null;
+  iconId: string | null;
   iconPathLastUpdatedAt: Date;
 }) => {
   return (
     <Box
       component="img"
       src={
-        iconPath === null
+        iconId === null
           ? UnknownApp
           : getAppIconUrl(id, iconPathLastUpdatedAt)
       }

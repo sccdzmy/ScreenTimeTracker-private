@@ -38,7 +38,7 @@ public class PatchUserSettingsHandler(ScreenTimeDbContext context)
     private static AppTrackingSettings MapAppTracking(AppTrackingSettingsDto dto)
     {
         return new AppTrackingSettings(
-            dto.IconDirectory,
+            "./Data/ManagedIcons",
             TimeSpan.FromMinutes(dto.MetadataStaleThresholdMinutes),
             TimeSpan.FromSeconds(dto.ActiveUsageSessionAutoSaveIntervalSeconds),
             TimeSpan.FromSeconds(dto.MinValidUsageSessionDurationSeconds),
@@ -50,7 +50,7 @@ public class PatchUserSettingsHandler(ScreenTimeDbContext context)
     private static WebsiteTrackingSettings MapWebsiteTracking(WebsiteTrackingSettingsDto dto)
     {
         return new WebsiteTrackingSettings(
-            dto.IconDirectory,
+            "./Data/ManagedIcons",
             TimeSpan.FromSeconds(dto.ActiveUsageSessionAutoSaveIntervalSeconds),
             TimeSpan.FromSeconds(dto.MinValidUsageSessionDurationSeconds),
             TimeSpan.FromSeconds(dto.UsageSessionMergeToleranceSeconds),

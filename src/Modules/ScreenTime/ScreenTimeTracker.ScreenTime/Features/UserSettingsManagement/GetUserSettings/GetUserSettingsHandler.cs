@@ -19,7 +19,6 @@ public class GetUserSettingsHandler(ScreenTimeDbContext context)
 
         return new GetUserSettingsResponse(
             new AppTrackingSettingsDto(
-                userSettings.AppTracking.IconDirectory,
                 (int)userSettings.AppTracking.MetadataStaleThreshold.TotalSeconds,
                 (int)userSettings.AppTracking.ActiveUsageSessionAutoSaveInterval.TotalSeconds,
                 (int)userSettings.AppTracking.MinValidUsageSessionDuration.TotalSeconds,
@@ -27,7 +26,6 @@ public class GetUserSettingsHandler(ScreenTimeDbContext context)
                 (int)userSettings.AppTracking.UsageSessionOptimizationInterval.TotalSeconds
             ),
             new WebsiteTrackingSettingsDto(
-                userSettings.AppTracking.IconDirectory,
                 (int)userSettings.WebsiteTracking.ActiveUsageSessionAutoSaveInterval.TotalSeconds,
                 (int)userSettings.WebsiteTracking.MinValidUsageSessionDuration.TotalSeconds,
                 (int)userSettings.WebsiteTracking.UsageSessionMergeTolerance.TotalSeconds,

@@ -9,7 +9,7 @@ export const appSchema = z.object({
   metadataLastRefreshedAt: z.date(),
   appCategoryId: z.string(),
   executablePath: z.string().nullable(),
-  iconPath: z.string().nullable(),
+  iconId: z.string().nullable(),
   iconPathLastUpdatedAt: z.date(),
   isSystem: z.boolean(),
 });

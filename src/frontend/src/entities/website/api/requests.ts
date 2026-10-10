@@ -16,7 +16,7 @@ export const getWebsites = async (params: GetWebsitesParams): Promise<Partial<We
       allowMetadataAutoRefresh: validated.allowMetadataAutoRefresh,
       metadataLastRefreshedAt: validated.metadataLastRefreshedAt,
       websiteCategoryId: validated.websiteCategoryId,
-      iconPath: validated.iconPath,
+      iconId: validated.iconId,
       iconPathLastUpdatedAt: validated.iconPathLastUpdatedAt,
       isSystem: validated.isSystem,
     };

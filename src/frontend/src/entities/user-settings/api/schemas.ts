@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 export const appTrackingSettingsDtoSchema = z.object({
-  iconDirectory: z.string(),
   metadataStaleThresholdMinutes: z.number().int(),
   activeUsageSessionAutoSaveIntervalSeconds: z.number().int(),
   minValidUsageSessionDurationSeconds: z.number().int(),
@@ -12,7 +11,6 @@ export const appTrackingSettingsDtoSchema = z.object({
 export type AppTrackingSettingsDto = z.infer<typeof appTrackingSettingsDtoSchema>;
 
 export const websiteTrackingSettingsDtoSchema = z.object({
-  iconDirectory: z.string(),
   activeUsageSessionAutoSaveIntervalSeconds: z.number().int(),
   minValidUsageSessionDurationSeconds: z.number().int(),
   usageSessionMergeToleranceSeconds: z.number().int(),

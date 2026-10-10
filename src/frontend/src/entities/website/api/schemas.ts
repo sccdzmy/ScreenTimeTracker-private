@@ -9,7 +9,7 @@ export const websiteDtoSchema = z.object({
   allowMetadataAutoRefresh: z.boolean(),
   metadataLastRefreshedAt: z.coerce.date(),
   websiteCategoryId: z.string(),
-  iconPath: z.string().nullable(),
+  iconId: z.string().nullable(),
   iconPathLastUpdatedAt: z.coerce.date(),
   isSystem: z.boolean(),
 });
@@ -29,7 +29,7 @@ export const patchWebsiteSchema = z.object({
       color: true,
       allowMetadataAutoRefresh: true,
       websiteCategoryId: true,
-      iconPath: true,
+      iconId: true,
     })
     .partial(),
 });

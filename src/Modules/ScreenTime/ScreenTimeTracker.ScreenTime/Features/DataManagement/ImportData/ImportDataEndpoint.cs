@@ -32,6 +32,7 @@ public class ImportDataEndpoint(IMediator mediator) : EndpointWithoutRequest<Imp
                     detail: firstError.Description,
                     statusCode: firstError.Type switch
                     {
+                        ErrorType.Validation => StatusCodes.Status400BadRequest,
                         ErrorType.NotFound => StatusCodes.Status404NotFound,
                         _ => StatusCodes.Status500InternalServerError,
                     },

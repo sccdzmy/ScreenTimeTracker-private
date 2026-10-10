@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using ScreenTimeTracker.BuildingBlocks.Security;
 namespace ScreenTimeTracker.ScreenTime.Features.Apps.GetApp;
 
 public record GetAppResponse(
@@ -9,7 +11,7 @@ public record GetAppResponse(
     DateTimeOffset MetadataLastRefreshedAt,
     Guid CategoryId,
     string? ExecutablePath,
-    string? IconPath,
+    [property: JsonPropertyName("iconId"), JsonConverter(typeof(IconReferenceConverter))] string? IconPath,
     DateTimeOffset IconPathLastUpdatedAt,
     bool IsSystem
 );

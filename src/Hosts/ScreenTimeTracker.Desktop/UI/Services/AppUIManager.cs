@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using ScreenTimeTracker.Desktop.Security;
 using System.Drawing;
 using System.Reflection;
 using Microsoft.Extensions.Hosting;
@@ -19,6 +20,7 @@ public interface IAppUIManager
 
 public partial class AppUIManager : IAppUIManager
 {
+    private readonly LocalAccessService _access;
     private readonly ILogger<AppUIManager> _logger;
     private readonly IServerUrlProvider _urlProvider;
     private readonly IWindowPlacementStore _placementStore;
@@ -27,6 +29,7 @@ public partial class AppUIManager : IAppUIManager
     private readonly Lock _windowLock = new();
 
     public AppUIManager(
+        LocalAccessService access,
         ILogger<AppUIManager> logger,
         IServerUrlProvider urlProvider,
         IWindowPlacementStore placementStore,
@@ -34,6 +37,7 @@ public partial class AppUIManager : IAppUIManager
         IDesktopLocalSettingsProvider desktopLocalSettingsProvider
     )
     {
+        _access = access;
         _logger = logger;
         _placementStore = placementStore;
         _urlProvider = urlProvider;
@@ -73,13 +77,13 @@ public partial class AppUIManager : IAppUIManager
 
     public void OpenUIInBrowser()
     {
-        string uiUrl = _urlProvider.GetServerUrl();
+        string uiUrl = _urlProvider.GetServerUrl() + "/#bootstrap=" + _access.CreateBootstrap();
         Process.Start(new ProcessStartInfo { FileName = uiUrl, UseShellExecute = true });
     }
 
     public void OpenUIInWindow()
     {
-        string uiUrl = _urlProvider.GetServerUrl();
+        string uiUrl = _urlProvider.GetServerUrl() + "/#bootstrap=" + _access.CreateBootstrap();
 
         lock (_windowLock)
         {
@@ -156,7 +160,7 @@ public partial class AppUIManager : IAppUIManager
                     }
                     catch (Exception ex)
                     {
-                        LogOpenUIInWindowFailed(_logger, ex);
+                        LogOpenUIInWindowFailed(_logger, ex.GetType().Name);
                     }
                     finally
                     {
@@ -177,6 +181,7 @@ public partial class AppUIManager : IAppUIManager
                 // 窗口已经存在，将其唤醒/带到前台
                 _window.Invoke(() =>
                 {
+                    _window.Load(uiUrl);
                     if (_window.Minimized)
                         _window.SetMinimized(false);
                     else
@@ -189,8 +194,8 @@ public partial class AppUIManager : IAppUIManager
         }
     }
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to open UI in window.")]
-    private static partial void LogOpenUIInWindowFailed(ILogger logger, Exception ex);
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to open UI in window: {ErrorType}.")]
+    private static partial void LogOpenUIInWindowFailed(ILogger logger, string errorType);
 
     // https://github.com/tryphotino/photino.NET/issues/59
     // Photino.NET 的 bug 导致无法在 WaitForClose() 返回后创建第二个窗口

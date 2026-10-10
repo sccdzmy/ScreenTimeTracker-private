@@ -10,7 +10,7 @@ export const appDtoSchema = z.object({
   metadataLastRefreshedAt: z.coerce.date(),
   appCategoryId: z.string(),
   executablePath: z.string().nullable(),
-  iconPath: z.string().nullable(),
+  iconId: z.string().nullable(),
   iconPathLastUpdatedAt: z.coerce.date(),
   isSystem: z.boolean(),
 });
@@ -30,7 +30,7 @@ export const patchAppSchema = z.object({
       color: true,
       allowMetadataAutoRefresh: true,
       appCategoryId: true,
-      iconPath: true,
+      iconId: true,
     })
     .partial(),
 });

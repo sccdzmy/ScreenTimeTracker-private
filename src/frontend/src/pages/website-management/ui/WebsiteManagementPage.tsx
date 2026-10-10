@@ -1,3 +1,4 @@
+import { IconUpload } from "@/shared/ui/IconUpload";
 import {
   WebsiteIcon,
   websiteQueries,
@@ -163,7 +164,7 @@ export const WebsiteManagementPage = () => {
         <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
           <WebsiteIcon
             id={params.row.id}
-            iconPath={params.row.iconPath}
+            iconId={params.row.iconId}
             iconPathLastUpdatedAt={params.row.iconPathLastUpdatedAt}
             sx={{
               width: "2rem",
@@ -174,26 +175,23 @@ export const WebsiteManagementPage = () => {
       ),
     },
     {
-      field: "iconPath",
-      headerName: t(($) => $.page_websiteManagement.columns.iconPath),
+      field: "iconId",
+      headerName: t(($) => $.page_websiteManagement.columns.iconId),
       width: 150,
       renderCell: (params: GridRenderCellParams<Website, string>) => (
         <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
-          <LazyTextField
-            fullWidth
-            size="small"
+          <IconUpload
             value={params.value || ""}
-            onKeyDown={stopGridKeyboardEvent}
             onValueChange={async (value) => {
               try {
                 await patchWebsiteAsync({
                   id: params.row.id,
-                  body: { iconPath: value === "" ? null : value },
+                  body: { iconId: value === "" ? null : value },
                 });
               } catch {
                 enqueueSnackbar(
                   t(($) => $.page_websiteManagement.errors.updateFailed, {
-                    field: t(($) => $.page_websiteManagement.columns.iconPath),
+                    field: t(($) => $.page_websiteManagement.columns.iconId),
                   }),
                   { variant: "error" },
                 );

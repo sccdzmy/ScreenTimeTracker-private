@@ -1,3 +1,4 @@
+using ScreenTimeTracker.BuildingBlocks.Security;
 using System.Text.Json;
 using ErrorOr;
 using Mediator;
@@ -30,6 +31,7 @@ public class ImportDataHandler(
         CancellationToken cancellationToken
     )
     {
+        if (string.IsNullOrEmpty(request.RawJson) || System.Text.Encoding.UTF8.GetByteCount(request.RawJson) > 64 * 1024 * 1024) throw new ArgumentException("Import exceeds size limit.");
         int version;
         try
         {
@@ -59,6 +61,16 @@ public class ImportDataHandler(
             );
         }
 
+        using (var raw = JsonDocument.Parse(request.RawJson))
+        {
+            string[] required = version switch { 1 => ["usageSessions"], 2 or 3 => ["apps", "appCategories", "appUsageSessions"], 4 => ["apps", "appCategories", "appUsageSessions", "websites", "websiteCategories", "websiteUsageSessions"], _ => [] };
+            foreach (var key in required)
+            {
+                var property = raw.RootElement.EnumerateObject().FirstOrDefault(x => x.Name.Equals(key, StringComparison.OrdinalIgnoreCase));
+                if (property.Value.ValueKind != JsonValueKind.Array || property.Value.GetArrayLength() > 100000 || property.Value.EnumerateArray().Any(x => x.ValueKind != JsonValueKind.Object)) throw new ArgumentException("Invalid import collections.");
+            }
+            InputRules.Json(raw.RootElement);
+        }
         ImportDataContracts.V4Data v4Data;
         try
         {
@@ -97,7 +109,48 @@ public class ImportDataHandler(
             );
         }
 
-        return await SaveDataAsync(v4Data, cancellationToken);
+        ValidateData(v4Data);
+        var createdIcons = new List<string>();
+        using var iconScope = ManagedIcons.TrackWrites(createdIcons);
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            var result = await SaveDataAsync(v4Data, cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+            return result;
+        }
+        catch
+        {
+            await transaction.RollbackAsync(CancellationToken.None);
+            foreach (var path in createdIcons)
+                if (ManagedIcons.IsSafePath(path) && File.Exists(path)) File.Delete(path);
+            throw;
+        }
+    }
+
+    private static void ValidateData(ImportDataContracts.V4Data data)
+    {
+        if (data.Apps is null || data.AppCategories is null || data.AppUsageSessions is null || data.Websites is null || data.WebsiteCategories is null || data.WebsiteUsageSessions is null)
+            throw new ArgumentException("Missing import collections.");
+        if (data.AppUsageSessions.Length + data.WebsiteUsageSessions.Length > 100000 || data.Apps.Length + data.Websites.Length + data.AppCategories.Length + data.WebsiteCategories.Length > 10000)
+            throw new ArgumentException("Import exceeds record limit.");
+        using var document = JsonDocument.Parse(JsonSerializer.Serialize(data));
+        InputRules.Json(document.RootElement);
+        foreach (var item in data.Apps) ValidateIcon(item.Icon);
+        foreach (var item in data.AppCategories) ValidateIcon(item.Icon);
+        foreach (var item in data.Websites) ValidateIcon(item.Icon);
+        foreach (var item in data.WebsiteCategories) ValidateIcon(item.Icon);
+        foreach (var item in data.AppUsageSessions)
+            if (item.StartTime >= item.EndTime) throw new ArgumentException("Invalid session interval.");
+        foreach (var item in data.WebsiteUsageSessions)
+            if (item.StartTime >= item.EndTime) throw new ArgumentException("Invalid session interval.");
+    }
+    private static void ValidateIcon(ImportDataContracts.Icon? icon)
+    {
+        if (icon is null) return;
+        if (icon.Data is null || icon.Data.Length == 0 || icon.Extension is null || icon.Extension.IndexOfAny(['/', '\\']) >= 0)
+            throw new ArgumentException("Invalid imported icon.");
+        if (ManagedIcons.TrustedBuiltIn(icon.Data) is null) ManagedIcons.Normalize(icon.Data);
     }
 
     private static T Deserialize<T>(string json)
@@ -422,7 +475,8 @@ public class ImportDataHandler(
                         )
                     );
 
-                foreach (var session in data.AppUsageSessions)
+                var intervalIndex = new IntervalIndex(existingSessions.Select(x => x.UsagePeriod));
+                foreach (var session in data.AppUsageSessions.OrderBy(x => x.StartTime))
                 {
                     if (now <= session.EndTime)
                     {
@@ -430,9 +484,7 @@ public class ImportDataHandler(
                         continue;
                     }
 
-                    var hasOverlap = existingSessions.Any(s =>
-                        s.UsagePeriod.Overlaps(new TimeRange(session.StartTime, session.EndTime))
-                    );
+                    var hasOverlap = intervalIndex.Overlaps(new TimeRange(session.StartTime, session.EndTime));
                     if (hasOverlap)
                     {
                         skippedAppUsageSessions++;
@@ -457,7 +509,7 @@ public class ImportDataHandler(
                         app.Id,
                         new TimeRange(session.StartTime, session.EndTime)
                     );
-                    existingSessions.Add(usageSession);
+                    intervalIndex.Add(usageSession.UsagePeriod);
                     context.AppUsageSessions.Add(usageSession);
                     importedAppUsageSessions++;
                 }
@@ -561,7 +613,8 @@ public class ImportDataHandler(
                         )
                     );
 
-                foreach (var session in data.WebsiteUsageSessions)
+                var intervalIndex = new IntervalIndex(existingSessions.Select(x => x.UsagePeriod));
+                foreach (var session in data.WebsiteUsageSessions.OrderBy(x => x.StartTime))
                 {
                     if (now <= session.EndTime)
                     {
@@ -569,9 +622,7 @@ public class ImportDataHandler(
                         continue;
                     }
 
-                    var hasOverlap = existingSessions.Any(s =>
-                        s.UsagePeriod.Overlaps(new TimeRange(session.StartTime, session.EndTime))
-                    );
+                    var hasOverlap = intervalIndex.Overlaps(new TimeRange(session.StartTime, session.EndTime));
                     if (hasOverlap)
                     {
                         skippedWebsiteUsageSessions++;
@@ -596,7 +647,7 @@ public class ImportDataHandler(
                         website.Id,
                         new TimeRange(session.StartTime, session.EndTime)
                     );
-                    existingSessions.Add(usageSession);
+                    intervalIndex.Add(usageSession.UsagePeriod);
                     context.WebsiteUsageSessions.Add(usageSession);
                     importedWebsiteUsageSessions++;
                 }
@@ -623,21 +674,7 @@ public class ImportDataHandler(
         CancellationToken cancellationToken
     )
     {
-        if (icon is null || icon.Data is null || icon.Data.Length == 0)
-            return null;
-
-        var safeIconName = Path.GetFileName(iconName);
-        try
-        {
-            if (!Directory.Exists(iconDirectory))
-                Directory.CreateDirectory(iconDirectory);
-            var filePath = Path.Combine(iconDirectory, $"{safeIconName}{icon.Extension}");
-            await File.WriteAllBytesAsync(filePath, icon.Data, cancellationToken);
-            return filePath;
-        }
-        catch
-        {
-            return null;
-        }
+        if (icon is null) return null;
+        return ManagedIcons.TrustedBuiltIn(icon.Data) ?? await ManagedIcons.SaveAsync(icon.Data, cancellationToken);
     }
 }

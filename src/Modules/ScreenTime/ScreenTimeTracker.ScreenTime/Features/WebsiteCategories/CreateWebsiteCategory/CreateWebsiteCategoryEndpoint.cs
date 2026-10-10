@@ -1,3 +1,4 @@
+using ScreenTimeTracker.BuildingBlocks.Security;
 using ErrorOr;
 using FastEndpoints;
 using Mediator;
@@ -19,7 +20,7 @@ public class CreateWebsiteCategoryEndpoint(IMediator mediator)
     public override async Task HandleAsync(CreateWebsiteCategoryRequest req, CancellationToken ct)
     {
         ErrorOr<CreateWebsiteCategoryResponse> result = await mediator.Send(
-            new CreateWebsiteCategoryCommand(req.Name, req.Color, req.IconPath),
+            new CreateWebsiteCategoryCommand(req.Name, req.Color, ManagedIcons.Resolve(req.IconId)),
             ct
         );
 
