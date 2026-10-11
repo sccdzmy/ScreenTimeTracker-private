@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Statistics;
 using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,6 @@ public class GetWebsiteCategoryUsageDistributionHandler(UserSettingsSnapshot set
     )
     {
         var settings = await settingsSnapshot.GetAsync(cancellationToken);
-        var dayCutoffHour = settings.TimeBoundary.DayCutoffHour;
         var timeRange = LogicalDay.CalculateUtcWindow(
             request.StartDate,
             request.EndDate,
@@ -54,40 +54,8 @@ public class GetWebsiteCategoryUsageDistributionHandler(UserSettingsSnapshot set
 
         var websiteCategoryIds = websiteCategoryMap.Keys;
 
-        var sessions = await context
-            .WebsiteUsageSessions.AsNoTracking()
-            .Join(
-                context.Websites.AsNoTracking(),
-                session => session.WebsiteId,
-                website => website.Id,
-                (session, website) =>
-                    new
-                    {
-                        website.WebsiteCategoryId,
-                        session.UsagePeriod,
-                        session.StartTime,
-                        session.EndTime,
-                    }
-            )
-            .Where(x =>
-                websiteCategoryIds.Contains(x.WebsiteCategoryId)
-                && timeRange.Start < x.EndTime
-                && x.StartTime < timeRange.End
-            )
-            .Select(x => new { x.WebsiteCategoryId, x.UsagePeriod })
-            .ToListAsync(cancellationToken);
-
-        var durationByWebsiteCategoryId = new Dictionary<Guid, TimeSpan>();
-
-        foreach (var session in sessions)
-        {
-            TimeSpan overlap = timeRange.OverlapDuration(session.UsagePeriod);
-            if (overlap == TimeSpan.Zero)
-                continue;
-
-            durationByWebsiteCategoryId[session.WebsiteCategoryId] =
-                durationByWebsiteCategoryId.GetValueOrDefault(session.WebsiteCategoryId) + overlap;
-        }
+        var durationByWebsiteCategoryId = await UsageDistributionQueries.ReadAsync(
+            context, UsageIdentityKind.WebsiteCategory, websiteCategoryIds, timeRange, cancellationToken);
 
         int totalCount = durationByWebsiteCategoryId.Count;
 

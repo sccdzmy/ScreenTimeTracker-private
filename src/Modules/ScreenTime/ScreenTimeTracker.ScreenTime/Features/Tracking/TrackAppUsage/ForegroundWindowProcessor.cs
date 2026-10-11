@@ -171,11 +171,13 @@ public partial class ForegroundWindowProcessor(
 
         var identityChanged = context.ChangeTracker.Entries<App>().Any(e => e.State is EntityState.Added or EntityState.Modified);
         await context.SaveChangesAsync(cancellationToken);
+        // Gap repair can alter old rows already scanned by a compaction continuation.
+        if (batch?.GapStart is not null) identities.InvalidateApps();
         if (message.WindowInfo is { } window)
         {
             var resolved = context.ChangeTracker.Entries<App>().Select(e => e.Entity).FirstOrDefault(a => a.Id == appId);
             if (resolved is not null) identities.PutApp(window.ProcessName,
-                new AppIdentity(resolved.Id, window.ExecutablePath, resolved.AllowMetadataAutoRefresh, resolved.MetadataLastRefreshedAt), identityVersion + (identityChanged ? 1 : 0));
+                new AppIdentity(resolved.Id, window.ExecutablePath, resolved.AllowMetadataAutoRefresh, resolved.MetadataLastRefreshedAt), identityVersion + (identityChanged ? 1 : 0) + (batch?.GapStart is not null ? 1 : 0));
         }
         activeSessionStore.Current = nextSession;
         mutation.Complete();

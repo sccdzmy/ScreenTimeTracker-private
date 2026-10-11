@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.DataManagement.ExportData;
 using Mediator;
 using System.Text.Json;
 using ScreenTimeTracker.ScreenTime.Features.DataManagement.ImportData;
@@ -336,6 +337,7 @@ internal sealed class SqlProbe : DbCommandInterceptor
 {
     public int Commands, SettingsReads, WebsiteReads, AppReads;
     public bool FailWrites, FailAppDelete, BlockSettings, BlockWrites;
+    public string? BlockReadContains;
     public TaskCompletionSource Blocked { get; }=new(TaskCreationOptions.RunContinuationsAsynchronously);
     public TaskCompletionSource Release { get; }=new(TaskCreationOptions.RunContinuationsAsynchronously);
     public void Reset()=>(Commands,SettingsReads,WebsiteReads,AppReads)=(0,0,0,0);
@@ -349,6 +351,7 @@ internal sealed class SqlProbe : DbCommandInterceptor
     public override async ValueTask<InterceptionResult<DbDataReader>> ReaderExecutingAsync(DbCommand command,CommandEventData eventData,InterceptionResult<DbDataReader> result,CancellationToken cancellationToken=default)
     {
         Count(command);
+        if (BlockReadContains is { } fragment && command.CommandText.Contains(fragment, StringComparison.Ordinal)) { BlockReadContains = null; Blocked.TrySetResult(); await Release.Task.WaitAsync(cancellationToken); }
         if(BlockWrites && !command.CommandText.StartsWith("SELECT",StringComparison.Ordinal)) { BlockWrites=false; Blocked.TrySetResult(); await Release.Task.WaitAsync(cancellationToken); }
         if(BlockSettings && command.CommandText.Contains("UserSettings",StringComparison.Ordinal)) { BlockSettings=false; Blocked.TrySetResult(); await Release.Task.WaitAsync(cancellationToken); }
         return result;
@@ -358,25 +361,28 @@ internal sealed class SqlProbe : DbCommandInterceptor
 internal sealed class Fixture : IAsyncDisposable
 {
     private readonly SqliteConnection _connection;
+    private readonly string _temporary = Path.Combine(Path.GetTempPath(), "stt-round2-" + Guid.NewGuid().ToString("N"));
     public ServiceProvider Services { get; }
     public Clock Clock { get; }=new(); public Metadata Metadata { get; }=new(); public SqlProbe Sql { get; }=new();
     public IdleProvider Idle { get; }=new(); public Notifications Notifications { get; }=new();
-    private Fixture(SqliteConnection connection)
+    private Fixture(SqliteConnection connection, bool fileScopes)
     {
         _connection=connection; var services=new ServiceCollection().AddLogging();
         services.AddSingleton<TimeProvider>(Clock); services.AddSingleton<IExecutableMetadataProvider>(Metadata);
         services.AddSingleton<IIdleTimeProvider>(Idle); services.AddSingleton<IPublisher>(Notifications);
-        services.AddDbContext<ScreenTimeDbContext>(o=>o.UseSqlite(connection).AddInterceptors(Sql));
+        services.AddDbContext<ScreenTimeDbContext>(o=> { if (fileScopes) o.UseSqlite(connection.ConnectionString); else o.UseSqlite(connection); o.AddInterceptors(Sql); });
         services.AddSingleton<ActiveAppUsageSessionStore>(); services.AddSingleton<ActiveWebsiteUsageSessionStore>();
         services.AddSingleton<UserIdleStore>(); services.AddSingleton<SystemSuspendStore>();
         services.AddSingleton<TrackingCoordinator>(); services.AddSingleton<TrackingIdentityCache>(); services.AddSingleton<UserSettingsSnapshot>();
+        services.AddSingleton<SessionCompactionRunner>();
+        services.AddSingleton(new ExportGenerationGate(Path.Combine(_temporary, "ExportTemporary")));
         services.AddSingleton<WebsiteActivityProcessor>(); services.AddSingleton<ForegroundWindowProcessor>();
         services.AddSingleton<ActiveAppUsageSessionAutoSaver>(); services.AddSingleton<ActiveWebsiteUsageSessionAutoSaver>();
         Services=services.BuildServiceProvider();
     }
-    public static async Task<Fixture> Create()
+    public static async Task<Fixture> Create(bool fileScopes = false)
     {
-        var connection=new SqliteConnection("Data Source=:memory:"); await connection.OpenAsync(TestContext.Current.CancellationToken); var fixture=new Fixture(connection);
+        var connection=new SqliteConnection(fileScopes ? "Data Source=" + Path.Combine(Path.GetTempPath(), "stt-round2-db-" + Guid.NewGuid().ToString("N") + ".db") + ";Pooling=False" : "Data Source=:memory:"); await connection.OpenAsync(TestContext.Current.CancellationToken); var fixture=new Fixture(connection, fileScopes);
         using var scope=fixture.Scope(); var db=scope.ServiceProvider.GetRequiredService<ScreenTimeDbContext>(); await db.Database.EnsureCreatedAsync(TestContext.Current.CancellationToken); db.UserSettings.Add(UserSettings.CreateDefault()); await db.SaveChangesAsync(TestContext.Current.CancellationToken); fixture.Sql.Reset(); return fixture;
     }
     public T Get<T>() where T:notnull=>Services.GetRequiredService<T>(); public IServiceScope Scope()=>Services.CreateScope();
@@ -384,7 +390,7 @@ internal sealed class Fixture : IAsyncDisposable
     public Task Window(string name,string? path)=>Batch(new ForegroundBatch(new(new WindowInfo(name,path),Clock.GetUtcNow()),IdleVersion:Get<UserIdleStore>().Version,SuspendVersion:Get<SystemSuspendStore>().Version));
     public Task Batch(ForegroundBatch batch)=>Invoke(Get<ForegroundWindowProcessor>(),"ProcessWindowChangeAsync",[batch.Latest,TestContext.Current.CancellationToken,batch]);
     private static Task Invoke(object target,string method,object?[] args)=>(Task)target.GetType().GetMethod(method,BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(target,args)!;
-    public async ValueTask DisposeAsync() { await Services.DisposeAsync(); await _connection.DisposeAsync(); }
+    public async ValueTask DisposeAsync() { var path = _connection.DataSource; await Services.DisposeAsync(); await _connection.DisposeAsync(); if (Directory.Exists(_temporary)) Directory.Delete(_temporary, true); if (File.Exists(path)) { File.Delete(path); File.Delete(path + "-wal"); File.Delete(path + "-shm"); } }
 }
 
 internal sealed class IdleProvider : IIdleTimeProvider

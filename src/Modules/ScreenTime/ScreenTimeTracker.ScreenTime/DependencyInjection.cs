@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.DataManagement.ExportData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +39,9 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<ScreenTimeDbMigrationService>();
 
         services.AddSingleton<TrackingCoordinator>();
+        services.AddSingleton<SessionCompactionRunner>();
+        services.AddSingleton<ExportGenerationGate>();
+        services.AddHostedService(sp => sp.GetRequiredService<ExportGenerationGate>());
         services.AddSingleton<TrackingIdentityCache>();
         services.AddSingleton<UserSettingsSnapshot>();
 

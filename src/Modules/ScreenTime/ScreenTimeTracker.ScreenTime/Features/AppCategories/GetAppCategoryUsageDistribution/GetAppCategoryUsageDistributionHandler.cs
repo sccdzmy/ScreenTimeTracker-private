@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Statistics;
 using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,6 @@ public class GetAppCategoryUsageDistributionHandler(UserSettingsSnapshot setting
     )
     {
         var settings = await settingsSnapshot.GetAsync(cancellationToken);
-        var dayCutoffHour = settings.TimeBoundary.DayCutoffHour;
         var timeRange = LogicalDay.CalculateUtcWindow(
             request.StartDate,
             request.EndDate,
@@ -47,40 +47,8 @@ public class GetAppCategoryUsageDistributionHandler(UserSettingsSnapshot setting
 
         var appCategoryIds = appCategoryMap.Keys;
 
-        var sessions = await context
-            .AppUsageSessions.AsNoTracking()
-            .Join(
-                context.Apps.AsNoTracking(),
-                session => session.AppId,
-                app => app.Id,
-                (session, app) =>
-                    new
-                    {
-                        app.AppCategoryId,
-                        session.UsagePeriod,
-                        session.StartTime,
-                        session.EndTime,
-                    }
-            )
-            .Where(x =>
-                appCategoryIds.Contains(x.AppCategoryId)
-                && timeRange.Start < x.EndTime
-                && x.StartTime < x.EndTime
-            )
-            .Select(x => new { x.AppCategoryId, x.UsagePeriod })
-            .ToListAsync(cancellationToken);
-
-        var durationByAppCategoryId = new Dictionary<Guid, TimeSpan>();
-
-        foreach (var session in sessions)
-        {
-            TimeSpan overlap = timeRange.OverlapDuration(session.UsagePeriod);
-            if (overlap == TimeSpan.Zero)
-                continue;
-
-            durationByAppCategoryId[session.AppCategoryId] =
-                durationByAppCategoryId.GetValueOrDefault(session.AppCategoryId) + overlap;
-        }
+        var durationByAppCategoryId = await UsageDistributionQueries.ReadAsync(
+            context, UsageIdentityKind.AppCategory, appCategoryIds, timeRange, cancellationToken);
 
         int totalCount = durationByAppCategoryId.Count;
 

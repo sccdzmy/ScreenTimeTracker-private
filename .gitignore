@@ -396,3 +396,6 @@ security-test-output/
 artifacts/
 NativeWindow.json
 NativeWindow.json.tmp
+
+# Temporary files used to generate consistent exports
+ExportTemporary/

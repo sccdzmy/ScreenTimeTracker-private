@@ -68,6 +68,7 @@ public sealed class SecurityTests : IAsyncLifetime
         builder.Services.AddSingleton<TrackingCoordinator>();
         builder.Services.AddSingleton<TrackingIdentityCache>();
         builder.Services.AddSingleton<UserSettingsSnapshot>();
+        builder.Services.AddSingleton<ScreenTimeTracker.ScreenTime.Features.DataManagement.ExportData.ExportGenerationGate>();
         builder.Services.AddSingleton<UserIdleStore>();
         builder.Services.AddSingleton<SystemSuspendStore>();
         builder.Services.AddSingleton<WebsiteActivityProcessor>(); // Deliberately no real OS collector.
@@ -332,7 +333,47 @@ public sealed class SecurityTests : IAsyncLifetime
         Assert.Equal(0, await page.Locator("script:not([src])").CountAsync());
         await page.GetByRole(AriaRole.Button, new() { Name = "Revoke all extensions / 撤销全部扩展", Exact = true }).ClickAsync();
         await page.GetByText("Extensions revoked", new() { Exact = false }).WaitForAsync();
+        // Download a Blob and copy text on demand. The clipboard is mocked to avoid touching the desktop clipboard.
+        await page.GotoAsync(address + "/data");
+        var download = await page.RunAndWaitForDownloadAsync(() => page.GetByRole(AriaRole.Button, new() { Name = "Export Data", Exact = true }).ClickAsync());
+        var downloaded = Path.Combine(_temporary, "synthetic-download.json"); await download.SaveAsAsync(downloaded);
+        using (var document = JsonDocument.Parse(await File.ReadAllTextAsync(downloaded, TestContext.Current.CancellationToken)))
+        {
+            Assert.Equal(4, document.RootElement.GetProperty("version").GetInt32());
+            Assert.Contains(document.RootElement.GetProperty("apps").EnumerateArray(), a => a.GetProperty("name").GetString() == hostileName);
+        }
+        await page.EvaluateAsync("Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: text => { window.__syntheticExport = text; return Promise.resolve(); } } })");
+        await page.GetByRole(AriaRole.Button, new() { Name = "Export Data", Exact = true }).Locator("..").GetByRole(AriaRole.Button).Nth(1).ClickAsync();
+        await page.WaitForFunctionAsync("() => typeof window.__syntheticExport === 'string'");
+        using (var document = JsonDocument.Parse(await page.EvaluateAsync<string>("window.__syntheticExport"))) Assert.Equal(4, document.RootElement.GetProperty("version").GetInt32());
+        var exportGate = _app.Services.GetRequiredService<ScreenTimeTracker.ScreenTime.Features.DataManagement.ExportData.ExportGenerationGate>();
+        Assert.True(exportGate.TryEnter());
+        try
+        {
+            await page.GetByRole(AriaRole.Button, new() { Name = "Export Data", Exact = true }).ClickAsync();
+            await page.GetByText("Failed to export data to file", new() { Exact = true }).WaitForAsync();
+        }
+        finally { exportGate.Exit(); }
+        Assert.Empty(errors);
         await web.StopAsync(TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
+    public async Task ExportBusyReturnsConflictWithoutStartingAnotherSnapshot()
+    {
+        await Login();
+        var gate = _app.Services.GetRequiredService<ScreenTimeTracker.ScreenTime.Features.DataManagement.ExportData.ExportGenerationGate>();
+        Assert.True(gate.TryEnter());
+        try
+        {
+            using var response = await _client.GetAsync("/api/screen-time/data/export", TestContext.Current.CancellationToken);
+            Assert.Equal(HttpStatusCode.Conflict, response.StatusCode); Assert.Equal("1", response.Headers.GetValues("Retry-After").Single());
+            Assert.False(Directory.Exists(gate.Root));
+        }
+        finally { gate.Exit(); }
+        using var success = await _client.GetAsync("/api/screen-time/data/export", TestContext.Current.CancellationToken);
+        Assert.Equal(HttpStatusCode.OK, success.StatusCode); Assert.Equal("application/json", success.Content.Headers.ContentType!.MediaType);
+        Assert.Empty(Directory.EnumerateFiles(gate.Root));
     }
 
     [Fact]

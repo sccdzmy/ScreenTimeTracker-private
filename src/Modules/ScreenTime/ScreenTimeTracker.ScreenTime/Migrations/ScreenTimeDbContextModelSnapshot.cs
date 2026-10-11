@@ -85,6 +85,8 @@ namespace ScreenTimeTracker.ScreenTime.Migrations
 
                     b.HasIndex("AppId", "EndTime");
 
+                    b.HasIndex("AppId", "StartTime");
+
                     b.ToTable("ScreenTime_AppUsageSessions");
                 });
 
@@ -322,6 +324,8 @@ namespace ScreenTimeTracker.ScreenTime.Migrations
                     b.HasIndex("StartTime");
 
                     b.HasIndex("WebsiteId", "EndTime");
+
+                    b.HasIndex("WebsiteId", "StartTime");
 
                     b.ToTable("ScreenTime_WebsiteUsageSessions");
                 });

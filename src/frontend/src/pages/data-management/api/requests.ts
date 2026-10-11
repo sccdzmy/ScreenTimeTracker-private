@@ -8,8 +8,8 @@ export const deleteUsageData = async (params: DeleteUsageDataParams) => {
   return data;
 };
 
-export const exportData = async () => {
-  const { data } = await apiClient.get(`/screen-time/data/export`);
+export const exportData = async (): Promise<Blob> => {
+  const { data } = await apiClient.get<Blob>(`/screen-time/data/export`, { responseType: "blob" });
   return data;
 };
 

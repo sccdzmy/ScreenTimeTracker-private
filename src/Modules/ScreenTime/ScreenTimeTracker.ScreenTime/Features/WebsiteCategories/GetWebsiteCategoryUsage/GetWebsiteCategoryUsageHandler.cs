@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Statistics;
 using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -23,21 +24,15 @@ public class GetWebsiteCategoryUsageHandler(UserSettingsSnapshot settingsSnapsho
             request.TimeZoneInfo
         );
 
-        var timeBuckets = GenerateBuckets(
-            request.StartDate,
-            request.EndDate,
-            request.Granularity,
-            request.TimeZoneInfo,
-            settings.TimeBoundary.DayCutoffHour
-        );
+        var buckets = new UsageBuckets(request.StartDate, request.EndDate, (UsageBucketGranularity)request.Granularity,
+            request.TimeZoneInfo, settings.TimeBoundary.DayCutoffHour);
+        var timeBuckets = buckets.Ranges;
+        if (timeBuckets.Count == 0) return [];
 
-        if (timeBuckets.Count == 0)
-            return [];
-
-        List<TimeRange> sessions;
+        IAsyncEnumerable<TimeRange> sessions;
 
         if (request.IncludedIds is not null)
-            sessions = await context
+            sessions = context
                 .WebsiteUsageSessions.AsNoTracking()
                 .Join(
                     context.Websites.AsNoTracking(),
@@ -51,9 +46,9 @@ public class GetWebsiteCategoryUsageHandler(UserSettingsSnapshot settingsSnapsho
                     && x.session.StartTime < timeRange.End
                 )
                 .Select(x => new TimeRange(x.session.StartTime, x.session.EndTime))
-                .ToListAsync(cancellationToken);
+                .AsAsyncEnumerable();
         else if (request.ExcludedIds is not null)
-            sessions = await context
+            sessions = context
                 .WebsiteUsageSessions.AsNoTracking()
                 .Join(
                     context.Websites.AsNoTracking(),
@@ -67,45 +62,27 @@ public class GetWebsiteCategoryUsageHandler(UserSettingsSnapshot settingsSnapsho
                     && x.session.StartTime < timeRange.End
                 )
                 .Select(x => new TimeRange(x.session.StartTime, x.session.EndTime))
-                .ToListAsync(cancellationToken);
+                .AsAsyncEnumerable();
         else
         {
-            sessions = await context
+            sessions = context
                 .WebsiteUsageSessions.AsNoTracking()
                 .Where(x => timeRange.Start < x.EndTime && x.StartTime < timeRange.End)
                 .Select(x => new TimeRange(x.StartTime, x.EndTime))
-                .ToListAsync(cancellationToken);
+                .AsAsyncEnumerable();
         }
 
-        var duration = new TimeSpan[timeBuckets.Count];
+        await foreach (var session in sessions.WithCancellation(cancellationToken))
+            buckets.Add(session);
 
-        foreach (var session in sessions)
-        {
-            TimeRange? validPart = session.Intersect(timeRange);
-
-            if (validPart is null)
-                continue;
-
-            int startIdx = FindFirstBucketIndex(timeBuckets, validPart.Value.Start);
-
-            for (int i = startIdx; i < timeBuckets.Count; i++)
-            {
-                var bucket = timeBuckets[i];
-                if (bucket.Start >= validPart.Value.End)
-                    break;
-
-                duration[i] += bucket.OverlapDuration(validPart.Value);
-            }
-        }
-
-        var result = new List<GetWebsiteCategoryUsageResponseItem>(duration.Length);
-        for (int i = 0; i < duration.Length; i++)
+        var result = new List<GetWebsiteCategoryUsageResponseItem>(timeBuckets.Count);
+        for (int i = 0; i < timeBuckets.Count; i++)
         {
             result.Add(
                 new GetWebsiteCategoryUsageResponseItem(
                     timeBuckets[i].Start,
                     timeBuckets[i].End,
-                    (long)duration[i].TotalSeconds
+                    buckets.Seconds(i)
                 )
             );
         }
@@ -113,67 +90,4 @@ public class GetWebsiteCategoryUsageHandler(UserSettingsSnapshot settingsSnapsho
         return result;
     }
 
-    private static List<TimeRange> GenerateBuckets(
-        DateOnly startDate,
-        DateOnly endDate,
-        UsageGranularity granularity,
-        TimeZoneInfo timeZoneInfo,
-        int dayCutoffHour
-    )
-    {
-        var timeRanges = new List<TimeRange>();
-
-        if (granularity == UsageGranularity.Hour)
-        {
-            var startDay = LogicalDay.From(startDate, dayCutoffHour, timeZoneInfo);
-            var endDay = LogicalDay.From(endDate, dayCutoffHour, timeZoneInfo);
-
-            var overallStartUtc = startDay.UtcWindow.Start;
-            var overallEndUtc = endDay.UtcWindow.End;
-
-            var currentUtc = overallStartUtc;
-            while (currentUtc < overallEndUtc)
-            {
-                var nextUtc = currentUtc.AddHours(1);
-                timeRanges.Add(new TimeRange(currentUtc, nextUtc));
-                currentUtc = nextUtc;
-            }
-        }
-        else if (granularity == UsageGranularity.Day)
-        {
-            for (var d = startDate; d <= endDate; d = d.AddDays(1))
-            {
-                var logicalDay = LogicalDay.From(d, dayCutoffHour, timeZoneInfo);
-                timeRanges.Add(logicalDay.UtcWindow);
-            }
-        }
-
-        return timeRanges;
-    }
-
-    private static int FindFirstBucketIndex(
-        List<TimeRange> timeBuckets,
-        DateTimeOffset sessionStart
-    )
-    {
-        int low = 0,
-            high = timeBuckets.Count - 1;
-        int result = timeBuckets.Count;
-
-        while (low <= high)
-        {
-            int mid = low + (high - low) / 2;
-            if (timeBuckets[mid].End > sessionStart)
-            {
-                result = mid;
-                high = mid - 1;
-            }
-            else
-            {
-                low = mid + 1;
-            }
-        }
-
-        return result;
-    }
 }

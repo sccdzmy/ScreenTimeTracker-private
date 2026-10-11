@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Statistics;
 using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,6 @@ public class GetAppUsageDistributionHandler(UserSettingsSnapshot settingsSnapsho
     )
     {
         var settings = await settingsSnapshot.GetAsync(cancellationToken);
-        var dayCutoffHour = settings.TimeBoundary.DayCutoffHour;
         var timeRange = LogicalDay.CalculateUtcWindow(
             request.StartDate,
             request.EndDate,
@@ -47,27 +47,8 @@ public class GetAppUsageDistributionHandler(UserSettingsSnapshot settingsSnapsho
 
         var appIds = appMap.Keys;
 
-        var sessions = await context
-            .AppUsageSessions.AsNoTracking()
-            .Where(x =>
-                appIds.Contains(x.AppId)
-                && timeRange.Start < x.EndTime
-                && x.StartTime < timeRange.End
-            )
-            .Select(x => new { x.AppId, x.UsagePeriod })
-            .ToListAsync(cancellationToken);
-
-        var durationByAppId = new Dictionary<Guid, TimeSpan>();
-
-        foreach (var session in sessions)
-        {
-            TimeSpan overlap = timeRange.OverlapDuration(session.UsagePeriod);
-            if (overlap == TimeSpan.Zero)
-                continue;
-
-            durationByAppId[session.AppId] =
-                durationByAppId.GetValueOrDefault(session.AppId) + overlap;
-        }
+        var durationByAppId = await UsageDistributionQueries.ReadAsync(
+            context, UsageIdentityKind.App, appIds, timeRange, cancellationToken);
 
         int totalCount = durationByAppId.Count;
 

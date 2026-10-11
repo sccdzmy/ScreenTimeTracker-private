@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Statistics;
 using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,6 @@ public class GetWebsiteUsageDistributionHandler(UserSettingsSnapshot settingsSna
     )
     {
         var settings = await settingsSnapshot.GetAsync(cancellationToken);
-        var dayCutoffHour = settings.TimeBoundary.DayCutoffHour;
         var timeRange = LogicalDay.CalculateUtcWindow(
             request.StartDate,
             request.EndDate,
@@ -47,27 +47,8 @@ public class GetWebsiteUsageDistributionHandler(UserSettingsSnapshot settingsSna
 
         var websiteIds = websiteMap.Keys;
 
-        var sessions = await context
-            .WebsiteUsageSessions.AsNoTracking()
-            .Where(x =>
-                websiteIds.Contains(x.WebsiteId)
-                && timeRange.Start < x.EndTime
-                && x.StartTime < timeRange.End
-            )
-            .Select(x => new { x.WebsiteId, x.UsagePeriod })
-            .ToListAsync(cancellationToken);
-
-        var durationByWebsiteId = new Dictionary<Guid, TimeSpan>();
-
-        foreach (var session in sessions)
-        {
-            TimeSpan overlap = timeRange.OverlapDuration(session.UsagePeriod);
-            if (overlap == TimeSpan.Zero)
-                continue;
-
-            durationByWebsiteId[session.WebsiteId] =
-                durationByWebsiteId.GetValueOrDefault(session.WebsiteId) + overlap;
-        }
+        var durationByWebsiteId = await UsageDistributionQueries.ReadAsync(
+            context, UsageIdentityKind.Website, websiteIds, timeRange, cancellationToken);
 
         int totalCount = durationByWebsiteId.Count;
 

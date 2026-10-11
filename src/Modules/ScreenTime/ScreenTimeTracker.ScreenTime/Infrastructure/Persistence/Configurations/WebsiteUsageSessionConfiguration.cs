@@ -16,6 +16,7 @@ namespace ScreenTimeTracker.ScreenTime.Infrastructure.Persistence.Configurations
                 .HasForeignKey(x => x.WebsiteId)
                 .OnDelete(DeleteBehavior.Cascade); // 删 Website 时连带删 WebsiteUsageSession
 
+            builder.HasIndex(x => new { x.WebsiteId, x.StartTime });
             builder.HasIndex(x => x.StartTime);
             builder.HasIndex(x => x.EndTime);
             builder.HasIndex(x => new { x.WebsiteId, x.EndTime }); // 因为都是两集合交集查询，通常 EndTime 比 StartTime 能筛选掉更多数据
