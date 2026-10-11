@@ -1,0 +1,145 @@
+{
+  "windows": {
+    "fileCount": 553,
+    "containsNodeForge": false,
+    "runtime": [
+      {
+        "name": "Microsoft.NETCore.App",
+        "version": "10.0.12"
+      },
+      {
+        "name": "Microsoft.AspNetCore.App",
+        "version": "10.0.12"
+      }
+    ],
+    "packageLibraries": [
+      "ErrorOr/2.1.1",
+      "FastEndpoints.Attributes/8.2.0",
+      "FastEndpoints.Core/8.2.0",
+      "FastEndpoints.JobQueues/8.2.0",
+      "FastEndpoints.Messaging.Core/8.2.0",
+      "FastEndpoints.Messaging/8.2.0",
+      "FastEndpoints.Swagger/8.2.0",
+      "FastEndpoints/8.2.0",
+      "FluentValidation/12.1.1",
+      "H.GeneratedIcons.System.Drawing/2.4.1",
+      "H.NotifyIcon/2.4.1",
+      "Mediator.Abstractions/3.0.2",
+      "Microsoft.AspNetCore.OpenApi/10.0.12",
+      "Microsoft.Data.Sqlite.Core/10.0.12",
+      "Microsoft.EntityFrameworkCore.Abstractions/10.0.12",
+      "Microsoft.EntityFrameworkCore.Relational/10.0.12",
+      "Microsoft.EntityFrameworkCore.Sqlite.Core/10.0.12",
+      "Microsoft.EntityFrameworkCore.Sqlite/10.0.12",
+      "Microsoft.EntityFrameworkCore/10.0.12",
+      "Microsoft.Extensions.DependencyModel/10.0.12",
+      "Microsoft.OpenApi/2.12.0",
+      "Microsoft.Win32.SystemEvents/10.0.12",
+      "NJsonSchema.Annotations/11.6.1",
+      "NJsonSchema.NewtonsoftJson/11.6.1",
+      "NJsonSchema.Yaml/11.6.1",
+      "NJsonSchema/11.6.1",
+      "NSwag.Annotations/14.7.1",
+      "NSwag.AspNetCore/14.7.1",
+      "NSwag.Core.Yaml/14.7.1",
+      "NSwag.Core/14.7.1",
+      "NSwag.Generation.AspNetCore/14.7.1",
+      "NSwag.Generation/14.7.1",
+      "Namotion.Reflection/3.5.0",
+      "Newtonsoft.Json/13.0.4",
+      "NotificationIcon.NET/1.2.8",
+      "Photino.NET/4.0.16",
+      "Photino.Native/4.0.22",
+      "SQLitePCLRaw.bundle_e_sqlite3/2.1.12",
+      "SQLitePCLRaw.core/2.1.12",
+      "SQLitePCLRaw.lib.e_sqlite3/2.1.13",
+      "SQLitePCLRaw.provider.e_sqlite3/2.1.12",
+      "ScreenTimeTracker.BuildingBlocks/1.0.0",
+      "ScreenTimeTracker.DesktopSettings.Contracts/1.0.0",
+      "ScreenTimeTracker.DesktopSettings/1.0.0",
+      "ScreenTimeTracker.ScreenTime/1.0.0",
+      "ScreenTimeTracker/4.6.3",
+      "Serilog.Extensions.Hosting/10.0.0",
+      "Serilog.Extensions.Logging/10.0.0",
+      "Serilog.Settings.Configuration/10.0.1",
+      "Serilog.Sinks.Console/6.1.1",
+      "Serilog.Sinks.File/7.0.0",
+      "Serilog/4.4.0",
+      "SkiaSharp.NativeAssets.Win32/4.153.1",
+      "SkiaSharp/4.153.1",
+      "System.Drawing.Common/10.0.12",
+      "TaskScheduler/2.12.2",
+      "Tmds.DBus/0.94.2",
+      "YamlDotNet/16.3.0",
+      "runtimepack.Microsoft.AspNetCore.App.Runtime.win-x64/10.0.12",
+      "runtimepack.Microsoft.NETCore.App.Runtime.win-x64/10.0.12"
+    ],
+    "executableSha256": "37dd808cbc1041cb6703fdd9607ab722d08c90af68264a55059dc05e5dd3f8f8",
+    "includesFirefoxExtension": true,
+    "includesChromeExtension": true
+  },
+  "frontend": {
+    "fileCount": 98,
+    "containsNodeForge": false
+  },
+  "chrome": {
+    "fileCount": 17,
+    "containsNodeForge": false,
+    "manifestVersion": 3,
+    "contentScripts": [
+      {
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "all_frames": false,
+        "js": [
+          "content-scripts/content.js"
+        ]
+      }
+    ],
+    "browserSpecificSettings": {
+      "gecko": {
+        "id": "screen-time-tracker@local.invalid",
+        "strict_min_version": "140.0",
+        "data_collection_permissions": {
+          "required": [
+            "browsingActivity",
+            "websiteContent"
+          ]
+        }
+      }
+    },
+    "backgroundSha256": "d4c8b41d37b2f1029a125625a67b0ca119a305eefdca68e44b6a0b6a74cbd5f5"
+  },
+  "firefox": {
+    "fileCount": 17,
+    "containsNodeForge": false,
+    "manifestVersion": 2,
+    "contentScripts": [
+      {
+        "matches": [
+          "http://*/*",
+          "https://*/*"
+        ],
+        "all_frames": false,
+        "js": [
+          "content-scripts/content.js"
+        ]
+      }
+    ],
+    "browserSpecificSettings": {
+      "gecko": {
+        "id": "screen-time-tracker@local.invalid",
+        "strict_min_version": "140.0",
+        "data_collection_permissions": {
+          "required": [
+            "browsingActivity",
+            "websiteContent"
+          ]
+        }
+      }
+    },
+    "backgroundSha256": "d4c8b41d37b2f1029a125625a67b0ca119a305eefdca68e44b6a0b6a74cbd5f5"
+  }
+}

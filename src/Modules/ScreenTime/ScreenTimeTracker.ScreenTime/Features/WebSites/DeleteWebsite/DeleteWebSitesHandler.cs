@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using ErrorOr;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 namespace ScreenTimeTracker.ScreenTime.Features.Websites.DeleteWebsite;
 
 public class DeleteWebsiteHandler(
+    TrackingCoordinator coordinator, TrackingIdentityCache identityCache,
     ScreenTimeDbContext context,
     ActiveWebsiteUsageSessionStore activeSessionStore
 ) : IRequestHandler<DeleteWebsiteCommand, ErrorOr<Deleted>>
@@ -17,6 +19,7 @@ public class DeleteWebsiteHandler(
         CancellationToken cancellationToken
     )
     {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
         Website? website = await context.Websites.FindAsync([request.WebsiteId], cancellationToken);
         if (website is null)
             return Error.NotFound(
@@ -30,17 +33,21 @@ public class DeleteWebsiteHandler(
                 description: "System website cannot be deleted."
             );
 
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+
         // 把所有 Website 的数据都删除
         await context
             .WebsiteUsageSessions.Where(log => log.WebsiteId == request.WebsiteId)
             .ExecuteDeleteAsync(cancellationToken);
 
-        if (activeSessionStore.Current?.WebsiteId == request.WebsiteId)
-            activeSessionStore.Current = null;
-
         context.Websites.Remove(website);
 
         await context.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+        identityCache.InvalidateAll();
+        if (activeSessionStore.Current?.WebsiteId == request.WebsiteId)
+            activeSessionStore.Current = null;
+        mutation.Complete();
         return Result.Deleted;
     }
 }

@@ -1,3 +1,4 @@
+using ScreenTimeTracker.BuildingBlocks.Security;
 using System.Linq.Expressions;
 using System.Text.Json;
 using Mediator;
@@ -18,7 +19,7 @@ public class GetAppCategoriesHandler(ScreenTimeDbContext context)
         { nameof(GetAppCategoriesResponseItem.Id), [nameof(AppCategory.Id)] },
         { nameof(GetAppCategoriesResponseItem.Name), [nameof(AppCategory.Name)] },
         { nameof(GetAppCategoriesResponseItem.Color), [nameof(AppCategory.Color)] },
-        { nameof(GetAppCategoriesResponseItem.IconPath), [nameof(AppCategory.IconPath)] },
+        { "IconId", [nameof(AppCategory.IconPath)] },
         {
             nameof(GetAppCategoriesResponseItem.IconPathLastUpdatedAt),
             [nameof(AppCategory.IconPathLastUpdatedAt)]
@@ -34,7 +35,7 @@ public class GetAppCategoriesHandler(ScreenTimeDbContext context)
         [nameof(GetAppCategoriesResponseItem.Id)] = e => e.Id,
         [nameof(GetAppCategoriesResponseItem.Name)] = e => e.Name,
         [nameof(GetAppCategoriesResponseItem.Color)] = e => e.Color,
-        [nameof(GetAppCategoriesResponseItem.IconPath)] = e => e.IconPath,
+        ["IconId"] = e => ManagedIcons.Id(e.IconPath),
         [nameof(GetAppCategoriesResponseItem.IconPathLastUpdatedAt)] = e => e.IconPathLastUpdatedAt,
         [nameof(GetAppCategoriesResponseItem.IsSystem)] = e => e.IsSystem,
     };

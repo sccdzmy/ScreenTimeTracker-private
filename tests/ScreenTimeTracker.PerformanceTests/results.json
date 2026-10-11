@@ -1,0 +1,92 @@
+{
+  "runtime": "Microsoft.NETCore.App 10.0.12; Microsoft.AspNetCore.App 10.0.12",
+  "baselineCommit": "0ef35f2",
+  "scenario": {
+    "websiteReports": 2400,
+    "reportIntervalMilliseconds": 1500,
+    "sessionSaves": 240,
+    "settingsPolls": 840,
+    "database": "temporary in-memory SQLite",
+    "trialsPerVersion": 3,
+    "independentProcessPerTrial": true,
+    "order": "baseline and optimized alternating"
+  },
+  "samples": {
+    "baseline": [
+      {
+        "run": 1,
+        "sql": 3721,
+        "settingsQueries": 840,
+        "websiteQueries": 2400,
+        "allocatedBytes": 284269736,
+        "cpuMilliseconds": 781.25,
+        "elapsedMilliseconds": 1765.0793,
+        "sampledPeakWorkingBytes": 101838848,
+        "peakProcessWorkingBytes": 101838848
+      },
+      {
+        "run": 2,
+        "sql": 3721,
+        "settingsQueries": 840,
+        "websiteQueries": 2400,
+        "allocatedBytes": 284247328,
+        "cpuMilliseconds": 1437.5,
+        "elapsedMilliseconds": 2611.1343,
+        "sampledPeakWorkingBytes": 103432192,
+        "peakProcessWorkingBytes": 103432192
+      },
+      {
+        "run": 3,
+        "sql": 3721,
+        "settingsQueries": 840,
+        "websiteQueries": 2400,
+        "allocatedBytes": 284246984,
+        "cpuMilliseconds": 3125,
+        "elapsedMilliseconds": 4458.0584,
+        "sampledPeakWorkingBytes": 104923136,
+        "peakProcessWorkingBytes": 104923136
+      }
+    ],
+    "optimized": [
+      {
+        "run": 1,
+        "sql": 482,
+        "settingsQueries": 0,
+        "websiteQueries": 1,
+        "allocatedBytes": 25283616,
+        "cpuMilliseconds": 62.5,
+        "elapsedMilliseconds": 447.8301,
+        "sampledPeakWorkingBytes": 102531072,
+        "peakProcessWorkingBytes": 102531072
+      },
+      {
+        "run": 2,
+        "sql": 482,
+        "settingsQueries": 0,
+        "websiteQueries": 1,
+        "allocatedBytes": 25282888,
+        "cpuMilliseconds": 187.5,
+        "elapsedMilliseconds": 715.4767,
+        "sampledPeakWorkingBytes": 102912000,
+        "peakProcessWorkingBytes": 102912000
+      },
+      {
+        "run": 3,
+        "sql": 482,
+        "settingsQueries": 0,
+        "websiteQueries": 1,
+        "allocatedBytes": 25333072,
+        "cpuMilliseconds": 1375,
+        "elapsedMilliseconds": 1288.6487,
+        "sampledPeakWorkingBytes": 103419904,
+        "peakProcessWorkingBytes": 103419904
+      }
+    ]
+  },
+  "limits": [
+    "Compressed simulated hour; not one hour of wall-clock observation.",
+    "CPU and allocation cover the workload after database initialization.",
+    "Process peak working set includes initialization and is not backend-only memory.",
+    "HTTP, native collectors, UI, extensions and OS power behavior are not measured."
+  ]
+}

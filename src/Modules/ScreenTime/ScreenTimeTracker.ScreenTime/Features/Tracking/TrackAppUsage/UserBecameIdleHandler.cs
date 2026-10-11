@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 using ScreenTimeTracker.ScreenTime.Domain.Aggregates.Apps;
@@ -8,6 +9,7 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 namespace ScreenTimeTracker.ScreenTime.Features.Tracking.TrackAppUsage;
 
 public class UserBecameIdleHandler(
+    TrackingCoordinator coordinator,
     ScreenTimeDbContext context,
     ActiveAppUsageSessionStore activeSessionStore,
     TimeProvider timeProvider
@@ -18,9 +20,11 @@ public class UserBecameIdleHandler(
         CancellationToken cancellationToken
     )
     {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
         var now = timeProvider.GetUtcNow();
 
-        var activeSession = activeSessionStore.Take();
+        var activeSession = activeSessionStore.Current;
+        var nextSession = activeSession;
         if (activeSession is not null)
         {
             if (activeSession.StartTime < notification.IdleStartedAt)
@@ -38,7 +42,7 @@ public class UserBecameIdleHandler(
                 if (savedActiveSession is not null)
                     context.AppUsageSessions.Remove(savedActiveSession);
             }
-            activeSessionStore.Current = new ActiveAppUsageSessionState(
+            nextSession = new ActiveAppUsageSessionState(
                 App.IdleAppId,
                 notification.IdleStartedAt
             );
@@ -67,6 +71,8 @@ public class UserBecameIdleHandler(
         }
 
         await context.SaveChangesAsync(cancellationToken);
+        activeSessionStore.Current = nextSession;
+        mutation.Complete();
         return;
     }
 }

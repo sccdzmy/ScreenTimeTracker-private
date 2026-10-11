@@ -17,30 +17,46 @@ public record WebsiteActivityReport(
 );
 
 public partial class WebsiteActivityProcessor(
+    TrackingCoordinator coordinator, TrackingIdentityCache identities, ActiveWebsiteUsageSessionStore activeSessionStore,
     ILogger<WebsiteActivityProcessor> logger,
     IServiceScopeFactory serviceScopeFactory,
     UserIdleStore userIdleStore,
     SystemSuspendStore systemSuspendStore
 ) : BackgroundService
 {
-    private static readonly TimeSpan AllowedNetworkJitter = TimeSpan.FromSeconds(5);
+    private static readonly TimeSpan AllowedNetworkJitter = TimeSpan.FromMilliseconds(250);
 
     private readonly Channel<WebsiteActivityReport> _channel =
-        Channel.CreateUnbounded<WebsiteActivityReport>(
-            new UnboundedChannelOptions { SingleReader = true }
+        Channel.CreateBounded<WebsiteActivityReport>(
+            new BoundedChannelOptions(256) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait }
         );
 
-    public void Enqueue(WebsiteActivityReport report)
+    private readonly object _enqueueGate = new();
+    private DateTimeOffset? _lastAcceptedAt;
+    public bool Enqueue(WebsiteActivityReport report)
     {
-        _channel.Writer.TryWrite(report);
+        lock (_enqueueGate)
+        {
+            if (userIdleStore.Current.IsUserIdle || systemSuspendStore.Current.IsSystemSuspendActive) { _lastAcceptedAt = null; return true; }
+            if (report.Duration <= TimeSpan.Zero || report.Duration > TimeSpan.FromSeconds(5)) return false;
+            var elapsed = _lastAcceptedAt is { } last ? report.ReportedAt - last : TimeSpan.FromMilliseconds(1500);
+            if (elapsed <= TimeSpan.Zero) return false;
+            report = report with { Duration = report.Duration < elapsed ? report.Duration : elapsed };
+            if (!_channel.Writer.TryWrite(report)) return false;
+            _lastAcceptedAt = report.ReportedAt;
+            return true;
+        }
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        WebsiteActivityReport? pending = null;
         try
         {
-            await foreach (var report in _channel.Reader.ReadAllAsync(stoppingToken))
+            while (!stoppingToken.IsCancellationRequested)
             {
+                var report = pending ?? await _channel.Reader.ReadAsync(stoppingToken);
+                pending = null;
                 // 用户空闲或系统挂起时，直接跳过处理
                 if (
                     userIdleStore.Current.IsUserIdle
@@ -54,7 +70,9 @@ public partial class WebsiteActivityProcessor(
                 }
                 catch (Exception ex)
                 {
-                    LogProcessActivityFailed(logger, report.Host, ex);
+                    LogProcessActivityFailed(logger, "website", ex);
+                    pending = report;
+                    await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
                 }
             }
         }
@@ -66,61 +84,38 @@ public partial class WebsiteActivityProcessor(
         CancellationToken cancellationToken
     )
     {
-        using var scope = serviceScopeFactory.CreateScope();
-
-        var context = scope.ServiceProvider.GetRequiredService<ScreenTimeDbContext>();
-        var activeSessionStore =
-            scope.ServiceProvider.GetRequiredService<ActiveWebsiteUsageSessionStore>();
-
-        var website = await context.Websites.FirstOrDefaultAsync(
-            w => w.Host == report.Host,
-            cancellationToken
-        );
-        if (website is null)
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
+        if (userIdleStore.Current.IsUserIdle || systemSuspendStore.Current.IsSystemSuspendActive) return;
+        var identityVersion = identities.WebsiteVersion;
+        // Resolve IDs from bounded cache, never retain tracked entities between scopes.
+        using var scope = identities.TryWebsite(report.Host, out var websiteId) ? null : serviceScopeFactory.CreateScope();
+        ScreenTimeDbContext? context = scope?.ServiceProvider.GetRequiredService<ScreenTimeDbContext>();
+        if (context is not null)
         {
-            website = Website.CreateDiscovered(
-                report.ReportedAt - report.Duration,
-                report.Name,
-                report.Host
-            );
-            context.Websites.Add(website);
-        }
-
-        // 活跃 Session 衔接逻辑
-        if (activeSessionStore.Current is null)
-            activeSessionStore.Current = new ActiveWebsiteUsageSessionState(
-                website.Id,
-                report.ReportedAt - report.Duration,
-                report.ReportedAt
-            );
-        else if (
-            activeSessionStore.Current.WebsiteId == website.Id
-            && (
-                activeSessionStore.Current.LastActiveAt + report.Duration - report.ReportedAt
-            ).Duration() <= AllowedNetworkJitter
-        )
-            activeSessionStore.Current = activeSessionStore.Current with
+            var website = await context.Websites.FirstOrDefaultAsync(w => w.Host == report.Host, cancellationToken);
+            if (website is null)
             {
-                LastActiveAt = report.ReportedAt,
-            };
-        else
-        {
-            // 切换了网站或时间间隔过长：持久化旧 Session 并开启新 Session
-            var activeSession = activeSessionStore.Take();
-            if (activeSession is not null)
-                await context.PersistActiveSessionAsync(
-                    activeSession,
-                    activeSession.LastActiveAt,
-                    cancellationToken
-                );
-            activeSessionStore.Current = new ActiveWebsiteUsageSessionState(
-                website.Id,
-                report.ReportedAt - report.Duration,
-                report.ReportedAt
-            );
+                website = Website.CreateDiscovered(report.ReportedAt - report.Duration, report.Name, report.Host);
+                context.Websites.Add(website);
+            }
+            websiteId = website.Id;
         }
-
-        await context.SaveChangesAsync(cancellationToken);
+        var previous = activeSessionStore.Current;
+        var continuous = previous is not null && previous.WebsiteId == websiteId &&
+            (previous.LastActiveAt + report.Duration - report.ReportedAt).Duration() <= AllowedNetworkJitter;
+        var next = continuous ? previous! with { LastActiveAt = report.ReportedAt } :
+            new ActiveWebsiteUsageSessionState(websiteId, report.ReportedAt - report.Duration, report.ReportedAt);
+        using var persistenceScope = !continuous && previous is not null && context is null ? serviceScopeFactory.CreateScope() : null;
+        if (!continuous && previous is not null)
+        {
+            context ??= persistenceScope!.ServiceProvider.GetRequiredService<ScreenTimeDbContext>();
+            await context.PersistActiveSessionAsync(previous, previous.LastActiveAt, cancellationToken);
+        }
+        var identityChanged = context?.ChangeTracker.Entries<Website>().Any(e => e.State is EntityState.Added or EntityState.Modified) == true;
+        if (context is not null) await context.SaveChangesAsync(cancellationToken);
+        if (scope is not null) identities.PutWebsite(report.Host, websiteId, identityVersion + (identityChanged ? 1 : 0));
+        activeSessionStore.Current = next;
+        mutation.Complete();
     }
 
     [LoggerMessage(

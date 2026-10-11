@@ -1,0 +1,4530 @@
+{
+  "source": "https://github.com/github/advisory-database",
+  "archiveSha256": "70dce1402ec21922b80bb68facd5d15292d806e42cc7144df0397cb627fdbaab",
+  "reviewedAdvisories": 36780,
+  "packageVersionCount": 902,
+  "npmCount": 761,
+  "nugetCount": 141,
+  "findings": [
+    {
+      "ecosystem": "npm",
+      "name": "node-forge",
+      "version": "1.4.0",
+      "advisory": "GHSA-86w9-cpqp-85rv",
+      "summary": "node-forge RSA PKCS#1 v1.5 signature verification accepts extra nested DigestAlgorithm elements",
+      "url": "https://github.com/advisories/GHSA-86w9-cpqp-85rv"
+    }
+  ],
+  "packages": [
+    {
+      "ecosystem": "NuGet",
+      "name": "CycleDetection",
+      "version": "2.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "DiffEngine",
+      "version": "11.3.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "EmptyFiles",
+      "version": "4.4.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "ErrorOr",
+      "version": "2.1.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "FastEndpoints",
+      "version": "8.2.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "FastEndpoints.Attributes",
+      "version": "8.2.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "FastEndpoints.Core",
+      "version": "8.2.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "FastEndpoints.JobQueues",
+      "version": "8.2.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "FastEndpoints.Messaging",
+      "version": "8.2.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "FastEndpoints.Messaging.Core",
+      "version": "8.2.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "FastEndpoints.Swagger",
+      "version": "8.2.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "FluentValidation",
+      "version": "12.1.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "H.GeneratedIcons.System.Drawing",
+      "version": "2.4.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "H.NotifyIcon",
+      "version": "2.4.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Humanizer.Core",
+      "version": "2.14.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "JetBrains.Annotations",
+      "version": "2025.2.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Mediator.Abstractions",
+      "version": "3.0.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Mediator.SourceGenerator",
+      "version": "3.0.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.ApplicationInsights",
+      "version": "2.23.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.AspNetCore.OpenApi",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.AspNetCore.TestHost",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Bcl.AsyncInterfaces",
+      "version": "6.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Build.Framework",
+      "version": "18.0.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.CodeAnalysis.Analyzers",
+      "version": "3.11.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.CodeAnalysis.CSharp",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.CodeAnalysis.CSharp.Workspaces",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.CodeAnalysis.Common",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.CodeAnalysis.Workspaces.Common",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.CodeAnalysis.Workspaces.MSBuild",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Data.Sqlite.Core",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.EntityFrameworkCore",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.EntityFrameworkCore.Abstractions",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.EntityFrameworkCore.Analyzers",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.EntityFrameworkCore.Design",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.EntityFrameworkCore.Relational",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.EntityFrameworkCore.Sqlite",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.EntityFrameworkCore.Sqlite.Core",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Caching.Abstractions",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Caching.Memory",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Configuration",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Configuration.Abstractions",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Configuration.Binder",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Configuration.CommandLine",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Configuration.EnvironmentVariables",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Configuration.FileExtensions",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Configuration.Json",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Configuration.UserSecrets",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.DependencyInjection",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.DependencyInjection.Abstractions",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.DependencyModel",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Diagnostics",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Diagnostics.Abstractions",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Diagnostics.Abstractions",
+      "version": "10.0.9"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.FileProviders.Abstractions",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.FileProviders.Abstractions",
+      "version": "10.0.9"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.FileProviders.Physical",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.FileSystemGlobbing",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Hosting",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Hosting.Abstractions",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Hosting.Abstractions",
+      "version": "10.0.9"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Logging",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Logging.Abstractions",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Logging.Configuration",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Logging.Console",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Logging.Debug",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Logging.EventLog",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Logging.EventSource",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Options",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Options.ConfigurationExtensions",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Extensions.Primitives",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.OpenApi",
+      "version": "2.12.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Playwright",
+      "version": "1.63.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Testing.Extensions.Telemetry",
+      "version": "2.0.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Testing.Extensions.TrxReport.Abstractions",
+      "version": "2.0.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Testing.Platform",
+      "version": "2.0.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Testing.Platform.MSBuild",
+      "version": "2.0.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.VisualStudio.SolutionPersistence",
+      "version": "1.0.52"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Win32.Registry",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Win32.SystemEvents",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Windows.CsWin32",
+      "version": "0.3.298"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Windows.SDK.Win32Docs",
+      "version": "0.1.42-alpha"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Windows.SDK.Win32Metadata",
+      "version": "70.0.11-preview"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Microsoft.Windows.WDK.Win32Metadata",
+      "version": "0.13.25-experimental"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Mono.Cecil",
+      "version": "0.11.6"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Mono.TextTemplating",
+      "version": "3.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "NJsonSchema",
+      "version": "11.6.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "NJsonSchema.Annotations",
+      "version": "11.6.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "NJsonSchema.NewtonsoftJson",
+      "version": "11.6.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "NJsonSchema.Yaml",
+      "version": "11.6.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "NSwag.Annotations",
+      "version": "14.7.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "NSwag.AspNetCore",
+      "version": "14.7.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "NSwag.Core",
+      "version": "14.7.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "NSwag.Core.Yaml",
+      "version": "14.7.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "NSwag.Generation",
+      "version": "14.7.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "NSwag.Generation.AspNetCore",
+      "version": "14.7.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Namotion.Reflection",
+      "version": "3.5.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Newtonsoft.Json",
+      "version": "13.0.4"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "NotificationIcon.NET",
+      "version": "1.2.8"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Photino.NET",
+      "version": "4.0.16"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Photino.Native",
+      "version": "4.0.22"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "SQLitePCLRaw.bundle_e_sqlite3",
+      "version": "2.1.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "SQLitePCLRaw.core",
+      "version": "2.1.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "SQLitePCLRaw.lib.e_sqlite3",
+      "version": "2.1.13"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "SQLitePCLRaw.provider.e_sqlite3",
+      "version": "2.1.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Serilog",
+      "version": "4.4.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Serilog.Extensions.Hosting",
+      "version": "10.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Serilog.Extensions.Logging",
+      "version": "10.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Serilog.Settings.Configuration",
+      "version": "10.0.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Serilog.Sinks.Console",
+      "version": "6.1.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Serilog.Sinks.File",
+      "version": "7.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Shouldly",
+      "version": "4.3.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "SkiaSharp",
+      "version": "4.153.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "SkiaSharp.NativeAssets.Linux.NoDependencies",
+      "version": "4.153.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "SkiaSharp.NativeAssets.Win32",
+      "version": "4.153.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "SkiaSharp.NativeAssets.macOS",
+      "version": "4.153.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.CodeDom",
+      "version": "6.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.ComponentModel.Annotations",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.Composition",
+      "version": "9.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.Composition.AttributedModel",
+      "version": "9.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.Composition.Convention",
+      "version": "9.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.Composition.Hosting",
+      "version": "9.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.Composition.Runtime",
+      "version": "9.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.Composition.TypedParts",
+      "version": "9.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.Diagnostics.EventLog",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.Diagnostics.EventLog",
+      "version": "6.0.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.Drawing.Common",
+      "version": "10.0.12"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.Management",
+      "version": "6.0.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "System.ValueTuple",
+      "version": "4.6.1"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "TaskScheduler",
+      "version": "2.12.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "Tmds.DBus",
+      "version": "0.94.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "TngTech.ArchUnitNET",
+      "version": "0.13.3"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "TngTech.ArchUnitNET.xUnitV3",
+      "version": "0.13.3"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "YamlDotNet",
+      "version": "16.3.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "xunit.analyzers",
+      "version": "1.27.0"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "xunit.v3.assert",
+      "version": "3.2.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "xunit.v3.common",
+      "version": "3.2.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "xunit.v3.core.mtp-v2",
+      "version": "3.2.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "xunit.v3.extensibility.core",
+      "version": "3.2.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "xunit.v3.mtp-v2",
+      "version": "3.2.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "xunit.v3.runner.common",
+      "version": "3.2.2"
+    },
+    {
+      "ecosystem": "NuGet",
+      "name": "xunit.v3.runner.inproc.console",
+      "version": "3.2.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@1natsu/wait-element",
+      "version": "4.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@aklinker1/rollup-plugin-visualizer",
+      "version": "5.12.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/code-frame",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/compat-data",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/core",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/generator",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/helper-compilation-targets",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/helper-globals",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/helper-module-imports",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/helper-module-transforms",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/helper-string-parser",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/helper-validator-identifier",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/helper-validator-option",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/helpers",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/parser",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/runtime",
+      "version": "7.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/runtime",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/runtime",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/template",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/traverse",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@babel/types",
+      "version": "7.29.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@base-ui/utils",
+      "version": "0.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@devicefarmer/adbkit",
+      "version": "3.3.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@devicefarmer/adbkit-logcat",
+      "version": "2.1.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@devicefarmer/adbkit-monkey",
+      "version": "1.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emnapi/core",
+      "version": "1.11.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emnapi/runtime",
+      "version": "1.11.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emnapi/wasi-threads",
+      "version": "1.2.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/babel-plugin",
+      "version": "11.13.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/cache",
+      "version": "11.14.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/hash",
+      "version": "0.9.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/is-prop-valid",
+      "version": "1.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/memoize",
+      "version": "0.9.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/react",
+      "version": "11.14.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/serialize",
+      "version": "1.3.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/sheet",
+      "version": "1.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/styled",
+      "version": "11.14.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/unitless",
+      "version": "0.10.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/use-insertion-effect-with-fallbacks",
+      "version": "1.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/utils",
+      "version": "1.4.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@emotion/weak-memoize",
+      "version": "0.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/aix-ppc64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/android-arm",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/android-arm64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/android-x64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/darwin-arm64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/darwin-x64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/freebsd-arm64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/freebsd-x64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/linux-arm",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/linux-arm64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/linux-ia32",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/linux-loong64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/linux-mips64el",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/linux-ppc64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/linux-riscv64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/linux-s390x",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/linux-x64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/netbsd-arm64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/netbsd-x64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/openbsd-arm64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/openbsd-x64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/openharmony-arm64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/sunos-x64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/win32-arm64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/win32-ia32",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@esbuild/win32-x64",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@eslint-community/eslint-utils",
+      "version": "4.10.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@eslint-community/regexpp",
+      "version": "4.12.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@eslint/config-array",
+      "version": "0.21.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@eslint/config-helpers",
+      "version": "0.4.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@eslint/core",
+      "version": "0.17.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@eslint/eslintrc",
+      "version": "3.3.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@eslint/js",
+      "version": "9.39.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@eslint/object-schema",
+      "version": "2.1.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@eslint/plugin-kit",
+      "version": "0.4.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@floating-ui/utils",
+      "version": "0.2.12"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@fluent/syntax",
+      "version": "0.19.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@fontsource/roboto",
+      "version": "5.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@fregante/relaxed-json",
+      "version": "2.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@humanfs/core",
+      "version": "0.19.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@humanfs/node",
+      "version": "0.16.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@humanfs/types",
+      "version": "0.15.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@humanwhocodes/module-importer",
+      "version": "1.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@humanwhocodes/retry",
+      "version": "0.4.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@icons-pack/react-simple-icons",
+      "version": "13.13.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@jridgewell/gen-mapping",
+      "version": "0.3.13"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@jridgewell/remapping",
+      "version": "2.3.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@jridgewell/resolve-uri",
+      "version": "3.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@jridgewell/sourcemap-codec",
+      "version": "1.5.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@jridgewell/trace-mapping",
+      "version": "0.3.31"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mdn/browser-compat-data",
+      "version": "8.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mui/core-downloads-tracker",
+      "version": "9.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mui/icons-material",
+      "version": "9.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mui/material",
+      "version": "9.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mui/private-theming",
+      "version": "9.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mui/styled-engine",
+      "version": "9.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mui/system",
+      "version": "9.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mui/types",
+      "version": "9.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mui/utils",
+      "version": "9.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mui/x-data-grid",
+      "version": "9.10.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mui/x-date-pickers",
+      "version": "9.10.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mui/x-internals",
+      "version": "9.10.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@mui/x-virtualizer",
+      "version": "0.6.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@napi-rs/wasm-runtime",
+      "version": "1.1.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@napi-rs/wasm-runtime",
+      "version": "1.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxc-project/types",
+      "version": "0.139.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-android-arm-eabi",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-android-arm64",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-darwin-arm64",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-darwin-x64",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-freebsd-x64",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-linux-arm-gnueabihf",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-linux-arm-musleabihf",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-linux-arm64-gnu",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-linux-arm64-musl",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-linux-ppc64-gnu",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-linux-riscv64-gnu",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-linux-riscv64-musl",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-linux-s390x-gnu",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-linux-x64-gnu",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-linux-x64-musl",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-openharmony-arm64",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-win32-arm64-msvc",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-win32-ia32-msvc",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxfmt/binding-win32-x64-msvc",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-android-arm-eabi",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-android-arm64",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-darwin-arm64",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-darwin-x64",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-freebsd-x64",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-linux-arm-gnueabihf",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-linux-arm-musleabihf",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-linux-arm64-gnu",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-linux-arm64-musl",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-linux-ppc64-gnu",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-linux-riscv64-gnu",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-linux-riscv64-musl",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-linux-s390x-gnu",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-linux-x64-gnu",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-linux-x64-musl",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-openharmony-arm64",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-win32-arm64-msvc",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-win32-ia32-msvc",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@oxlint/binding-win32-x64-msvc",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@pinojs/redact",
+      "version": "0.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@pnpm/config.env-replace",
+      "version": "1.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@pnpm/network.ca-file",
+      "version": "1.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@pnpm/npm-conf",
+      "version": "3.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@popperjs/core",
+      "version": "2.11.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-android-arm64",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-darwin-arm64",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-darwin-x64",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-freebsd-x64",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-linux-arm-gnueabihf",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-linux-arm64-gnu",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-linux-arm64-musl",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-linux-ppc64-gnu",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-linux-s390x-gnu",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-linux-x64-gnu",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-linux-x64-musl",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-openharmony-arm64",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-wasm32-wasi",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-win32-arm64-msvc",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/binding-win32-x64-msvc",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rolldown/pluginutils",
+      "version": "1.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@rollup/pluginutils",
+      "version": "5.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@svgr/babel-plugin-add-jsx-attribute",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@svgr/babel-plugin-remove-jsx-attribute",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@svgr/babel-plugin-remove-jsx-empty-expression",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@svgr/babel-plugin-replace-jsx-attribute-value",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@svgr/babel-plugin-svg-dynamic-title",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@svgr/babel-plugin-svg-em-dimensions",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@svgr/babel-plugin-transform-react-native-svg",
+      "version": "8.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@svgr/babel-plugin-transform-svg-component",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@svgr/babel-preset",
+      "version": "8.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@svgr/core",
+      "version": "8.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@svgr/hast-util-to-babel-ast",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@svgr/plugin-jsx",
+      "version": "8.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/history",
+      "version": "1.162.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/query-core",
+      "version": "5.101.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/query-devtools",
+      "version": "5.101.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/react-query",
+      "version": "5.101.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/react-query-devtools",
+      "version": "5.101.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/react-router",
+      "version": "1.170.18"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/react-router-devtools",
+      "version": "1.167.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/react-store",
+      "version": "0.9.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/router-core",
+      "version": "1.171.15"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/router-devtools-core",
+      "version": "1.168.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/router-generator",
+      "version": "1.167.21"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/router-plugin",
+      "version": "1.168.23"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/router-utils",
+      "version": "1.162.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/store",
+      "version": "0.9.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tanstack/virtual-file-routes",
+      "version": "1.162.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@tybys/wasm-util",
+      "version": "0.10.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/estree",
+      "version": "1.0.9"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/filesystem",
+      "version": "0.0.36"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/filewriter",
+      "version": "0.0.33"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/har-format",
+      "version": "1.2.16"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/json-schema",
+      "version": "7.0.15"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/minimatch",
+      "version": "3.0.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/node",
+      "version": "24.13.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/node",
+      "version": "26.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/parse-json",
+      "version": "4.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/prop-types",
+      "version": "15.7.15"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/react",
+      "version": "19.2.17"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/react-dom",
+      "version": "19.2.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/react-transition-group",
+      "version": "4.4.12"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@types/webextension-polyfill",
+      "version": "0.12.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@vitejs/plugin-react",
+      "version": "6.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@webext-core/fake-browser",
+      "version": "1.5.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@webext-core/isolated-element",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@webext-core/match-patterns",
+      "version": "1.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@wxt-dev/browser",
+      "version": "0.1.43"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@wxt-dev/browser",
+      "version": "0.2.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "@wxt-dev/storage",
+      "version": "1.2.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "acorn",
+      "version": "8.18.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "acorn-jsx",
+      "version": "5.3.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "addons-linter",
+      "version": "10.8.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "addons-moz-compare",
+      "version": "1.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "addons-scanner-utils",
+      "version": "15.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "adm-zip",
+      "version": "0.6.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "agent-base",
+      "version": "6.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "agent-base",
+      "version": "7.1.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ajv",
+      "version": "6.15.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ajv",
+      "version": "8.20.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ansi-align",
+      "version": "3.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ansi-escapes",
+      "version": "7.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ansi-regex",
+      "version": "5.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ansi-regex",
+      "version": "6.2.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ansi-styles",
+      "version": "4.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ansi-styles",
+      "version": "6.2.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ansis",
+      "version": "4.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "argparse",
+      "version": "2.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "array-differ",
+      "version": "4.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "array-union",
+      "version": "3.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "async",
+      "version": "3.2.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "async-mutex",
+      "version": "0.5.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "asynckit",
+      "version": "0.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "atomic-sleep",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "atomically",
+      "version": "2.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "axios",
+      "version": "1.20.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "babel-dead-code-elimination",
+      "version": "1.0.12"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "babel-plugin-macros",
+      "version": "3.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "balanced-match",
+      "version": "1.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "baseline-browser-mapping",
+      "version": "2.11.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "bluebird",
+      "version": "3.7.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "boolbase",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "boolbase",
+      "version": "2.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "boxen",
+      "version": "8.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "brace-expansion",
+      "version": "1.1.21"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "browserslist",
+      "version": "4.28.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "buffer-equal-constant-time",
+      "version": "1.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "buffer-from",
+      "version": "1.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "bundle-name",
+      "version": "4.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "c12",
+      "version": "3.3.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cac",
+      "version": "6.7.14"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cac",
+      "version": "7.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "call-bind-apply-helpers",
+      "version": "1.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "callsites",
+      "version": "3.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "camelcase",
+      "version": "6.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "camelcase",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "caniuse-lite",
+      "version": "1.0.30001806"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "chalk",
+      "version": "4.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "chalk",
+      "version": "5.6.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cheerio",
+      "version": "1.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cheerio-select",
+      "version": "2.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "chokidar",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "chrome-launcher",
+      "version": "1.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ci-info",
+      "version": "4.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "citty",
+      "version": "0.2.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cli-boxes",
+      "version": "3.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cli-cursor",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cli-truncate",
+      "version": "5.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cliui",
+      "version": "8.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "clone",
+      "version": "1.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "clsx",
+      "version": "1.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "clsx",
+      "version": "2.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "color-convert",
+      "version": "2.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "color-name",
+      "version": "1.1.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "columnify",
+      "version": "1.6.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "combined-stream",
+      "version": "1.0.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "commander",
+      "version": "12.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "commander",
+      "version": "2.9.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "commander",
+      "version": "9.5.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "common-tags",
+      "version": "1.8.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "concat-map",
+      "version": "0.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "concat-stream",
+      "version": "1.6.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "confbox",
+      "version": "0.1.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "confbox",
+      "version": "0.2.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "config-chain",
+      "version": "1.1.13"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "configstore",
+      "version": "7.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "consola",
+      "version": "3.4.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "convert-source-map",
+      "version": "1.9.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "convert-source-map",
+      "version": "2.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cookie-es",
+      "version": "3.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "core-util-is",
+      "version": "1.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cosmiconfig",
+      "version": "7.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cosmiconfig",
+      "version": "8.3.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cross-spawn",
+      "version": "7.0.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "css-select",
+      "version": "5.2.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "css-select",
+      "version": "7.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "css-tree",
+      "version": "3.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "css-what",
+      "version": "6.2.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "css-what",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "cssom",
+      "version": "0.5.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "csstype",
+      "version": "3.2.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "dayjs",
+      "version": "1.11.21"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "debounce",
+      "version": "1.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "debug",
+      "version": "4.3.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "debug",
+      "version": "4.4.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "decamelize",
+      "version": "6.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "deep-extend",
+      "version": "0.6.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "deep-is",
+      "version": "0.1.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "deepmerge",
+      "version": "4.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "default-browser",
+      "version": "5.5.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "default-browser-id",
+      "version": "5.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "defaults",
+      "version": "1.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "define-lazy-prop",
+      "version": "2.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "define-lazy-prop",
+      "version": "3.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "defu",
+      "version": "6.1.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "delayed-stream",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "dequal",
+      "version": "2.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "destr",
+      "version": "2.0.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "detect-libc",
+      "version": "2.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "diff",
+      "version": "8.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "dom-helpers",
+      "version": "5.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "dom-serializer",
+      "version": "2.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "dom-serializer",
+      "version": "3.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "domelementtype",
+      "version": "2.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "domelementtype",
+      "version": "3.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "domhandler",
+      "version": "5.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "domhandler",
+      "version": "6.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "domutils",
+      "version": "3.2.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "domutils",
+      "version": "4.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "dot-case",
+      "version": "3.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "dot-prop",
+      "version": "9.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "dotenv",
+      "version": "16.6.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "dotenv",
+      "version": "17.4.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "dotenv-expand",
+      "version": "12.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "dunder-proto",
+      "version": "1.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ecdsa-sig-formatter",
+      "version": "1.0.11"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "echarts",
+      "version": "6.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "echarts-for-react",
+      "version": "3.0.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "electron-to-chromium",
+      "version": "1.5.396"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "emoji-regex",
+      "version": "10.6.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "emoji-regex",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "encoding-sniffer",
+      "version": "0.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "entities",
+      "version": "4.5.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "entities",
+      "version": "6.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "entities",
+      "version": "7.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "entities",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "environment",
+      "version": "1.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "error-ex",
+      "version": "1.3.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "es-define-property",
+      "version": "1.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "es-errors",
+      "version": "1.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "es-module-lexer",
+      "version": "2.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "es-object-atoms",
+      "version": "1.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "es-set-tostringtag",
+      "version": "2.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "es6-error",
+      "version": "4.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "esbuild",
+      "version": "0.28.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "escalade",
+      "version": "3.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "escape-goat",
+      "version": "4.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "escape-string-regexp",
+      "version": "4.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "escape-string-regexp",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "eslint",
+      "version": "9.39.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "eslint-plugin-no-unsanitized",
+      "version": "4.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "eslint-scope",
+      "version": "8.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "eslint-visitor-keys",
+      "version": "3.4.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "eslint-visitor-keys",
+      "version": "4.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "eslint-visitor-keys",
+      "version": "5.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "espree",
+      "version": "10.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "espree",
+      "version": "11.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "esprima",
+      "version": "4.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "esquery",
+      "version": "1.7.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "esrecurse",
+      "version": "4.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "estraverse",
+      "version": "5.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "estree-walker",
+      "version": "2.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "estree-walker",
+      "version": "3.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "esutils",
+      "version": "2.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "eventemitter3",
+      "version": "5.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "exsolve",
+      "version": "1.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "fast-deep-equal",
+      "version": "3.1.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "fast-json-patch",
+      "version": "3.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "fast-json-stable-stringify",
+      "version": "2.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "fast-levenshtein",
+      "version": "2.0.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "fast-redact",
+      "version": "3.5.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "fast-uri",
+      "version": "3.1.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "fdir",
+      "version": "6.5.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "file-entry-cache",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "filesize",
+      "version": "11.0.22"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "find-root",
+      "version": "1.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "find-up",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "firefox-profile",
+      "version": "4.7.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "first-chunk-stream",
+      "version": "3.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "flat-cache",
+      "version": "4.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "flatted",
+      "version": "3.4.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "follow-redirects",
+      "version": "1.16.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "form-data",
+      "version": "4.0.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "form-data-encoder",
+      "version": "4.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "formdata-node",
+      "version": "6.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "fs-extra",
+      "version": "11.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "fsevents",
+      "version": "2.3.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "function-bind",
+      "version": "1.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "fx-runner",
+      "version": "1.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "fx-runner",
+      "version": "1.5.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "gensync",
+      "version": "1.0.0-beta.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "get-caller-file",
+      "version": "2.0.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "get-east-asian-width",
+      "version": "1.6.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "get-intrinsic",
+      "version": "1.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "get-port-please",
+      "version": "3.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "get-proto",
+      "version": "1.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "giget",
+      "version": "3.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "glob-parent",
+      "version": "6.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "glob-to-regexp",
+      "version": "0.4.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "global-directory",
+      "version": "4.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "globals",
+      "version": "14.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "goober",
+      "version": "2.1.19"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "gopd",
+      "version": "1.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "graceful-fs",
+      "version": "4.2.10"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "graceful-fs",
+      "version": "4.2.11"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "graceful-readlink",
+      "version": "1.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "growly",
+      "version": "1.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "has-flag",
+      "version": "4.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "has-symbols",
+      "version": "1.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "has-tostringtag",
+      "version": "1.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "hasown",
+      "version": "2.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "hoist-non-react-statics",
+      "version": "3.3.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "hookable",
+      "version": "6.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "html-escaper",
+      "version": "3.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "html-parse-stringify",
+      "version": "4.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "htmlparser2",
+      "version": "10.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "https-proxy-agent",
+      "version": "5.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "https-proxy-agent",
+      "version": "7.0.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "i18next",
+      "version": "26.3.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "iconv-lite",
+      "version": "0.6.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ignore",
+      "version": "5.3.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "image-size",
+      "version": "2.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "immediate",
+      "version": "3.0.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "import-fresh",
+      "version": "3.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "import-meta-resolve",
+      "version": "4.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "imurmurhash",
+      "version": "0.1.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "index-to-position",
+      "version": "1.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "inherits",
+      "version": "2.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ini",
+      "version": "1.3.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ini",
+      "version": "4.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ini",
+      "version": "4.1.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-absolute",
+      "version": "0.1.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-arrayish",
+      "version": "0.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-core-module",
+      "version": "2.16.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-docker",
+      "version": "2.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-docker",
+      "version": "3.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-extglob",
+      "version": "2.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-fullwidth-code-point",
+      "version": "3.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-fullwidth-code-point",
+      "version": "5.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-glob",
+      "version": "4.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-in-ci",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-in-ssh",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-inside-container",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-installed-globally",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-npm",
+      "version": "6.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-path-inside",
+      "version": "4.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-plain-object",
+      "version": "2.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-potential-custom-element-name",
+      "version": "1.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-primitive",
+      "version": "3.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-relative",
+      "version": "0.1.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-utf8",
+      "version": "0.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-wsl",
+      "version": "2.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "is-wsl",
+      "version": "3.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "isarray",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "isbot",
+      "version": "5.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "isexe",
+      "version": "1.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "isexe",
+      "version": "2.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "isexe",
+      "version": "3.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "isobject",
+      "version": "3.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "jiti",
+      "version": "2.7.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "jose",
+      "version": "5.9.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "js-tokens",
+      "version": "4.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "js-tokens",
+      "version": "9.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "js-yaml",
+      "version": "4.3.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "jsesc",
+      "version": "3.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "json-buffer",
+      "version": "3.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "json-merge-patch",
+      "version": "1.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "json-parse-even-better-errors",
+      "version": "2.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "json-parse-even-better-errors",
+      "version": "3.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "json-schema-traverse",
+      "version": "0.4.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "json-schema-traverse",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "json-stable-stringify-without-jsonify",
+      "version": "1.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "json5",
+      "version": "2.2.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "jsonfile",
+      "version": "6.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "jsonwebtoken",
+      "version": "9.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "jszip",
+      "version": "3.10.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "jwa",
+      "version": "2.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "jws",
+      "version": "4.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "keyv",
+      "version": "4.5.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "kleur",
+      "version": "3.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ky",
+      "version": "1.14.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "latest-version",
+      "version": "9.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "levn",
+      "version": "0.4.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lie",
+      "version": "3.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lighthouse-logger",
+      "version": "2.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lightningcss",
+      "version": "1.33.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lightningcss-android-arm64",
+      "version": "1.33.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lightningcss-darwin-arm64",
+      "version": "1.33.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lightningcss-darwin-x64",
+      "version": "1.33.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lightningcss-freebsd-x64",
+      "version": "1.33.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lightningcss-linux-arm-gnueabihf",
+      "version": "1.33.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lightningcss-linux-arm64-gnu",
+      "version": "1.33.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lightningcss-linux-arm64-musl",
+      "version": "1.33.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lightningcss-linux-x64-gnu",
+      "version": "1.33.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lightningcss-linux-x64-musl",
+      "version": "1.33.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lightningcss-win32-arm64-msvc",
+      "version": "1.33.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lightningcss-win32-x64-msvc",
+      "version": "1.33.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lines-and-columns",
+      "version": "1.2.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lines-and-columns",
+      "version": "2.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "linkedom",
+      "version": "0.18.13"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "listr2",
+      "version": "10.2.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "local-pkg",
+      "version": "1.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "locate-path",
+      "version": "6.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lodash.includes",
+      "version": "4.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lodash.isboolean",
+      "version": "3.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lodash.isinteger",
+      "version": "4.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lodash.isnumber",
+      "version": "3.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lodash.isplainobject",
+      "version": "4.0.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lodash.isstring",
+      "version": "4.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lodash.merge",
+      "version": "4.6.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lodash.once",
+      "version": "4.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "log-update",
+      "version": "6.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "loose-envify",
+      "version": "1.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lower-case",
+      "version": "2.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "lru-cache",
+      "version": "5.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "magic-string",
+      "version": "0.30.21"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "magicast",
+      "version": "0.5.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "make-error",
+      "version": "1.3.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "many-keys-map",
+      "version": "3.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "marky",
+      "version": "1.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "math-intrinsics",
+      "version": "1.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "mdn-data",
+      "version": "2.27.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "mime-db",
+      "version": "1.52.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "mime-types",
+      "version": "2.1.35"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "mimic-function",
+      "version": "5.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "minimatch",
+      "version": "3.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "minimist",
+      "version": "1.2.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "mlly",
+      "version": "1.8.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ms",
+      "version": "2.1.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "multimatch",
+      "version": "6.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "nano-spawn",
+      "version": "2.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "nanoid",
+      "version": "3.3.20"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "nanospinner",
+      "version": "1.2.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "natural-compare",
+      "version": "1.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "no-case",
+      "version": "3.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "node-fetch-native",
+      "version": "1.6.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "node-forge",
+      "version": "1.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "node-notifier",
+      "version": "10.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "node-releases",
+      "version": "2.0.51"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "normalize-path",
+      "version": "3.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "notistack",
+      "version": "3.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "nth-check",
+      "version": "2.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "nth-check",
+      "version": "3.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "nypm",
+      "version": "0.6.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "object-assign",
+      "version": "4.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "obug",
+      "version": "2.1.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ofetch",
+      "version": "1.5.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ohash",
+      "version": "2.0.11"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "on-exit-leak-free",
+      "version": "2.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "onetime",
+      "version": "7.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "open",
+      "version": "11.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "open",
+      "version": "8.4.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "optionator",
+      "version": "0.9.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "os-shim",
+      "version": "0.1.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "oxfmt",
+      "version": "0.60.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "oxlint",
+      "version": "1.75.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "p-limit",
+      "version": "3.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "p-locate",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "package-json",
+      "version": "10.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "pako",
+      "version": "1.0.11"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "parent-module",
+      "version": "1.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "parse-json",
+      "version": "5.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "parse-json",
+      "version": "7.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "parse-json",
+      "version": "8.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "parse5",
+      "version": "7.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "parse5-htmlparser2-tree-adapter",
+      "version": "7.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "parse5-parser-stream",
+      "version": "7.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "path-exists",
+      "version": "4.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "path-key",
+      "version": "3.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "path-parse",
+      "version": "1.0.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "path-type",
+      "version": "4.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "pathe",
+      "version": "2.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "pend",
+      "version": "1.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "perfect-debounce",
+      "version": "2.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "picocolors",
+      "version": "1.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "picomatch",
+      "version": "2.3.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "picomatch",
+      "version": "4.0.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "pino",
+      "version": "10.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "pino",
+      "version": "9.7.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "pino-abstract-transport",
+      "version": "2.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "pino-abstract-transport",
+      "version": "3.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "pino-std-serializers",
+      "version": "7.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "pkg-types",
+      "version": "1.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "pkg-types",
+      "version": "2.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "postcss",
+      "version": "8.5.23"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "postcss",
+      "version": "8.5.24"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "powershell-utils",
+      "version": "0.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "prelude-ls",
+      "version": "1.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "prettier",
+      "version": "3.9.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "process-nextick-args",
+      "version": "2.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "process-warning",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "promise-toolbox",
+      "version": "0.21.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "prompts",
+      "version": "2.4.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "prop-types",
+      "version": "15.8.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "proto-list",
+      "version": "1.2.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "proxy-from-env",
+      "version": "2.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "publish-browser-extension",
+      "version": "4.0.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "punycode",
+      "version": "2.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "pupa",
+      "version": "3.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "quansync",
+      "version": "0.2.11"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "quick-format-unescaped",
+      "version": "4.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "rc",
+      "version": "1.2.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "rc9",
+      "version": "3.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "react",
+      "version": "19.2.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "react-dom",
+      "version": "19.2.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "react-i18next",
+      "version": "17.0.11"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "react-is",
+      "version": "16.13.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "react-is",
+      "version": "19.2.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "react-transition-group",
+      "version": "4.4.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "readable-stream",
+      "version": "2.3.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "readdirp",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "real-require",
+      "version": "0.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "real-require",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "registry-auth-token",
+      "version": "5.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "registry-url",
+      "version": "6.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "require-directory",
+      "version": "2.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "require-from-string",
+      "version": "2.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "reselect",
+      "version": "5.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "resolve",
+      "version": "1.22.12"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "resolve-from",
+      "version": "4.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "restore-cursor",
+      "version": "5.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "rfdc",
+      "version": "1.4.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "rolldown",
+      "version": "1.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "run-applescript",
+      "version": "7.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "safe-buffer",
+      "version": "5.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "safe-buffer",
+      "version": "5.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "safe-stable-stringify",
+      "version": "2.5.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "safer-buffer",
+      "version": "2.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "sax",
+      "version": "1.6.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "scheduler",
+      "version": "0.27.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "scule",
+      "version": "1.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "semver",
+      "version": "6.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "semver",
+      "version": "7.8.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "seroval",
+      "version": "1.6.9"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "seroval-plugins",
+      "version": "1.5.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "set-value",
+      "version": "4.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "setimmediate",
+      "version": "1.0.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "shebang-command",
+      "version": "2.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "shebang-regex",
+      "version": "3.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "shell-quote",
+      "version": "1.12.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "shellwords",
+      "version": "0.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "signal-exit",
+      "version": "4.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "sisteransi",
+      "version": "1.0.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "size-sensor",
+      "version": "1.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "slice-ansi",
+      "version": "7.1.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "slice-ansi",
+      "version": "8.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "snake-case",
+      "version": "3.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "sonic-boom",
+      "version": "4.2.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "source-map",
+      "version": "0.5.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "source-map",
+      "version": "0.6.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "source-map",
+      "version": "0.7.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "source-map-js",
+      "version": "1.2.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "source-map-support",
+      "version": "0.5.21"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "spawn-sync",
+      "version": "1.0.15"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "split",
+      "version": "1.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "split2",
+      "version": "4.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "string-width",
+      "version": "4.2.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "string-width",
+      "version": "7.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "string-width",
+      "version": "8.2.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "string_decoder",
+      "version": "1.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "strip-ansi",
+      "version": "6.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "strip-ansi",
+      "version": "7.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "strip-bom",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "strip-bom-buf",
+      "version": "2.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "strip-bom-stream",
+      "version": "4.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "strip-json-comments",
+      "version": "2.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "strip-json-comments",
+      "version": "3.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "strip-json-comments",
+      "version": "5.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "strip-json-comments",
+      "version": "5.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "strip-literal",
+      "version": "3.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "stubborn-fs",
+      "version": "2.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "stubborn-utils",
+      "version": "1.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "stylis",
+      "version": "4.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "supports-color",
+      "version": "7.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "supports-preserve-symlinks-flag",
+      "version": "1.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "svg-parser",
+      "version": "2.0.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "thread-stream",
+      "version": "3.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "thread-stream",
+      "version": "4.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "through",
+      "version": "2.3.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "tinyexec",
+      "version": "1.2.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "tinyglobby",
+      "version": "0.2.17"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "tinypool",
+      "version": "2.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "tmp",
+      "version": "0.2.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "tslib",
+      "version": "2.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "tslib",
+      "version": "2.8.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "type-check",
+      "version": "0.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "type-fest",
+      "version": "3.13.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "type-fest",
+      "version": "4.41.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "typedarray",
+      "version": "0.0.6"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "typescript",
+      "version": "5.9.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "typescript",
+      "version": "6.0.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "ufo",
+      "version": "1.6.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "uhyphen",
+      "version": "0.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "undici",
+      "version": "7.30.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "undici-types",
+      "version": "7.18.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "undici-types",
+      "version": "8.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "unimport",
+      "version": "6.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "universalify",
+      "version": "2.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "unplugin",
+      "version": "3.3.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "unplugin-utils",
+      "version": "0.3.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "upath",
+      "version": "3.0.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "update-browserslist-db",
+      "version": "1.2.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "update-notifier",
+      "version": "7.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "uri-js",
+      "version": "4.4.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "use-sync-external-store",
+      "version": "1.6.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "util-deprecate",
+      "version": "1.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "uuid",
+      "version": "11.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "vite",
+      "version": "8.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "vite-node",
+      "version": "6.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "vite-plugin-svgr",
+      "version": "5.2.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "watchpack",
+      "version": "2.4.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "watchpack",
+      "version": "2.5.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "wcwidth",
+      "version": "1.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "web-ext",
+      "version": "10.5.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "web-ext-run",
+      "version": "0.2.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "webpack-virtual-modules",
+      "version": "0.6.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "whatwg-encoding",
+      "version": "3.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "whatwg-mimetype",
+      "version": "4.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "when",
+      "version": "3.7.7"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "when-exit",
+      "version": "2.1.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "which",
+      "version": "1.2.4"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "which",
+      "version": "2.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "which",
+      "version": "4.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "widest-line",
+      "version": "5.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "winreg",
+      "version": "0.0.12"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "word-wrap",
+      "version": "1.2.5"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "wrap-ansi",
+      "version": "10.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "wrap-ansi",
+      "version": "7.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "wrap-ansi",
+      "version": "9.0.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "wsl-utils",
+      "version": "0.3.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "wxt",
+      "version": "0.20.27"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "xdg-basedir",
+      "version": "5.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "xml2js",
+      "version": "0.6.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "xmlbuilder",
+      "version": "11.0.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "y18n",
+      "version": "5.0.8"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "yallist",
+      "version": "3.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "yaml",
+      "version": "1.10.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "yargs",
+      "version": "17.7.2"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "yargs",
+      "version": "17.7.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "yargs-parser",
+      "version": "21.1.1"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "yauzl",
+      "version": "3.4.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "yocto-queue",
+      "version": "0.1.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "zip-dir",
+      "version": "2.0.0"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "zod",
+      "version": "4.4.3"
+    },
+    {
+      "ecosystem": "npm",
+      "name": "zrender",
+      "version": "6.1.0"
+    }
+  ]
+}

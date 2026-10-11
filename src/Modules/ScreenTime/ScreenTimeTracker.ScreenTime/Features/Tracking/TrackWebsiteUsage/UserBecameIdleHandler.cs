@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 using ScreenTimeTracker.ScreenTime.Domain.Aggregates.WebsiteUsageSessions;
@@ -6,6 +7,7 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 namespace ScreenTimeTracker.ScreenTime.Features.Tracking.TrackWebsiteUsage;
 
 public class UserBecameIdleHandler(
+    TrackingCoordinator coordinator,
     ScreenTimeDbContext context,
     ActiveWebsiteUsageSessionStore activeSessionStore
 ) : INotificationHandler<UserBecameIdleEvent>
@@ -15,7 +17,9 @@ public class UserBecameIdleHandler(
         CancellationToken cancellationToken
     )
     {
-        var activeSession = activeSessionStore.Take();
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
+        var activeSession = activeSessionStore.Current;
+        var nextSession = activeSession;
         if (activeSession is not null)
         {
             if (activeSession.StartTime < notification.IdleStartedAt)
@@ -35,7 +39,7 @@ public class UserBecameIdleHandler(
                 if (savedActiveSession is not null)
                     context.WebsiteUsageSessions.Remove(savedActiveSession);
             }
-            activeSessionStore.Current = new ActiveWebsiteUsageSessionState(
+            nextSession = new ActiveWebsiteUsageSessionState(
                 activeSession.WebsiteId,
                 notification.IdleStartedAt,
                 notification.IdleStartedAt
@@ -58,6 +62,9 @@ public class UserBecameIdleHandler(
         }
 
         await context.SaveChangesAsync(cancellationToken);
+        activeSessionStore.Current = nextSession;
+        activeSessionStore.LastSaved = null;
+        mutation.Complete();
         return;
     }
 }

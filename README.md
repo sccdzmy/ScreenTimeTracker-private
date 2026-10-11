@@ -8,6 +8,8 @@
 
 </div>
 
+The Windows build now uses an independent WPF frontend with a resident tray backend. See [native frontend documentation](docs/NATIVE_FRONTEND.md) for builds, validation, and legacy rollback. Web screenshots below refer to the legacy UI.
+
 ## Overview
 A simple and lightweight Windows desktop app for tracking screen time, helping you gain insights into your computer usage, boost productivity, and maintain a healthier work-life balance.
 

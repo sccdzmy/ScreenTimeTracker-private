@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using ErrorOr;
 using Mediator;
 using ScreenTimeTracker.BuildingBlocks.Types;
@@ -11,8 +12,8 @@ public record PatchUserSettingsCommand(
     OptionalValue<TimeBoundarySettingsDto> TimeBoundary = default
 ) : IRequest<ErrorOr<Updated>>;
 
+[JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]
 public record AppTrackingSettingsDto(
-    string IconDirectory,
     int MetadataStaleThresholdMinutes,
     int ActiveUsageSessionAutoSaveIntervalSeconds,
     int MinValidUsageSessionDurationSeconds,
@@ -20,8 +21,8 @@ public record AppTrackingSettingsDto(
     int UsageSessionOptimizationIntervalMinutes
 );
 
+[JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]
 public record WebsiteTrackingSettingsDto(
-    string IconDirectory,
     int ActiveUsageSessionAutoSaveIntervalSeconds,
     int MinValidUsageSessionDurationSeconds,
     int UsageSessionMergeToleranceSeconds,

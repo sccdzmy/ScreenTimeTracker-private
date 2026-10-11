@@ -1,3 +1,4 @@
+using ScreenTimeTracker.BuildingBlocks.Security;
 using ErrorOr;
 using FastEndpoints;
 using Mediator;
@@ -19,7 +20,7 @@ public class CreateAppCategoryEndpoint(IMediator mediator)
     public override async Task HandleAsync(CreateAppCategoryRequest req, CancellationToken ct)
     {
         ErrorOr<CreateAppCategoryResponse> result = await mediator.Send(
-            new CreateAppCategoryCommand(req.Name, req.Color, req.IconPath),
+            new CreateAppCategoryCommand(req.Name, req.Color, ManagedIcons.Resolve(req.IconId)),
             ct
         );
 

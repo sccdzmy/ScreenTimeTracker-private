@@ -33,7 +33,9 @@ public class AppUsageSession : AggregateRoot
     public static AppUsageSession Import(Guid appId, TimeRange usagePeriod) =>
         new(Guid.CreateVersion7(), appId, usagePeriod, false);
 
-    public void MarkAsIdle(Guid idleAppId) => AppId = idleAppId;
+    public void MarkAsIdle(Guid idleAppId) => Reattribute(idleAppId);
+
+    public void Reattribute(Guid appId) => AppId = appId;
 
     public void UpdateEndTime(DateTimeOffset endTime)
     {

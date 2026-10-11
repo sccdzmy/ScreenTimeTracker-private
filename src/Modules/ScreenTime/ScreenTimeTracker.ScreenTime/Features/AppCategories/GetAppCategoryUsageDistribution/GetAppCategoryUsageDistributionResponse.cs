@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using ScreenTimeTracker.BuildingBlocks.Security;
 namespace ScreenTimeTracker.ScreenTime.Features.AppCategories.GetAppCategoryUsageDistribution;
 
 public record GetAppCategoryUsageDistributionResponse(
@@ -12,7 +14,7 @@ public record AppCategoryUsageDistributionItem(
     Guid Id,
     string Name,
     string Color,
-    string? IconPath,
+    [property: JsonPropertyName("iconId"), JsonConverter(typeof(IconReferenceConverter))] string? IconPath,
     DateTimeOffset IconPathLastUpdatedAt,
     long DurationSeconds
 );

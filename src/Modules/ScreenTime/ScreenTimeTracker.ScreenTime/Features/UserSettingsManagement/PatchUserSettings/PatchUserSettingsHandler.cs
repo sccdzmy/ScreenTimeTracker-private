@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using ErrorOr;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,8 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 
 namespace ScreenTimeTracker.ScreenTime.Features.UserSettingsManagement.PatchUserSettings;
 
-public class PatchUserSettingsHandler(ScreenTimeDbContext context)
+public class PatchUserSettingsHandler(TrackingCoordinator coordinator,
+    ScreenTimeDbContext context)
     : IRequestHandler<PatchUserSettingsCommand, ErrorOr<Updated>>
 {
     public async ValueTask<ErrorOr<Updated>> Handle(
@@ -14,6 +16,7 @@ public class PatchUserSettingsHandler(ScreenTimeDbContext context)
         CancellationToken cancellationToken
     )
     {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
         UserSettings userSettings = await context.UserSettings.SingleAsync(cancellationToken);
 
         userSettings.Update(
@@ -32,13 +35,14 @@ public class PatchUserSettingsHandler(ScreenTimeDbContext context)
         );
 
         await context.SaveChangesAsync(cancellationToken);
+        mutation.Complete();
         return Result.Updated;
     }
 
     private static AppTrackingSettings MapAppTracking(AppTrackingSettingsDto dto)
     {
         return new AppTrackingSettings(
-            dto.IconDirectory,
+            "./Data/ManagedIcons",
             TimeSpan.FromMinutes(dto.MetadataStaleThresholdMinutes),
             TimeSpan.FromSeconds(dto.ActiveUsageSessionAutoSaveIntervalSeconds),
             TimeSpan.FromSeconds(dto.MinValidUsageSessionDurationSeconds),
@@ -50,7 +54,7 @@ public class PatchUserSettingsHandler(ScreenTimeDbContext context)
     private static WebsiteTrackingSettings MapWebsiteTracking(WebsiteTrackingSettingsDto dto)
     {
         return new WebsiteTrackingSettings(
-            dto.IconDirectory,
+            "./Data/ManagedIcons",
             TimeSpan.FromSeconds(dto.ActiveUsageSessionAutoSaveIntervalSeconds),
             TimeSpan.FromSeconds(dto.MinValidUsageSessionDurationSeconds),
             TimeSpan.FromSeconds(dto.UsageSessionMergeToleranceSeconds),

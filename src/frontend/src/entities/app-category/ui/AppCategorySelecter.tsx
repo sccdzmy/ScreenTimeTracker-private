@@ -8,7 +8,7 @@ import type { AppCategory } from "../model/schemas";
 import { appCategoryQueries } from "../api/queries";
 import { AppCategoryIcon } from "./AppCategoryIcon";
 
-type Item = Pick<AppCategory, "id" | "name" | "iconPath" | "iconPathLastUpdatedAt">;
+type Item = Pick<AppCategory, "id" | "name" | "iconId" | "iconPathLastUpdatedAt">;
 
 export type AppCategorySelecterProps = {
   className?: string;
@@ -25,7 +25,7 @@ export const AppCategorySelecter = ({
 }: AppCategorySelecterProps) => {
   const { data } = useQuery(
     appCategoryQueries.appCategories({
-      fields: "id,name,iconPath,iconPathLastUpdatedAt",
+      fields: "id,name,iconId,iconPathLastUpdatedAt",
     }),
   ) as {
     data?: Item[];
@@ -52,7 +52,7 @@ export const AppCategorySelecter = ({
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <AppCategoryIcon
                 id={item.id}
-                iconPath={item.iconPath}
+                iconId={item.iconId}
                 iconPathLastUpdatedAt={item.iconPathLastUpdatedAt}
                 sx={{ width: "1.5rem", height: "1.5rem", mr: 1 }}
               />

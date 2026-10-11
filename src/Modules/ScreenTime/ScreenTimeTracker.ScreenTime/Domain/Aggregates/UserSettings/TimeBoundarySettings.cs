@@ -22,5 +22,5 @@ public record TimeBoundarySettings : IValueObject
         DayCutoffHour = dayCutoffHour;
     }
 
-    public static TimeBoundarySettings CreateDefault() => new(4);
+    public static TimeBoundarySettings CreateDefault() => new(0);
 }

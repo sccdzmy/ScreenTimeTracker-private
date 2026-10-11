@@ -1,7 +1,7 @@
 import Paper from "@mui/material/Paper";
-import { exportDataQueryOptions, useDeleteData, useImportData } from "../api/queries";
+import { useDeleteData, useImportData } from "../api/queries";
 import { dateToDateOnly } from "@/shared/lib/date-only";
-import { useQuery } from "@tanstack/react-query";
+import { exportData } from "../api/requests";
 import axios from "axios";
 import { useState } from "react";
 import Typography from "@mui/material/Typography";
@@ -24,10 +24,6 @@ export const DataManagementPage = () => {
   const timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const { enqueueSnackbar } = useSnackbar();
   const { mutateAsync: deleteUsageDataAsync } = useDeleteData();
-  const { refetch } = useQuery({
-    ...exportDataQueryOptions(),
-    enabled: false,
-  });
   const { mutateAsync: importDataAsync } = useImportData();
 
   const [deleteUsageDataStartDate, setDeleteUsageDataStartDate] = useState<Date | null>(
@@ -50,10 +46,7 @@ export const DataManagementPage = () => {
     }
   };
 
-  const fetchExportContent = async () => {
-    const { data } = await refetch();
-    return JSON.stringify(data, null, 4);
-  };
+  const fetchExportContent = () => exportData();
 
   return (
     <Paper
@@ -118,10 +111,7 @@ export const DataManagementPage = () => {
                 variant="contained"
                 onClick={async () => {
                   try {
-                    const content = await fetchExportContent();
-                    const blob = new Blob([content], {
-                      type: "application/json",
-                    });
+                    const blob = await fetchExportContent();
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement("a");
                     a.href = url;
@@ -153,7 +143,7 @@ export const DataManagementPage = () => {
                 onClick={async () => {
                   try {
                     const content = await fetchExportContent();
-                    await navigator.clipboard.writeText(content);
+                    await navigator.clipboard.writeText(await content.text());
                     enqueueSnackbar(
                       t(($) => $.page_dataManagement.messages.exportClipboardSuccess),
                       {

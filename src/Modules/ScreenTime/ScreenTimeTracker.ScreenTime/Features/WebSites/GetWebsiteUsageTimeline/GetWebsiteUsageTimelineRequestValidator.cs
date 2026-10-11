@@ -7,6 +7,7 @@ public class GetWebsiteUsageTimelineRequestValidator : Validator<GetWebsiteUsage
 {
     public GetWebsiteUsageTimelineRequestValidator()
     {
+        RuleFor(x => x).Must(x => x.StartDate > DateOnly.MinValue && x.EndDate < DateOnly.MaxValue.AddDays(-1) && x.StartDate <= x.EndDate && x.EndDate.DayNumber - x.StartDate.DayNumber < 31).WithMessage("Date range exceeds limit.");
         RuleFor(x => x.TimeZoneId)
             .Must(BeAValidTimeZone)
             .WithMessage(x =>

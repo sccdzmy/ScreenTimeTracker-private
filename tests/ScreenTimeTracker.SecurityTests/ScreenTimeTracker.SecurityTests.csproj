@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup><OutputType>Exe</OutputType><RootNamespace>ScreenTimeTracker.SecurityTests</RootNamespace></PropertyGroup>
+<ItemGroup><FrameworkReference Include="Microsoft.AspNetCore.App" />
+<PackageReference Include="Microsoft.Playwright" />
+<PackageReference Include="xunit.v3.mtp-v2" /><PackageReference Include="Microsoft.AspNetCore.TestHost" />
+<PackageReference Include="Mediator.SourceGenerator" /><PackageReference Include="FastEndpoints" />
+</ItemGroup>
+<ItemGroup><ProjectReference Include="../../src/Clients/ScreenTimeTracker.ApiClient/ScreenTimeTracker.ApiClient.csproj" />
+<ProjectReference Include="../../src/Modules/ScreenTime/ScreenTimeTracker.ScreenTime/ScreenTimeTracker.ScreenTime.csproj" />
+<Compile Include="../../src/Hosts/ScreenTimeTracker.Desktop/Security/*.cs" Link="HostSecurity/%(Filename)%(Extension)" />
+<Compile Include="../../src/Modules/ScreenTime/ScreenTimeTracker.ScreenTime/Infrastructure/Persistence/ManagedIconMigration.cs" Link="ManagedIconMigration.cs" />
+<Compile Include="../../src/Modules/ScreenTime/ScreenTimeTracker.ScreenTime/Features/DataManagement/IntervalIndex.cs" Link="IntervalIndex.cs" />
+</ItemGroup></Project>

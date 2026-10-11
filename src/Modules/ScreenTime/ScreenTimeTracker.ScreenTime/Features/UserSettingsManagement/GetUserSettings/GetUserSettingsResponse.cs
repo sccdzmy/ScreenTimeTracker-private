@@ -8,7 +8,6 @@ public record GetUserSettingsResponse(
 );
 
 public record AppTrackingSettingsDto(
-    string IconDirectory,
     int MetadataStaleThresholdMinutes,
     int ActiveUsageSessionAutoSaveIntervalSeconds,
     int MinValidUsageSessionDurationSeconds,
@@ -17,7 +16,6 @@ public record AppTrackingSettingsDto(
 );
 
 public record WebsiteTrackingSettingsDto(
-    string IconDirectory,
     int ActiveUsageSessionAutoSaveIntervalSeconds,
     int MinValidUsageSessionDurationSeconds,
     int UsageSessionMergeToleranceSeconds,

@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,7 +12,8 @@ namespace ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 public partial class ScreenTimeDbMigrationService(
     ILogger<ScreenTimeDbMigrationService> logger,
     TimeProvider timeProvider,
-    IServiceScopeFactory scopeFactory
+    IServiceScopeFactory scopeFactory,
+    UserSettingsSnapshot settingsSnapshot
 ) : IHostedLifecycleService
 {
     public async Task StartingAsync(CancellationToken cancellationToken)
@@ -39,6 +41,8 @@ public partial class ScreenTimeDbMigrationService(
             context.UserSettings.Add(userSettings);
             await context.SaveChangesAsync(cancellationToken);
         }
+        await ManagedIconMigration.RunAsync(context, cancellationToken);
+        await settingsSnapshot.GetAsync(cancellationToken);
     }
 
     [LoggerMessage(Level = LogLevel.Information, Message = "New ScreenTime database detected.")]

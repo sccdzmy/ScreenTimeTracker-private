@@ -1,3 +1,4 @@
+import { initializeSession } from "@/shared/api";
 import { StrictMode, useEffect, type FC, type PropsWithChildren } from "react";
 import { createRoot } from "react-dom/client";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -114,7 +115,7 @@ declare module "@tanstack/react-router" {
   }
 }
 
-createRoot(document.getElementById("root")!).render(
+initializeSession().then(() => createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools />
@@ -128,4 +129,6 @@ createRoot(document.getElementById("root")!).render(
       </SnackbarProvider>
     </QueryClientProvider>
   </StrictMode>,
-);
+ )).catch(() => {
+  document.getElementById("root")!.textContent = "Open this interface from the desktop or tray to sign in. 请从桌面或托盘打开界面登录。";
+});

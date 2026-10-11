@@ -1,3 +1,4 @@
+using ScreenTimeTracker.BuildingBlocks.Security;
 using ErrorOr;
 using FastEndpoints;
 using Mediator;
@@ -55,7 +56,7 @@ public class GetWebsiteIconEndpoint(IMediator mediator)
             return;
         }
 
-        if (!File.Exists(iconPath))
+        if (!ManagedIcons.IsSafePath(iconPath) || !File.Exists(iconPath))
         {
             await Send.ResultAsync(
                 Results.Problem(
@@ -76,6 +77,7 @@ public class GetWebsiteIconEndpoint(IMediator mediator)
             contentType = "image/png"; // 默认当作 png 图片
         }
 
-        await Send.FileAsync(new FileInfo(iconPath), contentType, cancellation: ct);
+        var bytes = await ManagedIcons.ReadAsync(iconPath, ct);
+        await Send.BytesAsync(bytes, contentType: contentType, cancellation: ct);
     }
 }

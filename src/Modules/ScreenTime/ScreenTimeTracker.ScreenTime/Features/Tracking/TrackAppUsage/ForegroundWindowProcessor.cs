@@ -1,3 +1,4 @@
+using ScreenTimeTracker.BuildingBlocks.Security;
 using System.Threading.Channels;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -14,30 +15,42 @@ namespace ScreenTimeTracker.ScreenTime.Features.Tracking.TrackAppUsage;
 public record ForegroundWindowChangedMessage(WindowInfo? WindowInfo, DateTimeOffset OccurredAt);
 
 public partial class ForegroundWindowProcessor(
+    TrackingCoordinator coordinator, UserSettingsSnapshot settingsSnapshot, TrackingIdentityCache identities,
+    ActiveAppUsageSessionStore activeSessionStore,
     ILogger<ForegroundWindowProcessor> logger,
     IServiceScopeFactory serviceScopeFactory,
     UserIdleStore userIdleStore,
     SystemSuspendStore systemSuspendStore
 ) : BackgroundService
 {
-    private readonly Channel<ForegroundWindowChangedMessage> _channel =
-        Channel.CreateUnbounded<ForegroundWindowChangedMessage>(
-            new UnboundedChannelOptions { SingleReader = true }
-        );
+    private readonly ForegroundEventBuffer _buffer = new();
 
     private DateTimeOffset _lastProcessedAt = DateTimeOffset.MinValue;
 
+    public override void Dispose()
+    {
+        _buffer.Dispose();
+        base.Dispose();
+        GC.SuppressFinalize(this);
+    }
+
     public void Enqueue(ForegroundWindowChangedMessage message)
     {
-        _channel.Writer.TryWrite(message);
+        _buffer.Enqueue(message, userIdleStore.Version, systemSuspendStore.Version);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        ForegroundBatch? pending = null;
         try
         {
-            await foreach (var message in _channel.Reader.ReadAllAsync(stoppingToken))
+            while (!stoppingToken.IsCancellationRequested)
             {
+                var batch = pending ?? await _buffer.ReadAsync(stoppingToken);
+                pending = null;
+                var message = batch.Latest;
+                if ((batch.LatestIdleVersion ?? batch.IdleVersion) != userIdleStore.Version ||
+                    (batch.LatestSuspendVersion ?? batch.SuspendVersion) != systemSuspendStore.Version) continue;
                 // 处于挂起/空闲状态时，丢弃事件
                 if (
                     userIdleStore.Current.IsUserIdle
@@ -51,16 +64,14 @@ public partial class ForegroundWindowProcessor(
 
                 try
                 {
-                    await ProcessWindowChangeAsync(message, stoppingToken);
+                    await ProcessWindowChangeAsync(message, stoppingToken, batch);
                     _lastProcessedAt = message.OccurredAt;
                 }
                 catch (Exception ex)
                 {
-                    LogProcessWindowChangeFailed(
-                        logger,
-                        message.WindowInfo?.ProcessName ?? App.UnknownAppProcessName,
-                        ex
-                    );
+                    LogProcessWindowChangeFailed(logger, "collector", ex);
+                    pending = batch;
+                    await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
                 }
             }
         }
@@ -79,20 +90,32 @@ public partial class ForegroundWindowProcessor(
 
     private async Task ProcessWindowChangeAsync(
         ForegroundWindowChangedMessage message,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken,
+        ForegroundBatch? batch = null
     )
     {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
+        if (userIdleStore.Current.IsUserIdle || systemSuspendStore.Current.IsSystemSuspendActive) return;
+        if (batch?.GapStart is null && batch is not null &&
+            (batch.IdleVersion != userIdleStore.Version || batch.SuspendVersion != systemSuspendStore.Version)) return;
+        if (batch?.GapStart is null && message.WindowInfo is null && activeSessionStore.Current?.AppId == App.UnknownAppId)
+        { mutation.Complete(); return; }
+        var settings = await settingsSnapshot.GetAsync(cancellationToken);
+        bool cached = message.WindowInfo is { } info && identities.TryApp(info.ProcessName, out var candidate) &&
+            string.Equals(candidate.ExecutablePath, info.ExecutablePath, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal) &&
+            (!candidate.AllowRefresh || message.OccurredAt - candidate.RefreshedAt < settings.AppTracking.MetadataStaleThreshold);
+        AppIdentity? identity = null;
+        if (cached) identities.TryApp(message.WindowInfo!.ProcessName, out identity!);
+        if (batch?.GapStart is null && cached && activeSessionStore.Current?.AppId == identity!.Id)
+        { mutation.Complete(); return; }
         using var scope = serviceScopeFactory.CreateScope();
-
         var context = scope.ServiceProvider.GetRequiredService<ScreenTimeDbContext>();
-        var executableMetadataProvider =
-            scope.ServiceProvider.GetRequiredService<IExecutableMetadataProvider>();
-        var activeSessionStore =
-            scope.ServiceProvider.GetRequiredService<ActiveAppUsageSessionStore>();
-
+        var executableMetadataProvider = scope.ServiceProvider.GetRequiredService<IExecutableMetadataProvider>();
+        var identityVersion = identities.AppVersion;
         Guid appId;
         if (message.WindowInfo is null)
             appId = App.UnknownAppId;
+        else if (cached) appId = identity!.Id;
         else
             appId = await IdentifyApp(
                 context,
@@ -102,11 +125,39 @@ public partial class ForegroundWindowProcessor(
                 cancellationToken
             );
 
-        if (activeSessionStore.Current is null)
-            activeSessionStore.Current = new ActiveAppUsageSessionState(appId, message.OccurredAt);
-        else if (activeSessionStore.Current.AppId != appId)
+        var nextSession = activeSessionStore.Current;
+        if (batch?.GapStart is { } gapStart && batch.IdleVersion == userIdleStore.Version &&
+            batch.SuspendVersion == systemSuspendStore.Version)
         {
-            var activeSession = activeSessionStore.Take();
+            var safeStart = gapStart > _lastProcessedAt ? gapStart : _lastProcessedAt;
+            if (nextSession is { } prior)
+                await context.PersistActiveSessionAsync(prior, safeStart, cancellationToken);
+            if (safeStart < message.OccurredAt)
+                context.AppUsageSessions.Add(AppUsageSession.Create(App.UnknownAppId,
+                    new ScreenTimeTracker.ScreenTime.Domain.ValueObjects.TimeRange(safeStart, message.OccurredAt)));
+            nextSession = new ActiveAppUsageSessionState(appId, message.OccurredAt);
+        }
+        else if (batch?.GapStart is { } interruptedGap)
+        {
+            // Lifecycle handlers already closed known activity and removed sleep intervals.
+            // Repair only recorded active portions; idle and absent (sleep) time remain untouched.
+            if (nextSession is { } prior)
+            {
+                var end = prior.AppId == App.IdleAppId ? batch.LatestEpochStartedAt ?? message.OccurredAt : message.OccurredAt;
+                await context.PersistActiveSessionAsync(prior, end, cancellationToken);
+            }
+            if (batch.LatestEpochStartedAt is { } resumedAt && resumedAt < message.OccurredAt &&
+                (nextSession is null || nextSession.AppId == App.IdleAppId))
+                context.AppUsageSessions.Add(AppUsageSession.Create(App.UnknownAppId,
+                    new ScreenTimeTracker.ScreenTime.Domain.ValueObjects.TimeRange(resumedAt, message.OccurredAt)));
+            await ReattributeRecordedGapAsync(context, interruptedGap, message.OccurredAt, cancellationToken);
+            nextSession = new ActiveAppUsageSessionState(appId, message.OccurredAt);
+        }
+        else if (nextSession is null)
+            nextSession = new ActiveAppUsageSessionState(appId, message.OccurredAt);
+        else if (nextSession.AppId != appId)
+        {
+            var activeSession = nextSession;
             if (activeSession is not null)
             {
                 await context.PersistActiveSessionAsync(
@@ -115,13 +166,55 @@ public partial class ForegroundWindowProcessor(
                     cancellationToken
                 );
             }
-            activeSessionStore.Current = new ActiveAppUsageSessionState(appId, message.OccurredAt);
+            nextSession = new ActiveAppUsageSessionState(appId, message.OccurredAt);
         }
 
+        var identityChanged = context.ChangeTracker.Entries<App>().Any(e => e.State is EntityState.Added or EntityState.Modified);
         await context.SaveChangesAsync(cancellationToken);
+        // Gap repair can alter old rows already scanned by a compaction continuation.
+        if (batch?.GapStart is not null) identities.InvalidateApps();
+        if (message.WindowInfo is { } window)
+        {
+            var resolved = context.ChangeTracker.Entries<App>().Select(e => e.Entity).FirstOrDefault(a => a.Id == appId);
+            if (resolved is not null) identities.PutApp(window.ProcessName,
+                new AppIdentity(resolved.Id, window.ExecutablePath, resolved.AllowMetadataAutoRefresh, resolved.MetadataLastRefreshedAt), identityVersion + (identityChanged ? 1 : 0) + (batch?.GapStart is not null ? 1 : 0));
+        }
+        activeSessionStore.Current = nextSession;
+        mutation.Complete();
+        if (batch?.GapStart is { } start)
+            LogOverflow(logger, batch.DroppedCount, Math.Max(0, (message.OccurredAt - start).TotalMilliseconds));
     }
 
-    public static async Task<Guid> IdentifyApp(
+    private static async Task ReattributeRecordedGapAsync(ScreenTimeDbContext context, DateTimeOffset start,
+        DateTimeOffset end, CancellationToken cancellationToken)
+    {
+        var stored = await context.AppUsageSessions.Where(s => s.StartTime < end && start < s.EndTime).ToListAsync(cancellationToken);
+        var affected = stored.Concat(context.ChangeTracker.Entries<AppUsageSession>()
+            .Where(e => e.State is EntityState.Added or EntityState.Modified).Select(e => e.Entity)).Distinct().ToArray();
+        foreach (var session in affected)
+        {
+            if (session.AppId == App.IdleAppId || session.AppId == App.UnknownAppId) continue;
+            var left = session.StartTime > start ? session.StartTime : start;
+            var right = session.EndTime < end ? session.EndTime : end;
+            if (left >= right) continue;
+            var originalId = session.AppId; var originalEnd = session.EndTime;
+            if (session.StartTime < left)
+            {
+                session.UpdateEndTime(left);
+                context.AppUsageSessions.Add(AppUsageSession.Create(App.UnknownAppId,
+                    new ScreenTimeTracker.ScreenTime.Domain.ValueObjects.TimeRange(left, right)));
+            }
+            else { session.Reattribute(App.UnknownAppId); session.UpdateEndTime(right); }
+            if (right < originalEnd)
+                context.AppUsageSessions.Add(AppUsageSession.Create(originalId,
+                    new ScreenTimeTracker.ScreenTime.Domain.ValueObjects.TimeRange(right, originalEnd)));
+        }
+    }
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Foreground queue overflow: {Count} events; gap {Milliseconds} ms.")]
+    private static partial void LogOverflow(ILogger logger, long count, double milliseconds);
+
+    private async Task<Guid> IdentifyApp(
         ScreenTimeDbContext context,
         IExecutableMetadataProvider executableMetadataProvider,
         DateTimeOffset occurredAt,
@@ -132,9 +225,7 @@ public partial class ForegroundWindowProcessor(
         string processName = windowInfo.ProcessName;
         string? executablePath = windowInfo.ExecutablePath;
 
-        UserSettings settings = await context
-            .UserSettings.AsNoTracking()
-            .SingleAsync(cancellationToken: cancellationToken);
+        var settings = await settingsSnapshot.GetAsync(cancellationToken);
         App? app = await context.Apps.FirstOrDefaultAsync(
             p => p.ProcessName == processName,
             cancellationToken
@@ -165,7 +256,8 @@ public partial class ForegroundWindowProcessor(
         // 已有 App 信息
         else
         {
-            if (app.NeedsMetadataRefresh(occurredAt, settings.AppTracking.MetadataStaleThreshold))
+            if (app.AllowMetadataAutoRefresh && (app.NeedsMetadataRefresh(occurredAt, settings.AppTracking.MetadataStaleThreshold) ||
+                !string.Equals(app.ExecutablePath, executablePath, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)))
             {
                 if (executablePath is null)
                     app.RefreshMetadata(occurredAt, executablePath, null);
@@ -194,94 +286,18 @@ public partial class ForegroundWindowProcessor(
         CancellationToken cancellationToken
     )
     {
-        if (metadata.IconStream is null)
+        if (metadata.IconStream is null) return null;
+        using var output = new MemoryStream();
+        var buffer = new byte[8192]; int read;
+        while ((read = await metadata.IconStream.ReadAsync(buffer, cancellationToken)) != 0)
         {
-            CleanUpManagedIcon(app.IconPath, iconDir);
-            return null;
+            if (output.Length + read > ManagedIcons.MaxBytes) return null;
+            output.Write(buffer, 0, read);
         }
-
-        string newIconPath = Path.Combine(
-            iconDir,
-            $"{app.ProcessName}.{metadata.IconFileExtension}"
-        );
-
-        StringComparison pathComparison =
-            OperatingSystem.IsWindows() || OperatingSystem.IsMacOS()
-                ? StringComparison.OrdinalIgnoreCase
-                : StringComparison.Ordinal;
-        bool isSamePath = string.Equals(app.IconPath, newIconPath, pathComparison);
-
-        // 如果新旧路径不一致，且旧图标属于受管理目录，则清理旧图标
-        if (!isSamePath)
-            CleanUpManagedIcon(app.IconPath, iconDir);
-        // 简单校验，如果路径一致且新旧图标大小相同，跳过 IO 操作
-        else if (
-            File.Exists(newIconPath)
-            && new FileInfo(newIconPath).Length == metadata.IconStream.Length
-        )
-            return newIconPath;
-
-        // 确保目录存在
-        Directory.CreateDirectory(iconDir);
-
-        // 使用 FileMode.Create 自动覆盖旧文件
-        await using (
-            var fileStream = new FileStream(
-                newIconPath,
-                FileMode.Create,
-                FileAccess.Write,
-                FileShare.None
-            )
-        )
-            await metadata.IconStream.CopyToAsync(fileStream, cancellationToken);
-
-        return newIconPath;
+        try { return await ManagedIcons.SaveAsync(output.ToArray(), cancellationToken); }
+        catch (ArgumentException) { return null; }
     }
 
-    /// 仅清理在受管理目录（managedDirectory）下的旧文件
-    private static void CleanUpManagedIcon(string? filePath, string managedDirectory)
-    {
-        if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
-            return;
-
-        // 只有文件确实在软件管理的图标目录下时，才允许删除
-        if (IsFileInDirectory(filePath, managedDirectory))
-        {
-            try
-            {
-                File.Delete(filePath);
-            }
-            catch
-            {
-                // 忽略删除失败的异常（如文件被占用）
-            }
-        }
-    }
-
-    // 判断文件路径是否位于指定目录下
-    private static bool IsFileInDirectory(string filePath, string directoryPath)
-    {
-        if (string.IsNullOrWhiteSpace(filePath) || string.IsNullOrWhiteSpace(directoryPath))
-            return false;
-
-        try
-        {
-            // 获取相对路径（Path.GetRelativePath 会自动处理 Windows/macOS/Linux 的大小写规则）
-            string relativePath = Path.GetRelativePath(directoryPath, filePath);
-
-            // 满足以下条件说明 filePath 确实在 directoryPath 目录（或子目录）下：
-            //    - 相对路径不等于 "." (代表就是目录本身)
-            //    - 相对路径不以 ".." 开头 (代表不在父级或平级目录)
-            //    - 相对路径不是根绝对路径 (代表没有跨驱动器，比如从 C:\ 到 D:\)
-            return relativePath != "."
-                && !relativePath.StartsWith("..", StringComparison.Ordinal)
-                && !Path.IsPathRooted(relativePath);
-        }
-        catch
-        {
-            return false;
-        }
-    }
 }
 
 public interface IExecutableMetadataProvider

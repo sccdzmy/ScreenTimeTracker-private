@@ -7,6 +7,7 @@ public class DeleteUsageDataRequestValidator : Validator<DeleteUsageDataRequest>
 {
     public DeleteUsageDataRequestValidator()
     {
+        RuleFor(x => x).Must(x => x.StartDate > DateOnly.MinValue && x.EndDate < DateOnly.MaxValue.AddDays(-1) && x.StartDate <= x.EndDate && x.EndDate.DayNumber - x.StartDate.DayNumber < 3660).WithMessage("Date range exceeds limit.");
         RuleFor(x => x.TimeZoneId)
             .Must(BeAValidTimeZone)
             .WithMessage(x =>

@@ -4,7 +4,7 @@ export const websiteCategorySchema = z.object({
   id: z.string(),
   name: z.string(),
   color: z.string(),
-  iconPath: z.string().nullable(),
+  iconId: z.string().nullable(),
   iconPathLastUpdatedAt: z.date(),
   isSystem: z.boolean(),
 });

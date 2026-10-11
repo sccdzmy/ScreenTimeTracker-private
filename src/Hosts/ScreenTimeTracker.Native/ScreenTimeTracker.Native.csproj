@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF><EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <OutputType>WinExe</OutputType><AllowUnsafeBlocks>true</AllowUnsafeBlocks><RootNamespace>ScreenTimeTracker.Native</RootNamespace>
+    <ApplicationIcon>../ScreenTimeTracker.Desktop/Resources/Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../Clients/ScreenTimeTracker.ApiClient/ScreenTimeTracker.ApiClient.csproj" /></ItemGroup>
+  <ItemGroup><RuntimeHostConfigurationOption Include="Switch.System.Windows.Appearance.DisableFluentThemeWindowBackdrop" Value="true" /></ItemGroup>
+</Project>

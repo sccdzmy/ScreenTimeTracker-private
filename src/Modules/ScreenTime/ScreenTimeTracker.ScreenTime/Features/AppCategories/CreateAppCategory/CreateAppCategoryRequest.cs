@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
 namespace ScreenTimeTracker.ScreenTime.Features.AppCategories.CreateAppCategory;
 
-public record CreateAppCategoryRequest(string Name, string Color, string? IconPath);
+[JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]
+public record CreateAppCategoryRequest(string Name, string Color, string? IconId);

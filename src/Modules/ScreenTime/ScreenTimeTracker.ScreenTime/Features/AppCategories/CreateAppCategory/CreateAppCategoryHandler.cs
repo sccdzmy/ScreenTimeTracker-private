@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using ErrorOr;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,8 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 
 namespace ScreenTimeTracker.ScreenTime.Features.AppCategories.CreateAppCategory;
 
-public class CreateAppCategoryHandler(ScreenTimeDbContext context, TimeProvider timeProvider)
+public class CreateAppCategoryHandler(TrackingCoordinator coordinator,
+    ScreenTimeDbContext context, TimeProvider timeProvider)
     : IRequestHandler<CreateAppCategoryCommand, ErrorOr<CreateAppCategoryResponse>>
 {
     public async ValueTask<ErrorOr<CreateAppCategoryResponse>> Handle(
@@ -14,6 +16,7 @@ public class CreateAppCategoryHandler(ScreenTimeDbContext context, TimeProvider 
         CancellationToken cancellationToken
     )
     {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
         var exists = await context.AppCategories.AnyAsync(
             x => x.Name == request.Name,
             cancellationToken
@@ -33,6 +36,7 @@ public class CreateAppCategoryHandler(ScreenTimeDbContext context, TimeProvider 
         context.AppCategories.Add(appCategory);
 
         await context.SaveChangesAsync(cancellationToken);
+        mutation.Complete();
 
         return new CreateAppCategoryResponse(
             appCategory.Id,

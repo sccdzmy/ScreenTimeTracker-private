@@ -8,7 +8,7 @@ import type { WebsiteCategory } from "../model/schemas";
 import { websiteCategoryQueries } from "../api/queries";
 import { WebsiteCategoryIcon } from "./WebsiteCategoryIcon";
 
-type Item = Pick<WebsiteCategory, "id" | "name" | "iconPath" | "iconPathLastUpdatedAt">;
+type Item = Pick<WebsiteCategory, "id" | "name" | "iconId" | "iconPathLastUpdatedAt">;
 
 export type WebsiteCategorySelecterProps = {
   className?: string;
@@ -25,7 +25,7 @@ export const WebsiteCategorySelecter = ({
 }: WebsiteCategorySelecterProps) => {
   const { data } = useQuery(
     websiteCategoryQueries.websiteCategories({
-      fields: "id,name,iconPath,iconPathLastUpdatedAt",
+      fields: "id,name,iconId,iconPathLastUpdatedAt",
     }),
   ) as {
     data?: Item[];
@@ -52,7 +52,7 @@ export const WebsiteCategorySelecter = ({
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <WebsiteCategoryIcon
                 id={item.id}
-                iconPath={item.iconPath}
+                iconId={item.iconId}
                 iconPathLastUpdatedAt={item.iconPathLastUpdatedAt}
                 sx={{ width: "1.5rem", height: "1.5rem", mr: 1 }}
               />

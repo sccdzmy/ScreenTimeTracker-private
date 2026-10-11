@@ -1,3 +1,4 @@
+import { escapeHtml } from "@/shared/lib/escape-html";
 import { useQuery } from "@tanstack/react-query";
 import ReactECharts from "echarts-for-react";
 import {
@@ -138,7 +139,7 @@ export const UsageChart = ({
         trigger: "axis",
         formatter: (params: { name: string; value: number }[]) => {
           const item = params[0];
-          return `${item.name}<br/>${formatSecondsDuration(item.value)}`;
+          return `${escapeHtml(item.name)}<br/>${formatSecondsDuration(item.value)}`;
         },
       },
       xAxis: {

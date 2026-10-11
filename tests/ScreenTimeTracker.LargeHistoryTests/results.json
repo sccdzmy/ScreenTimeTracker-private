@@ -1,0 +1,788 @@
+{
+  "baselineCommit": "50f087a",
+  "configuration": "Debug",
+  "runtime": "10.0.2",
+  "sessionsPerKind": [
+    10000,
+    100000,
+    1000000
+  ],
+  "trialsPerVariant": 3,
+  "saveProbe": "First insert, subsequent fixed-time unchanged saves; not sustained-write latency or isolated index write cost.",
+  "runs": [
+    {
+      "variant": "baseline",
+      "trial": 1,
+      "sessionsPerKind": 10000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 454.4964,
+          "cpuMilliseconds": 31.25,
+          "allocatedBytes": 88705392,
+          "sampledPeakWorkingBytes": 106508288,
+          "peakProcessWorkingBytes": 107372544,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 25,
+          "elapsedMilliseconds": 410.3952,
+          "cpuMilliseconds": 31.25,
+          "allocatedBytes": 34601920,
+          "sampledPeakWorkingBytes": 112861184,
+          "peakProcessWorkingBytes": 112861184,
+          "saveSamples": 18,
+          "maxCoordinatorWaitMilliseconds": 0.4777,
+          "maxSaveMilliseconds": 18.0939
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 20008,
+          "elapsedMilliseconds": 1395.8765,
+          "cpuMilliseconds": 312.5,
+          "allocatedBytes": 233151224,
+          "sampledPeakWorkingBytes": 138338304,
+          "peakProcessWorkingBytes": 140001280,
+          "saveSamples": 2,
+          "maxCoordinatorWaitMilliseconds": 730.6867,
+          "maxSaveMilliseconds": 3.3333
+        }
+      ]
+    },
+    {
+      "variant": "baseline",
+      "trial": 2,
+      "sessionsPerKind": 10000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 444.1588,
+          "cpuMilliseconds": 15.625,
+          "allocatedBytes": 88717560,
+          "sampledPeakWorkingBytes": 106508288,
+          "peakProcessWorkingBytes": 107012096,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 13,
+          "elapsedMilliseconds": 192.5574,
+          "cpuMilliseconds": 46.875,
+          "allocatedBytes": 33463048,
+          "sampledPeakWorkingBytes": 109953024,
+          "peakProcessWorkingBytes": 110010368,
+          "saveSamples": 6,
+          "maxCoordinatorWaitMilliseconds": 0.4942,
+          "maxSaveMilliseconds": 17.0794
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 20008,
+          "elapsedMilliseconds": 1199.0763,
+          "cpuMilliseconds": 218.75,
+          "allocatedBytes": 233164920,
+          "sampledPeakWorkingBytes": 137052160,
+          "peakProcessWorkingBytes": 137613312,
+          "saveSamples": 2,
+          "maxCoordinatorWaitMilliseconds": 626.2768,
+          "maxSaveMilliseconds": 3.6678
+        }
+      ]
+    },
+    {
+      "variant": "baseline",
+      "trial": 3,
+      "sessionsPerKind": 10000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 407.4964,
+          "cpuMilliseconds": 31.25,
+          "allocatedBytes": 88704136,
+          "sampledPeakWorkingBytes": 106967040,
+          "peakProcessWorkingBytes": 107315200,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 10,
+          "elapsedMilliseconds": 251.8554,
+          "cpuMilliseconds": 62.5,
+          "allocatedBytes": 33174872,
+          "sampledPeakWorkingBytes": 109993984,
+          "peakProcessWorkingBytes": 109993984,
+          "saveSamples": 3,
+          "maxCoordinatorWaitMilliseconds": 0.4581,
+          "maxSaveMilliseconds": 166.0573
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 20008,
+          "elapsedMilliseconds": 1170.8462,
+          "cpuMilliseconds": 93.75,
+          "allocatedBytes": 233154512,
+          "sampledPeakWorkingBytes": 138534912,
+          "peakProcessWorkingBytes": 138919936,
+          "saveSamples": 2,
+          "maxCoordinatorWaitMilliseconds": 603.0298,
+          "maxSaveMilliseconds": 3.3896
+        }
+      ]
+    },
+    {
+      "variant": "optimized",
+      "trial": 1,
+      "sessionsPerKind": 10000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 222.659,
+          "cpuMilliseconds": 0,
+          "allocatedBytes": 9527368,
+          "sampledPeakWorkingBytes": 95035392,
+          "peakProcessWorkingBytes": 95428608,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 20,
+          "elapsedMilliseconds": 390.477,
+          "cpuMilliseconds": 46.875,
+          "allocatedBytes": 12839968,
+          "sampledPeakWorkingBytes": 100294656,
+          "peakProcessWorkingBytes": 100294656,
+          "saveSamples": 13,
+          "maxCoordinatorWaitMilliseconds": 0.7506,
+          "maxSaveMilliseconds": 17.9793
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 74,
+          "elapsedMilliseconds": 299.7715,
+          "cpuMilliseconds": 0,
+          "allocatedBytes": 26102328,
+          "sampledPeakWorkingBytes": 107753472,
+          "peakProcessWorkingBytes": 107753472,
+          "saveSamples": 10,
+          "maxCoordinatorWaitMilliseconds": 11.1566,
+          "maxSaveMilliseconds": 4.6084
+        }
+      ]
+    },
+    {
+      "variant": "optimized",
+      "trial": 2,
+      "sessionsPerKind": 10000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 245.6648,
+          "cpuMilliseconds": 31.25,
+          "allocatedBytes": 9510064,
+          "sampledPeakWorkingBytes": 95043584,
+          "peakProcessWorkingBytes": 95309824,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 19,
+          "elapsedMilliseconds": 370.9432,
+          "cpuMilliseconds": 62.5,
+          "allocatedBytes": 12806448,
+          "sampledPeakWorkingBytes": 99446784,
+          "peakProcessWorkingBytes": 100294656,
+          "saveSamples": 12,
+          "maxCoordinatorWaitMilliseconds": 0.523,
+          "maxSaveMilliseconds": 20.5689
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 73,
+          "elapsedMilliseconds": 297.8735,
+          "cpuMilliseconds": 31.25,
+          "allocatedBytes": 25998952,
+          "sampledPeakWorkingBytes": 107651072,
+          "peakProcessWorkingBytes": 108396544,
+          "saveSamples": 9,
+          "maxCoordinatorWaitMilliseconds": 24.616,
+          "maxSaveMilliseconds": 3.3272
+        }
+      ]
+    },
+    {
+      "variant": "optimized",
+      "trial": 3,
+      "sessionsPerKind": 10000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 217.8114,
+          "cpuMilliseconds": 31.25,
+          "allocatedBytes": 9474416,
+          "sampledPeakWorkingBytes": 95272960,
+          "peakProcessWorkingBytes": 95358976,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 19,
+          "elapsedMilliseconds": 375.1036,
+          "cpuMilliseconds": 109.375,
+          "allocatedBytes": 12800120,
+          "sampledPeakWorkingBytes": 101662720,
+          "peakProcessWorkingBytes": 101662720,
+          "saveSamples": 12,
+          "maxCoordinatorWaitMilliseconds": 0.4697,
+          "maxSaveMilliseconds": 17.1158
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 80,
+          "elapsedMilliseconds": 482.845,
+          "cpuMilliseconds": 46.875,
+          "allocatedBytes": 26662784,
+          "sampledPeakWorkingBytes": 110489600,
+          "peakProcessWorkingBytes": 111558656,
+          "saveSamples": 16,
+          "maxCoordinatorWaitMilliseconds": 11.0112,
+          "maxSaveMilliseconds": 3.4169
+        }
+      ]
+    },
+    {
+      "variant": "baseline",
+      "trial": 1,
+      "sessionsPerKind": 100000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 3460.3474,
+          "cpuMilliseconds": 562.5,
+          "allocatedBytes": 846186152,
+          "sampledPeakWorkingBytes": 131723264,
+          "peakProcessWorkingBytes": 131821568,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 70,
+          "elapsedMilliseconds": 1556.7621,
+          "cpuMilliseconds": 203.125,
+          "allocatedBytes": 309510560,
+          "sampledPeakWorkingBytes": 253751296,
+          "peakProcessWorkingBytes": 253857792,
+          "saveSamples": 63,
+          "maxCoordinatorWaitMilliseconds": 0.5125,
+          "maxSaveMilliseconds": 19.3497
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 200008,
+          "elapsedMilliseconds": 14608.2105,
+          "cpuMilliseconds": 6156.25,
+          "allocatedBytes": 2201534648,
+          "sampledPeakWorkingBytes": 261500928,
+          "peakProcessWorkingBytes": 288575488,
+          "saveSamples": 2,
+          "maxCoordinatorWaitMilliseconds": 7712.2183,
+          "maxSaveMilliseconds": 6.0016
+        }
+      ]
+    },
+    {
+      "variant": "baseline",
+      "trial": 2,
+      "sessionsPerKind": 100000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 3262.7878,
+          "cpuMilliseconds": 1828.125,
+          "allocatedBytes": 846148776,
+          "sampledPeakWorkingBytes": 127483904,
+          "peakProcessWorkingBytes": 128651264,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 63,
+          "elapsedMilliseconds": 1228.0645,
+          "cpuMilliseconds": 656.25,
+          "allocatedBytes": 308935456,
+          "sampledPeakWorkingBytes": 253562880,
+          "peakProcessWorkingBytes": 253599744,
+          "saveSamples": 56,
+          "maxCoordinatorWaitMilliseconds": 0.4836,
+          "maxSaveMilliseconds": 29.1637
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 200008,
+          "elapsedMilliseconds": 14476.4502,
+          "cpuMilliseconds": 7921.875,
+          "allocatedBytes": 2216468136,
+          "sampledPeakWorkingBytes": 262602752,
+          "peakProcessWorkingBytes": 280227840,
+          "saveSamples": 2,
+          "maxCoordinatorWaitMilliseconds": 8394.8329,
+          "maxSaveMilliseconds": 6.0556
+        }
+      ]
+    },
+    {
+      "variant": "baseline",
+      "trial": 3,
+      "sessionsPerKind": 100000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 3318.4212,
+          "cpuMilliseconds": 937.5,
+          "allocatedBytes": 846127688,
+          "sampledPeakWorkingBytes": 127729664,
+          "peakProcessWorkingBytes": 128897024,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 63,
+          "elapsedMilliseconds": 1219.506,
+          "cpuMilliseconds": 265.625,
+          "allocatedBytes": 308851992,
+          "sampledPeakWorkingBytes": 253706240,
+          "peakProcessWorkingBytes": 253706240,
+          "saveSamples": 56,
+          "maxCoordinatorWaitMilliseconds": 0.9201,
+          "maxSaveMilliseconds": 24.7292
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 200008,
+          "elapsedMilliseconds": 14043.7853,
+          "cpuMilliseconds": 6562.5,
+          "allocatedBytes": 2216148664,
+          "sampledPeakWorkingBytes": 261365760,
+          "peakProcessWorkingBytes": 317644800,
+          "saveSamples": 2,
+          "maxCoordinatorWaitMilliseconds": 8016.8614,
+          "maxSaveMilliseconds": 6.022
+        }
+      ]
+    },
+    {
+      "variant": "optimized",
+      "trial": 1,
+      "sessionsPerKind": 100000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 1929.0787,
+          "cpuMilliseconds": 609.375,
+          "allocatedBytes": 78989296,
+          "sampledPeakWorkingBytes": 112955392,
+          "peakProcessWorkingBytes": 112955392,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 116,
+          "elapsedMilliseconds": 2372.3482,
+          "cpuMilliseconds": 1718.75,
+          "allocatedBytes": 108467432,
+          "sampledPeakWorkingBytes": 124366848,
+          "peakProcessWorkingBytes": 124366848,
+          "saveSamples": 109,
+          "maxCoordinatorWaitMilliseconds": 0.4733,
+          "maxSaveMilliseconds": 16.1333
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 669,
+          "elapsedMilliseconds": 3138.0902,
+          "cpuMilliseconds": 1234.375,
+          "allocatedBytes": 243607064,
+          "sampledPeakWorkingBytes": 131203072,
+          "peakProcessWorkingBytes": 131207168,
+          "saveSamples": 77,
+          "maxCoordinatorWaitMilliseconds": 78.5121,
+          "maxSaveMilliseconds": 169.6947
+        }
+      ]
+    },
+    {
+      "variant": "optimized",
+      "trial": 2,
+      "sessionsPerKind": 100000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 1959.9534,
+          "cpuMilliseconds": 1125,
+          "allocatedBytes": 79084872,
+          "sampledPeakWorkingBytes": 112529408,
+          "peakProcessWorkingBytes": 112529408,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 110,
+          "elapsedMilliseconds": 2525.0174,
+          "cpuMilliseconds": 1859.375,
+          "allocatedBytes": 107838008,
+          "sampledPeakWorkingBytes": 125173760,
+          "peakProcessWorkingBytes": 125231104,
+          "saveSamples": 103,
+          "maxCoordinatorWaitMilliseconds": 0.4843,
+          "maxSaveMilliseconds": 24.8914
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 671,
+          "elapsedMilliseconds": 2681.7693,
+          "cpuMilliseconds": 1125,
+          "allocatedBytes": 244049208,
+          "sampledPeakWorkingBytes": 130318336,
+          "peakProcessWorkingBytes": 130318336,
+          "saveSamples": 79,
+          "maxCoordinatorWaitMilliseconds": 48.8139,
+          "maxSaveMilliseconds": 10.885
+        }
+      ]
+    },
+    {
+      "variant": "optimized",
+      "trial": 3,
+      "sessionsPerKind": 100000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 1920.3676,
+          "cpuMilliseconds": 187.5,
+          "allocatedBytes": 79052032,
+          "sampledPeakWorkingBytes": 112218112,
+          "peakProcessWorkingBytes": 112345088,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 95,
+          "elapsedMilliseconds": 2607.9076,
+          "cpuMilliseconds": 593.75,
+          "allocatedBytes": 106451440,
+          "sampledPeakWorkingBytes": 119226368,
+          "peakProcessWorkingBytes": 119263232,
+          "saveSamples": 88,
+          "maxCoordinatorWaitMilliseconds": 0.4891,
+          "maxSaveMilliseconds": 177.5671
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 664,
+          "elapsedMilliseconds": 2313.1045,
+          "cpuMilliseconds": 578.125,
+          "allocatedBytes": 243410264,
+          "sampledPeakWorkingBytes": 130134016,
+          "peakProcessWorkingBytes": 130134016,
+          "saveSamples": 72,
+          "maxCoordinatorWaitMilliseconds": 59.3823,
+          "maxSaveMilliseconds": 3.2125
+        }
+      ]
+    },
+    {
+      "variant": "baseline",
+      "trial": 1,
+      "sessionsPerKind": 1000000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 40149.3924,
+          "cpuMilliseconds": 9671.875,
+          "allocatedBytes": 8346066256,
+          "sampledPeakWorkingBytes": 241926144,
+          "peakProcessWorkingBytes": 246251520,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 418,
+          "elapsedMilliseconds": 10254.0536,
+          "cpuMilliseconds": 3265.625,
+          "allocatedBytes": 2942871864,
+          "sampledPeakWorkingBytes": 1497026560,
+          "peakProcessWorkingBytes": 1497059328,
+          "saveSamples": 411,
+          "maxCoordinatorWaitMilliseconds": 0.7453,
+          "maxSaveMilliseconds": 25.5959
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 2000008,
+          "elapsedMilliseconds": 70624.2664,
+          "cpuMilliseconds": 12734.375,
+          "allocatedBytes": 21909965824,
+          "sampledPeakWorkingBytes": 1643778048,
+          "peakProcessWorkingBytes": 2052595712,
+          "saveSamples": 2,
+          "maxCoordinatorWaitMilliseconds": 39981.9494,
+          "maxSaveMilliseconds": 3.3452
+        }
+      ]
+    },
+    {
+      "variant": "baseline",
+      "trial": 2,
+      "sessionsPerKind": 1000000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 30921.7276,
+          "cpuMilliseconds": 6734.375,
+          "allocatedBytes": 8345784840,
+          "sampledPeakWorkingBytes": 233320448,
+          "peakProcessWorkingBytes": 237449216,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 414,
+          "elapsedMilliseconds": 10205.9446,
+          "cpuMilliseconds": 3765.625,
+          "allocatedBytes": 2942526248,
+          "sampledPeakWorkingBytes": 1491783680,
+          "peakProcessWorkingBytes": 1491808256,
+          "saveSamples": 407,
+          "maxCoordinatorWaitMilliseconds": 0.567,
+          "maxSaveMilliseconds": 152.7723
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 2000008,
+          "elapsedMilliseconds": 64098.2239,
+          "cpuMilliseconds": 9015.625,
+          "allocatedBytes": 21774485408,
+          "sampledPeakWorkingBytes": 1589489664,
+          "peakProcessWorkingBytes": 1611689984,
+          "saveSamples": 2,
+          "maxCoordinatorWaitMilliseconds": 32597.0966,
+          "maxSaveMilliseconds": 4.2222
+        }
+      ]
+    },
+    {
+      "variant": "baseline",
+      "trial": 3,
+      "sessionsPerKind": 1000000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 47679.2103,
+          "cpuMilliseconds": 12046.875,
+          "allocatedBytes": 8346096552,
+          "sampledPeakWorkingBytes": 246349824,
+          "peakProcessWorkingBytes": 246382592,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 367,
+          "elapsedMilliseconds": 9446.2757,
+          "cpuMilliseconds": 1171.875,
+          "allocatedBytes": 2938161928,
+          "sampledPeakWorkingBytes": 1493721088,
+          "peakProcessWorkingBytes": 1493745664,
+          "saveSamples": 360,
+          "maxCoordinatorWaitMilliseconds": 0.544,
+          "maxSaveMilliseconds": 24.6557
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 2000008,
+          "elapsedMilliseconds": 73260.5308,
+          "cpuMilliseconds": 17812.5,
+          "allocatedBytes": 21783132232,
+          "sampledPeakWorkingBytes": 1620402176,
+          "peakProcessWorkingBytes": 1639354368,
+          "saveSamples": 2,
+          "maxCoordinatorWaitMilliseconds": 42896.4908,
+          "maxSaveMilliseconds": 2.9457
+        }
+      ]
+    },
+    {
+      "variant": "optimized",
+      "trial": 1,
+      "sessionsPerKind": 1000000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 19091.8611,
+          "cpuMilliseconds": 531.25,
+          "allocatedBytes": 774017112,
+          "sampledPeakWorkingBytes": 110604288,
+          "peakProcessWorkingBytes": 110604288,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 962,
+          "elapsedMilliseconds": 29615.9231,
+          "cpuMilliseconds": 4593.75,
+          "allocatedBytes": 1051017944,
+          "sampledPeakWorkingBytes": 128315392,
+          "peakProcessWorkingBytes": 128319488,
+          "saveSamples": 955,
+          "maxCoordinatorWaitMilliseconds": 0.5497,
+          "maxSaveMilliseconds": 150.4457
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 6673,
+          "elapsedMilliseconds": 25394.2078,
+          "cpuMilliseconds": 2437.5,
+          "allocatedBytes": 2445113480,
+          "sampledPeakWorkingBytes": 132837376,
+          "peakProcessWorkingBytes": 132837376,
+          "saveSamples": 796,
+          "maxCoordinatorWaitMilliseconds": 351.1449,
+          "maxSaveMilliseconds": 160.8832
+        }
+      ]
+    },
+    {
+      "variant": "optimized",
+      "trial": 2,
+      "sessionsPerKind": 1000000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 24105.835,
+          "cpuMilliseconds": 4890.625,
+          "allocatedBytes": 773630752,
+          "sampledPeakWorkingBytes": 110661632,
+          "peakProcessWorkingBytes": 110661632,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 972,
+          "elapsedMilliseconds": 28795.3153,
+          "cpuMilliseconds": 7937.5,
+          "allocatedBytes": 1051721712,
+          "sampledPeakWorkingBytes": 128348160,
+          "peakProcessWorkingBytes": 128352256,
+          "saveSamples": 965,
+          "maxCoordinatorWaitMilliseconds": 0.6303,
+          "maxSaveMilliseconds": 22.1039
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 6982,
+          "elapsedMilliseconds": 45540.0545,
+          "cpuMilliseconds": 10234.375,
+          "allocatedBytes": 2474195864,
+          "sampledPeakWorkingBytes": 130756608,
+          "peakProcessWorkingBytes": 130756608,
+          "saveSamples": 1097,
+          "maxCoordinatorWaitMilliseconds": 618.4205,
+          "maxSaveMilliseconds": 169.6441
+        }
+      ]
+    },
+    {
+      "variant": "optimized",
+      "trial": 3,
+      "sessionsPerKind": 1000000,
+      "measures": [
+        {
+          "name": "statistics",
+          "sqlCommands": 12,
+          "elapsedMilliseconds": 17400.32,
+          "cpuMilliseconds": 3953.125,
+          "allocatedBytes": 773835040,
+          "sampledPeakWorkingBytes": 113287168,
+          "peakProcessWorkingBytes": 113287168,
+          "saveSamples": 0,
+          "maxCoordinatorWaitMilliseconds": 0,
+          "maxSaveMilliseconds": 0
+        },
+        {
+          "name": "export",
+          "sqlCommands": 698,
+          "elapsedMilliseconds": 20717.6371,
+          "cpuMilliseconds": 843.75,
+          "allocatedBytes": 1025943048,
+          "sampledPeakWorkingBytes": 125722624,
+          "peakProcessWorkingBytes": 125726720,
+          "saveSamples": 691,
+          "maxCoordinatorWaitMilliseconds": 0.7706,
+          "maxSaveMilliseconds": 165.0725
+        },
+        {
+          "name": "compaction",
+          "sqlCommands": 6962,
+          "elapsedMilliseconds": 40026.1978,
+          "cpuMilliseconds": 3890.625,
+          "allocatedBytes": 2471618232,
+          "sampledPeakWorkingBytes": 130994176,
+          "peakProcessWorkingBytes": 130994176,
+          "saveSamples": 1080,
+          "maxCoordinatorWaitMilliseconds": 328.9735,
+          "maxSaveMilliseconds": 155.6646
+        }
+      ]
+    }
+  ]
+}

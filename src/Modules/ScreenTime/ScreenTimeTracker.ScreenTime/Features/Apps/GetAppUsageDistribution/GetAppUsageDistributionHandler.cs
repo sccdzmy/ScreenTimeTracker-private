@@ -1,3 +1,5 @@
+using ScreenTimeTracker.ScreenTime.Features.Statistics;
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 using ScreenTimeTracker.ScreenTime.Domain.ValueObjects;
@@ -5,7 +7,8 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 
 namespace ScreenTimeTracker.ScreenTime.Features.Apps.GetAppUsageDistribution;
 
-public class GetAppUsageDistributionHandler(ScreenTimeDbContext context)
+public class GetAppUsageDistributionHandler(UserSettingsSnapshot settingsSnapshot,
+    ScreenTimeDbContext context)
     : IRequestHandler<GetAppUsageDistributionQuery, GetAppUsageDistributionResponse>
 {
     public async ValueTask<GetAppUsageDistributionResponse> Handle(
@@ -13,8 +16,7 @@ public class GetAppUsageDistributionHandler(ScreenTimeDbContext context)
         CancellationToken cancellationToken
     )
     {
-        var settings = await context.UserSettings.AsNoTracking().SingleAsync(cancellationToken);
-        var dayCutoffHour = settings.TimeBoundary.DayCutoffHour;
+        var settings = await settingsSnapshot.GetAsync(cancellationToken);
         var timeRange = LogicalDay.CalculateUtcWindow(
             request.StartDate,
             request.EndDate,
@@ -45,27 +47,8 @@ public class GetAppUsageDistributionHandler(ScreenTimeDbContext context)
 
         var appIds = appMap.Keys;
 
-        var sessions = await context
-            .AppUsageSessions.AsNoTracking()
-            .Where(x =>
-                appIds.Contains(x.AppId)
-                && timeRange.Start < x.EndTime
-                && x.StartTime < timeRange.End
-            )
-            .Select(x => new { x.AppId, x.UsagePeriod })
-            .ToListAsync(cancellationToken);
-
-        var durationByAppId = new Dictionary<Guid, TimeSpan>();
-
-        foreach (var session in sessions)
-        {
-            TimeSpan overlap = timeRange.OverlapDuration(session.UsagePeriod);
-            if (overlap == TimeSpan.Zero)
-                continue;
-
-            durationByAppId[session.AppId] =
-                durationByAppId.GetValueOrDefault(session.AppId) + overlap;
-        }
+        var durationByAppId = await UsageDistributionQueries.ReadAsync(
+            context, UsageIdentityKind.App, appIds, timeRange, cancellationToken);
 
         int totalCount = durationByAppId.Count;
 

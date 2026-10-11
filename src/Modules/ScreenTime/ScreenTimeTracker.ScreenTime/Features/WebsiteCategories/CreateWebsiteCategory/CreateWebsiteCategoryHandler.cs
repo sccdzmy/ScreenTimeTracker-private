@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using ErrorOr;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,8 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 
 namespace ScreenTimeTracker.ScreenTime.Features.WebsiteCategories.CreateWebsiteCategory;
 
-public class CreateWebsiteCategoryHandler(ScreenTimeDbContext context, TimeProvider timeProvider)
+public class CreateWebsiteCategoryHandler(TrackingCoordinator coordinator,
+    ScreenTimeDbContext context, TimeProvider timeProvider)
     : IRequestHandler<CreateWebsiteCategoryCommand, ErrorOr<CreateWebsiteCategoryResponse>>
 {
     public async ValueTask<ErrorOr<CreateWebsiteCategoryResponse>> Handle(
@@ -14,6 +16,7 @@ public class CreateWebsiteCategoryHandler(ScreenTimeDbContext context, TimeProvi
         CancellationToken cancellationToken
     )
     {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
         var exists = await context.WebsiteCategories.AnyAsync(
             x => x.Name == request.Name,
             cancellationToken
@@ -34,6 +37,7 @@ public class CreateWebsiteCategoryHandler(ScreenTimeDbContext context, TimeProvi
         context.WebsiteCategories.Add(websiteCategory);
 
         await context.SaveChangesAsync(cancellationToken);
+        mutation.Complete();
 
         return new CreateWebsiteCategoryResponse(
             websiteCategory.Id,

@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using ErrorOr;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,8 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 
 namespace ScreenTimeTracker.ScreenTime.Features.WebsiteCategories.DeleteWebsiteCategory;
 
-public class DeleteWebsiteCategoryHandler(ScreenTimeDbContext context)
+public class DeleteWebsiteCategoryHandler(TrackingCoordinator coordinator,
+    ScreenTimeDbContext context)
     : IRequestHandler<DeleteWebsiteCategoryCommand, ErrorOr<Deleted>>
 {
     public async ValueTask<ErrorOr<Deleted>> Handle(
@@ -14,6 +16,7 @@ public class DeleteWebsiteCategoryHandler(ScreenTimeDbContext context)
         CancellationToken cancellationToken
     )
     {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
         WebsiteCategory? websiteCategory = await context.WebsiteCategories.FindAsync(
             [request.WebsiteCategoryId],
             cancellationToken
@@ -46,6 +49,7 @@ public class DeleteWebsiteCategoryHandler(ScreenTimeDbContext context)
         context.WebsiteCategories.Remove(websiteCategory);
 
         await context.SaveChangesAsync(cancellationToken);
+        mutation.Complete();
         return Result.Deleted;
     }
 }

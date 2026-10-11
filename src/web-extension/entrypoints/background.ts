@@ -1,195 +1,96 @@
-import { fileTypeFromBuffer } from "file-type"
-import { userSettingsStorage } from "@/utils/settings";
-import { ConnectionStatus, connectionStatusStorage } from "@/utils/connection-status.ts";
-
-type Icon = {
-    extension: string,
-    data: string
-}
-
-type Website = {
-    id: string
-}
-
+import { connectionStatusStorage, type ConnectionStatus } from "@/utils/connection-status.ts";
+const baseUrl = "http://127.0.0.1:5124";
+const reportPath = "/api/screen-time/tracking/track-website-usage/record-activity";
 export default defineBackground(() => {
-    let userSettings = defaultUserSettings
-    // host -> favicon
-    const faviconCache = new Map<string, Icon | null>()
-
-    userSettingsStorage.getValue().then((val) => {
-        userSettings = val;
-    });
-    userSettingsStorage.watch((newValue) => {
-        userSettings = newValue;
-    });
-    connectionStatusStorage.getValue().then((val: ConnectionStatus) => {
-        updateActionIcon(val);
-    });
-    connectionStatusStorage.watch((newValue: ConnectionStatus) => {
-        updateActionIcon(newValue);
-    });
-
-    // 单击扩展图标
-    browser.action.onClicked.addListener(() => {
-        browser.tabs.create({
-            url: userSettings.baseUrl,
-        });
-    });
-
-    // 右键扩展图标的菜单
-    browser.runtime.onInstalled.addListener(async () => {
-        await browser.contextMenus.removeAll();
-        browser.contextMenus.create({
-            id: 'open-settings',
-            title: 'Open Settings',
-            contexts: ['action']
-        });
-
-        browser.contextMenus.create({
-            id: 'open-web-ui',
-            title: 'Open Web UI',
-            contexts: ['action']
-        });
-    });
-    browser.contextMenus.onClicked.addListener((info) => {
-        if (info.menuItemId === 'open-settings') {
-            browser.runtime.openOptionsPage()
-        }
-
-        if (info.menuItemId === 'open-web-ui') {
-            browser.tabs.create({
-                url: userSettings.baseUrl,
-            })
-        }
-    })
-
-    // 标签页激活事件
-    browser.tabs.onActivated.addListener(async (activeInfo) => {
-        let tab: Browser.tabs.Tab
-        // 可能事件刚触发标签页就被关闭导致获取失败
-        try {
-            tab = await browser.tabs.get(activeInfo.tabId);
-        } catch {
-            return
-        }
-        if (!tab.url)
-            return;
-
-        const noHostPlaceholder = "no-host"
-        const host = new URL(tab.url).host || noHostPlaceholder
-
-        const website = await getWebsiteByHost(host)
-        if (website === null)
-            return
-
-        let icon: Icon | null = null
-        if (faviconCache.has(host))
-            icon = faviconCache.get(host) || null
-        else if (!tab.favIconUrl) {
-            icon = null
-            faviconCache.set(host, null)
-        }
-        else {
-            icon = await getIcon(tab.favIconUrl)
-            faviconCache.set(host, icon)
-        }
-
-        await refreshWebsiteMetadata(website.id, icon)
-    });
-
-    browser.action.setIcon({
-        path: {
-            16: '/icons/disconnected-16.png',
-            32: '/icons/disconnected-32.png',
-            48: '/icons/disconnected-48.png',
-            128: '/icons/disconnected-128.png',
-        },
-    })
-
-    async function getWebsiteByHost(host: string): Promise<Website | null> {
-        try {
-            const response = await fetch(
-                `${userSettings.baseUrl}/api/screen-time/websites/by-host/${encodeURIComponent(host)}`
-            );
-
-            if (!response.ok)
-                return null
-
-            const website = await response.json();
-            return website
-        } catch (e) {
-            return null
-        }
+  const action = browser.action ?? browser.browserAction;
+  let token: string | null = null;
+  let busy = false;
+  let lastReport = 0;
+  const metadataAttempts = new Map<string, number>();
+  const ready = (async () => {
+    // Chromium exposes this switch; Firefox storage is unavailable to our content script.
+    const area = browser.storage.local as typeof browser.storage.local & { setAccessLevel?: (x: { accessLevel: "TRUSTED_CONTEXTS" }) => Promise<void> };
+    await area.setAccessLevel?.({ accessLevel: "TRUSTED_CONTEXTS" });
+    const saved = (await browser.storage.local.get("extensionToken")).extensionToken;
+    token = typeof saved === "string" ? saved : null;
+    await status(token ? "disconnected" : "unpaired");
+  })();
+  async function status(value: ConnectionStatus) {
+    await connectionStatusStorage.setValue(value);
+    await action.setTitle({ title: `STT: ${value}` });
+    await action.setIcon({ path: Object.fromEntries([16,32,48,128].map(n => [n, `/icons/${value === "connected" ? "connected" : "disconnected"}-${n}.png`])) });
+  }
+  async function request(path: string, body?: unknown) {
+    const response = await fetch(baseUrl + path, { method: body === undefined ? "GET" : "POST", credentials: "omit", redirect: "error", signal: AbortSignal.timeout(5000), headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body) });
+    if (!response.ok) {
+      await status(response.status === 401 || response.status === 403 ? "expired" : "http-error");
+      throw new Error("Local API rejected request");
     }
-
-    async function refreshWebsiteMetadata(websiteId: string, icon: Icon | null) {
-        try {
-            await fetch(
-                `${userSettings.baseUrl}/api/screen-time/websites/${websiteId}/refresh-metadata`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        icon,
-                    }),
-                }
-            );
-            connectionStatusStorage.setValue("connected");
-        }
-        catch (e) {
-            connectionStatusStorage.setValue("disconnected");
-        }
+    await status("connected");
+    return response;
+  }
+  action.onClicked.addListener(() => browser.runtime.openOptionsPage());
+  browser.runtime.onInstalled.addListener(async () => {
+    await browser.contextMenus.removeAll();
+    browser.contextMenus.create({ id: "open-settings", title: "Pair / Settings", contexts: ["action"] });
+  });
+  browser.contextMenus.onClicked.addListener(() => browser.runtime.openOptionsPage());
+  browser.runtime.onMessage.addListener(async (message: unknown, sender) => {
+    await ready;
+    if (!message || typeof message !== "object") return;
+    const msg = message as { type?: string; code?: string; baseUrl?: string; name?: string };
+    if (msg.type === "pair") {
+      // Only the packaged options page may redeem a code. Never return the token.
+      if (sender.id !== browser.runtime.id || sender.url !== browser.runtime.getURL("/options.html")) return { ok: false };
+      if (msg.baseUrl !== baseUrl || typeof msg.code !== "string" || !/^[0-9a-f]{16}$/i.test(msg.code)) return { ok: false, error: "Invalid local address or pairing code" };
+      try {
+        const r = await fetch(baseUrl + "/api/auth/pair", { method: "POST", credentials: "omit", redirect: "error", signal: AbortSignal.timeout(5000), headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: msg.code }) });
+        if (!r.ok) { await status("unpaired"); return { ok: false, error: "Pairing code rejected or expired" }; }
+        token = (await r.json()).token;
+        await browser.storage.local.set({ extensionToken: token });
+        await status("connected"); return { ok: true };
+      } catch { await status("disconnected"); return { ok: false, error: "Local service unavailable" }; }
     }
-})
-
-function updateActionIcon(connectionStatus: ConnectionStatus) {
-    browser.action.setIcon({
-        path: {
-            16: connectionStatus === 'connected' ? '/icons/connected-16.png' : '/icons/disconnected-16.png',
-            32: connectionStatus === 'connected' ? '/icons/connected-32.png' : '/icons/disconnected-32.png',
-            48: connectionStatus === 'connected' ? '/icons/connected-48.png' : '/icons/disconnected-48.png',
-            128: connectionStatus === 'connected' ? '/icons/connected-128.png' : '/icons/disconnected-128.png',
-        },
-    })
-}
-
-async function getIcon(iconUrl: string): Promise<Icon | null> {
+    if (msg.type !== "activity" || sender.id !== browser.runtime.id || sender.frameId !== 0 || sender.tab?.id === undefined || busy) return;
+    if (!token) { await status("unpaired"); return; }
+    busy = true;
     try {
-        const response = await fetch(iconUrl)
-
-        if (!response.ok) {
-            throw new Error(
-                `Failed to fetch icon: ${response.status}`
-            )
-        }
-
-        const buffer = await response.arrayBuffer()
-
-        const result = await fileTypeFromBuffer(buffer)
-
-        // xml 格式的图片就是 svg 格式，svg 无法通过二进制特征识别
-        const extension = (!result?.ext || result.ext === "xml") ? "svg" : result.ext
-
-        return {
-            extension: extension,
-            data: arrayBufferToBase64(buffer)
-        }
-    }
-    catch (e) {
-        console.log("getIcon failed: ", e)
-        return null
-    }
-}
-
-function arrayBufferToBase64(buffer: ArrayBuffer): string {
-    let binary = '';
-    const bytes = new Uint8Array(buffer);
-
-    for (let i = 0; i < bytes.byteLength; i++) {
-        binary += String.fromCharCode(bytes[i]!);
-    }
-
-    return btoa(binary);
-}
+      const tab = await browser.tabs.get(sender.tab.id);
+      const window = await browser.windows.get(tab.windowId);
+      const active = await browser.tabs.query({ active: true, windowId: tab.windowId });
+      if (!window.focused || !tab.active || active[0]?.id !== tab.id || !tab.url || sender.url !== tab.url) return;
+      const url = new URL(tab.url);
+      if (url.protocol !== "https:" && url.protocol !== "http:") return;
+      const now = performance.now();
+      const elapsed = lastReport ? now - lastReport : 1500;
+      if (elapsed < 250) return;
+      lastReport = now;
+      const name = typeof msg.name === "string" && msg.name.trim() ? msg.name.trim().slice(0,256) : url.host;
+      await request(reportPath, { host: url.host, name, durationMilliseconds: Math.min(1500, Math.floor(elapsed)) });
+      // URL and favicon come from browser APIs, not the content message.
+      if (tab.favIconUrl && (!metadataAttempts.has(url.host) || now - metadataAttempts.get(url.host)! >= 30*60*1000)) {
+        metadataAttempts.set(url.host, now);
+        if (metadataAttempts.size > 512) metadataAttempts.delete(metadataAttempts.keys().next().value!);
+        const favicon = new URL(tab.favIconUrl);
+        if (favicon.origin !== url.origin) return;
+        const image = await fetch(favicon.href, { credentials: "omit", redirect: "error", signal: AbortSignal.timeout(3000) });
+        if (!image.ok || Number(image.headers.get("content-length")) > 2*1024*1024) return;
+        const reader = image.body?.getReader(); if (!reader) return;
+        const chunks: Uint8Array[] = []; let total = 0;
+        for (;;) { const part = await reader.read(); if (part.done) break; total += part.value.length; if (total > 2*1024*1024) { await reader.cancel(); return; } chunks.push(part.value); }
+        const bytes = new Uint8Array(total); let offset = 0;
+        for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
+        const png = bytes[0] === 137 && bytes[1] === 80;
+        const jpeg = bytes[0] === 255 && bytes[1] === 216;
+        const ico = bytes[0] === 0 && bytes[1] === 0 && bytes[2] === 1 && bytes[3] === 0;
+        if (!png && !jpeg && !ico) return;
+        let binary = ""; for (const byte of bytes) binary += String.fromCharCode(byte);
+        const site = await (await request(`/api/screen-time/websites/by-host/${encodeURIComponent(url.host)}`)).json();
+        if (site.allowMetadataAutoRefresh !== true || typeof site.id !== "string" || !/^[0-9a-f-]{36}$/i.test(site.id)) return;
+        await request(`/api/screen-time/websites/${site.id}/refresh-metadata`, { icon: { extension: png ? "png" : jpeg ? "jpg" : "ico", data: btoa(binary) } });
+      }
+    } catch (error) {
+      if (error instanceof TypeError || (error instanceof DOMException && error.name === "TimeoutError")) await status("disconnected");
+    } finally { busy = false; }
+  });
+});

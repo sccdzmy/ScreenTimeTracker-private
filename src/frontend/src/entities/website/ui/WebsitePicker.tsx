@@ -9,7 +9,7 @@ import Chip from "@mui/material/Chip";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
-type Item = Pick<Website, "id" | "name" | "iconPath" | "iconPathLastUpdatedAt">;
+type Item = Pick<Website, "id" | "name" | "iconId" | "iconPathLastUpdatedAt">;
 
 export type WebsitePickerProps = {
   placeholder?: string;
@@ -53,7 +53,7 @@ export const WebsitePicker = (props: WebsitePickerProps) => {
   const { mode, value, onValueChange, placeholder, ...autocompleteProps } = commonProps;
 
   const { data: websitesData, isLoading: isWebsitesDataLoading } = useQuery(
-    websiteQueries.websites({ fields: "id,name,iconPath,iconPathLastUpdatedAt" }),
+    websiteQueries.websites({ fields: "id,name,iconId,iconPathLastUpdatedAt" }),
   ) as {
     data?: Item[];
     isLoading: boolean;
@@ -143,7 +143,7 @@ export const WebsitePicker = (props: WebsitePickerProps) => {
                 mr: 1,
               }}
               id={option.id}
-              iconPath={option.iconPath}
+              iconId={option.iconId}
               iconPathLastUpdatedAt={option.iconPathLastUpdatedAt}
             />
             <Typography>{option.name}</Typography>

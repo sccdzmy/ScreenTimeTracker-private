@@ -1,3 +1,4 @@
+using ScreenTimeTracker.ScreenTime.Features.Tracking;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 using ScreenTimeTracker.ScreenTime.Domain.Aggregates.AppUsageSessions;
@@ -6,6 +7,7 @@ using ScreenTimeTracker.ScreenTime.Infrastructure.Persistence;
 namespace ScreenTimeTracker.ScreenTime.Features.Tracking.TrackAppUsage;
 
 public class TimerDriftDetectedHandler(
+    TrackingCoordinator coordinator,
     ScreenTimeDbContext context,
     ActiveAppUsageSessionStore activeSessionStore,
     IForegroundWindowMonitor foregroundWindowMonitor,
@@ -18,8 +20,9 @@ public class TimerDriftDetectedHandler(
         CancellationToken cancellationToken
     )
     {
+        using var mutation = await coordinator.EnterAsync(cancellationToken);
         var now = timeProvider.GetUtcNow();
-        var activeSession = activeSessionStore.Take();
+        var activeSession = activeSessionStore.Current;
         if (activeSession is not null && activeSession.StartTime < notification.DriftStartAt)
             await context.PersistActiveSessionAsync(
                 activeSession,
@@ -28,7 +31,6 @@ public class TimerDriftDetectedHandler(
             );
 
         var windowInfo = foregroundWindowMonitor.GetForegroundWindow();
-        foregroundWindowProcessor.Enqueue(new ForegroundWindowChangedMessage(windowInfo, now));
 
         // 删除漂移开始到现在内的所有会话
         var affectedSessions = await context
@@ -46,6 +48,9 @@ public class TimerDriftDetectedHandler(
         }
 
         await context.SaveChangesAsync(cancellationToken);
+        activeSessionStore.Current = null;
+        mutation.Complete();
+        foregroundWindowProcessor.Enqueue(new ForegroundWindowChangedMessage(windowInfo, now));
         return;
     }
 }

@@ -5,7 +5,7 @@ export const appUsageDistributionItemDtoSchema = z.object({
   id: z.string(),
   name: z.string(),
   color: z.string(),
-  iconPath: z.string().nullable(),
+  iconId: z.string().nullable(),
   iconPathLastUpdatedAt: z.coerce.date(),
   durationSeconds: z.number(),
 });
@@ -24,7 +24,7 @@ export const appCategoryUsageDistributionItemDtoSchema = z.object({
   id: z.string(),
   name: z.string(),
   color: z.string(),
-  iconPath: z.string().nullable(),
+  iconId: z.string().nullable(),
   iconPathLastUpdatedAt: z.coerce.date(),
   durationSeconds: z.number(),
 });
@@ -45,7 +45,7 @@ export const websiteUsageDistributionItemDtoSchema = z.object({
   id: z.string(),
   name: z.string(),
   color: z.string(),
-  iconPath: z.string().nullable(),
+  iconId: z.string().nullable(),
   iconPathLastUpdatedAt: z.coerce.date(),
   durationSeconds: z.number(),
 });
@@ -64,7 +64,7 @@ export const websiteCategoryUsageDistributionItemDtoSchema = z.object({
   id: z.string(),
   name: z.string(),
   color: z.string(),
-  iconPath: z.string().nullable(),
+  iconId: z.string().nullable(),
   iconPathLastUpdatedAt: z.coerce.date(),
   durationSeconds: z.number(),
 });

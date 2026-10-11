@@ -1,3 +1,4 @@
+using ScreenTimeTracker.BuildingBlocks.Security;
 using System.Linq.Expressions;
 using System.Text.Json;
 using Mediator;
@@ -18,7 +19,7 @@ public class GetWebsiteCategoriesHandler(ScreenTimeDbContext context)
         { nameof(GetWebsiteCategoriesResponseItem.Id), [nameof(WebsiteCategory.Id)] },
         { nameof(GetWebsiteCategoriesResponseItem.Name), [nameof(WebsiteCategory.Name)] },
         { nameof(GetWebsiteCategoriesResponseItem.Color), [nameof(WebsiteCategory.Color)] },
-        { nameof(GetWebsiteCategoriesResponseItem.IconPath), [nameof(WebsiteCategory.IconPath)] },
+        { "IconId", [nameof(WebsiteCategory.IconPath)] },
         {
             nameof(GetWebsiteCategoriesResponseItem.IconPathLastUpdatedAt),
             [nameof(WebsiteCategory.IconPathLastUpdatedAt)]
@@ -33,7 +34,7 @@ public class GetWebsiteCategoriesHandler(ScreenTimeDbContext context)
             [nameof(GetWebsiteCategoriesResponseItem.Id)] = e => e.Id,
             [nameof(GetWebsiteCategoriesResponseItem.Name)] = e => e.Name,
             [nameof(GetWebsiteCategoriesResponseItem.Color)] = e => e.Color,
-            [nameof(GetWebsiteCategoriesResponseItem.IconPath)] = e => e.IconPath,
+            ["IconId"] = e => ManagedIcons.Id(e.IconPath),
             [nameof(GetWebsiteCategoriesResponseItem.IconPathLastUpdatedAt)] = e =>
                 e.IconPathLastUpdatedAt,
             [nameof(GetWebsiteCategoriesResponseItem.IsSystem)] = e => e.IsSystem,

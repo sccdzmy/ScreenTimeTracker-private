@@ -3,6 +3,7 @@ using Mediator;
 namespace ScreenTimeTracker.ScreenTime.Features.Tracking.TrackAppUsage;
 
 public class SystemResumedHandler(
+    TimeProvider timeProvider,
     IForegroundWindowMonitor foregroundWindowMonitor,
     ForegroundWindowProcessor foregroundWindowProcessor
 ) : INotificationHandler<SystemResumedEvent>
@@ -14,7 +15,7 @@ public class SystemResumedHandler(
     {
         var windowInfo = foregroundWindowMonitor.GetForegroundWindow();
         foregroundWindowProcessor.Enqueue(
-            new ForegroundWindowChangedMessage(windowInfo, DateTimeOffset.Now)
+            new ForegroundWindowChangedMessage(windowInfo, timeProvider.GetUtcNow())
         );
 
         return;
