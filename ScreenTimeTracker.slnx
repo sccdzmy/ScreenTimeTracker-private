@@ -2,7 +2,11 @@
   <Folder Name="/src/">
     <Project Path="src/ScreenTimeTracker.BuildingBlocks/ScreenTimeTracker.BuildingBlocks.csproj" />
   </Folder>
+  <Folder Name="/src/Clients/">
+    <Project Path="src/Clients/ScreenTimeTracker.ApiClient/ScreenTimeTracker.ApiClient.csproj" />
+  </Folder>
   <Folder Name="/src/Hosts/">
+    <Project Path="src/Hosts/ScreenTimeTracker.Native/ScreenTimeTracker.Native.csproj" />
     <Project Path="src/Hosts/ScreenTimeTracker.Desktop/ScreenTimeTracker.Desktop.csproj" />
   </Folder>
   <Folder Name="/src/Modules/" />
@@ -16,6 +20,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/ScreenTimeTracker.OptimizationTests/ScreenTimeTracker.OptimizationTests.csproj" />
     <Project Path="tests/ScreenTimeTracker.PerformanceTests/ScreenTimeTracker.PerformanceTests.csproj" />
+    <Project Path="tests/ScreenTimeTracker.NativeHarness/ScreenTimeTracker.NativeHarness.csproj" />
     <Project Path="tests/ScreenTimeTracker.SecurityTests/ScreenTimeTracker.SecurityTests.csproj" />
     <Project Path="tests/ScreenTimeTracker.ArchitectureTests/ScreenTimeTracker.ArchitectureTests.csproj" />
     <Project Path="tests/ScreenTimeTracker.Testing/ScreenTimeTracker.Testing.csproj" />

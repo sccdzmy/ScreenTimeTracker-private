@@ -270,6 +270,9 @@
           "xunit.v3.runner.common": "[3.2.2]"
         }
       },
+      "screentimetracker.apiclient": {
+        "type": "Project"
+      },
       "screentimetracker.buildingblocks": {
         "type": "Project",
         "dependencies": {

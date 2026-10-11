@@ -8,6 +8,7 @@ namespace ScreenTimeTracker.DesktopSettings.Migrations
     /// <inheritdoc />
     public partial class Init : Migration
     {
+        private static readonly string[] InitialColumns = ["Id", "DefaultUIOpenMode", "IsAutoStartEnabled", "IsSilentStartEnabled", "Language"];
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,7 +29,7 @@ namespace ScreenTimeTracker.DesktopSettings.Migrations
 
             migrationBuilder.InsertData(
                 table: "DesktopSettings_LocalSettings",
-                columns: new[] { "Id", "DefaultUIOpenMode", "IsAutoStartEnabled", "IsSilentStartEnabled", "Language" },
+                columns: InitialColumns,
                 values: new object[] { new Guid("00000000-0000-0000-0000-000000000001"), 0, false, false, "en-US" });
         }
 

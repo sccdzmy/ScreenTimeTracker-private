@@ -32,18 +32,24 @@ public sealed class LocalSecurityMiddleware(RequestDelegate next, IHostEnvironme
             context.Response.Headers["Access-Control-Allow-Headers"] = "Content-Type, X-STT-CSRF";
             context.Response.StatusCode = 204; return;
         }
-        if (path is "/api/auth/session" or "/api/auth/pair")
+        if (path is "/api/auth/session" or "/api/auth/pair" or "/api/auth/native-session")
         {
-            if (context.Request.Method != "POST" || !access.Allow(path, 5, TimeSpan.FromMinutes(1)) || context.Request.ContentLength > 4096)
+            if (context.Request.Method != "POST" || !access.Allow(path, path == "/api/auth/native-session" ? 120 : 5, TimeSpan.FromMinutes(1)) || context.Request.ContentLength > 4096)
             { context.Response.StatusCode = 429; return; }
+            if (path == "/api/auth/native-session" && origin.Length != 0) { context.Response.StatusCode = 403; return; }
             if (path == "/api/auth/session" && !sameOrigin && !developmentOrigin) { context.Response.StatusCode = 403; return; }
         }
         else
         {
             string? csrf = access.SessionCsrf(context.Request.Cookies["stt-session"]);
             var bearer = context.Request.Headers.Authorization.ToString();
+            bool native = bearer.StartsWith("Bearer ", StringComparison.Ordinal) && access.IsNativeSession(bearer[7..]);
             bool extension = bearer.StartsWith("Bearer ", StringComparison.Ordinal) && access.IsExtension(bearer[7..]);
-            if (extension)
+            if (native)
+            {
+                if (origin.Length != 0) { context.Response.StatusCode = 403; return; }
+            }
+            else if (extension)
             {
                 bool allowed = path == "/api/screen-time/tracking/track-website-usage/record-activity" && context.Request.Method == "POST"
                     || path.StartsWith("/api/screen-time/websites/by-host/", StringComparison.Ordinal) && context.Request.Method == "GET"
@@ -66,7 +72,7 @@ public sealed class LocalSecurityMiddleware(RequestDelegate next, IHostEnvironme
             {
                 if (context.Request.ContentType?.StartsWith("application/json", StringComparison.OrdinalIgnoreCase) != true)
                 { context.Response.StatusCode = 415; return; }
-                var limit = path is "/api/auth/session" or "/api/auth/pair" ? 4096 : path.Contains("import", StringComparison.OrdinalIgnoreCase) ? 64 * 1024 * 1024 : 4 * 1024 * 1024;
+                var limit = path is "/api/auth/session" or "/api/auth/pair" or "/api/auth/native-session" ? 4096 : path.Contains("import", StringComparison.OrdinalIgnoreCase) ? 64 * 1024 * 1024 : 4 * 1024 * 1024;
                 if (context.Request.ContentLength > limit) { context.Response.StatusCode = 413; return; }
                 context.Request.EnableBuffering(8192, limit);
                 using var bounded = new MemoryStream(); var buffer = new byte[8192]; int count;

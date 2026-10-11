@@ -77,7 +77,9 @@ public partial class WindowsTrayService : ITrayService, IDisposable
                 {
                     _openAppDirItem,
                     new PopupMenuSeparator(),
+#if LEGACY_WEB_UI
                     _openUIBrowserItem,
+#endif
                     _openUIWindowItem,
                     new PopupMenuSeparator(),
                     _exitItem,

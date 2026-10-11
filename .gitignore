@@ -391,3 +391,8 @@ export-*.json
 .output/
 dist/
 security-test-output/
+
+# Native release packages and local measurement artifacts
+artifacts/
+NativeWindow.json
+NativeWindow.json.tmp

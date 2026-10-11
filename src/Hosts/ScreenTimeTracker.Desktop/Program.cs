@@ -90,7 +90,11 @@ try
         sp.GetRequiredService<DesktopLocalSettingsProvider>()
     );
     builder.Services.AddHostedService<DesktopLocalSettingsProviderInitializer>();
+    #if LEGACY_WEB_UI
+    builder.Services.AddSingleton<IAppUIManager, LegacyPhotinoUIManager>();
+#else
     builder.Services.AddSingleton<IAppUIManager, AppUIManager>();
+#endif
     builder.Services.AddSingleton<IWindowPlacementStore, WindowPlacementStore>();
     // 平台特异
     if (OperatingSystem.IsWindows())
@@ -149,7 +153,9 @@ try
     // 中间件
     app.UseExceptionHandler();
     app.UseMiddleware<LocalSecurityMiddleware>();
+#if LEGACY_WEB_UI
     app.UseStaticFiles();
+#endif
     if (app.Environment.IsDevelopment())
         app.UseCors(cors => cors.WithOrigins("http://127.0.0.1:5173").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
     app.MapLocalSecurity();
@@ -165,7 +171,10 @@ try
         config.Serializer.Options.Converters.Add(new OptionalValueJsonConverterFactory());
     });
     if (app.Environment.IsDevelopment()) app.UseSwaggerGen(); // 文档url: /swagger/v1/swagger.json
-    app.MapFallbackToFile("index.html"); // SPA回退
+#if LEGACY_WEB_UI
+    app.MapFallbackToFile("index.html");
+#endif
+    app.MapNativeQueries();
 
     app.Lifetime.ApplicationStopped.Register(() =>
     {

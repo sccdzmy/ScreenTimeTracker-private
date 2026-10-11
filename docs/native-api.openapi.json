@@ -1,0 +1,49 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "UsageTrack native API additions", "version": "1.0.0", "description": "Protocol 1 additions. Existing /api/screen-time and /api/desktop-settings operations retain their paths and shapes. The server listens on loopback only. Native launch credentials are passed through parent-child pipes, not URLs." },
+  "servers": [{ "url": "http://127.0.0.1:5124" }],
+  "security": [{ "nativeSession": [] }],
+  "paths": {
+    "/api/auth/native-session": {
+      "post": {
+        "operationId": "nativeSession", "security": [],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "required": ["token"], "properties": { "token": { "type": "string", "minLength": 64, "maxLength": 64 } } } } } },
+        "responses": {
+          "200": { "description": "Single-use credential exchanged", "content": { "application/json": { "schema": { "type": "object", "required": ["token", "expiresInSeconds"], "properties": { "token": { "type": "string" }, "expiresInSeconds": { "type": "integer", "enum": [43200] } } } } } },
+          "401": { "description": "Missing, expired, consumed or wrong credential type" }, "403": { "description": "Browser Origin or non-loopback request" }, "429": { "description": "Rate or body-size limit" }
+        }
+      }
+    },
+    "/api/system/info": {
+      "get": { "operationId": "systemInfo", "responses": { "200": { "description": "Protocol and capabilities", "content": { "application/json": { "schema": { "type": "object", "required": ["protocolVersion", "capabilities"], "properties": { "protocolVersion": { "type": "integer", "enum": [1] }, "capabilities": { "type": "array", "items": { "type": "string" } } } } } } }, "401": { "description": "Session required" }, "403": { "description": "Extension scope does not permit access" } } }
+    },
+    "/api/screen-time/apps/page": { "get": { "operationId": "pagedApps", "parameters": [{ "$ref": "#/components/parameters/offset" }, { "$ref": "#/components/parameters/pageSize" }, { "$ref": "#/components/parameters/search" }], "responses": { "200": { "$ref": "#/components/responses/entityPage" }, "400": { "description": "Invalid bounds" } } } },
+    "/api/screen-time/websites/page": { "get": { "operationId": "pagedWebsites", "parameters": [{ "$ref": "#/components/parameters/offset" }, { "$ref": "#/components/parameters/pageSize" }, { "$ref": "#/components/parameters/search" }], "responses": { "200": { "$ref": "#/components/responses/entityPage" }, "400": { "description": "Invalid bounds" } } } },
+    "/api/screen-time/usage/{kind}/timeline/page": {
+      "get": { "operationId": "pagedTimeline", "description": "One logical day. Start and end dates must match; cutoff is read from current user settings. Intervals are clipped, not approximated. Repeated includedIds takes precedence over excludedIds. Pages are ordered by start time then session ID. Offsets describe the current database view, not a persistent snapshot.",
+        "parameters": [
+          { "name": "kind", "in": "path", "required": true, "schema": { "type": "string", "enum": ["apps", "websites", "app-categories", "website-categories"] } },
+          { "name": "startDate", "in": "query", "required": true, "schema": { "type": "string", "format": "date" } },
+          { "name": "endDate", "in": "query", "required": true, "schema": { "type": "string", "format": "date" } },
+          { "name": "timeZoneId", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "includedIds", "in": "query", "style": "form", "explode": true, "schema": { "type": "array", "maxItems": 500, "items": { "type": "string", "format": "uuid" } } },
+          { "name": "excludedIds", "in": "query", "style": "form", "explode": true, "schema": { "type": "array", "maxItems": 500, "items": { "type": "string", "format": "uuid" } } },
+          { "$ref": "#/components/parameters/offset" },
+          { "name": "pageSize", "in": "query", "schema": { "type": "integer", "minimum": 1, "maximum": 1000, "default": 500 } }
+        ],
+        "responses": { "200": { "description": "Exact intervals", "content": { "application/json": { "schema": { "type": "object", "required": ["items", "nextOffset"], "properties": { "nextOffset": { "type": "integer", "nullable": true }, "items": { "type": "array", "items": { "type": "object", "required": ["id", "name", "color", "startTime", "endTime"], "properties": { "id": { "type": "string", "format": "uuid" }, "name": { "type": "string" }, "color": { "type": "string" }, "startTime": { "type": "string", "format": "date-time" }, "endTime": { "type": "string", "format": "date-time" } } } } } } } } }, "400": { "description": "Invalid date, zone, IDs or page bounds" } }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": { "nativeSession": { "type": "http", "scheme": "bearer", "description": "Desktop-only session, revoked on UI exit. Browser cookies and extension tokens remain separate." } },
+    "parameters": {
+      "offset": { "name": "offset", "in": "query", "schema": { "type": "integer", "minimum": 0, "maximum": 1000000, "default": 0 } },
+      "pageSize": { "name": "pageSize", "in": "query", "schema": { "type": "integer", "minimum": 1, "maximum": 500, "default": 100 } },
+      "search": { "name": "search", "in": "query", "schema": { "type": "string", "maxLength": 200 } }
+    },
+    "responses": {
+      "entityPage": { "description": "Bounded entities, nextOffset null at end", "content": { "application/json": { "schema": { "type": "object", "required": ["items", "nextOffset"], "properties": { "nextOffset": { "type": "integer", "nullable": true }, "items": { "type": "array", "items": { "type": "object", "required": ["id", "name", "color", "iconId", "isSystem", "allowMetadataAutoRefresh"], "properties": { "id": { "type": "string", "format": "uuid" }, "name": { "type": "string" }, "color": { "type": "string" }, "iconId": { "type": "string", "nullable": true }, "isSystem": { "type": "boolean" }, "allowMetadataAutoRefresh": { "type": "boolean" }, "appCategoryId": { "type": "string", "format": "uuid" }, "websiteCategoryId": { "type": "string", "format": "uuid" }, "processName": { "type": "string" }, "host": { "type": "string" } } } } } } } } }
+    }
+  }
+}

@@ -1,210 +1,108 @@
+#if !LEGACY_WEB_UI
 using System.Diagnostics;
-using ScreenTimeTracker.Desktop.Security;
-using System.Drawing;
-using System.Reflection;
+using System.Text.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Photino.NET;
 using ScreenTimeTracker.Desktop.Hosting;
-using ScreenTimeTracker.Desktop.UI.State;
-using ScreenTimeTracker.DesktopSettings.Contracts.Enums;
+using ScreenTimeTracker.Desktop.Security;
 
 namespace ScreenTimeTracker.Desktop.UI.Services;
 
-public interface IAppUIManager
-{
-    void OpenUI();
-    void OpenUIInWindow();
-    void OpenUIInBrowser();
-}
-
-public partial class AppUIManager : IAppUIManager
+public sealed partial class AppUIManager : IAppUIManager, IDisposable
 {
     private readonly LocalAccessService _access;
+    private readonly IServerUrlProvider _urls;
     private readonly ILogger<AppUIManager> _logger;
-    private readonly IServerUrlProvider _urlProvider;
-    private readonly IWindowPlacementStore _placementStore;
-    private readonly IDesktopLocalSettingsProvider _desktopLocalSettingsProvider;
-    private PhotinoWindow? _window;
-    private readonly Lock _windowLock = new();
+    private readonly SemaphoreSlim _gate = new(1, 1);
+    private readonly CancellationTokenSource _stopping = new();
+    private Process? _process;
+    private string? _owner;
+    private readonly CancellationTokenRegistration _registration;
 
-    public AppUIManager(
-        LocalAccessService access,
-        ILogger<AppUIManager> logger,
-        IServerUrlProvider urlProvider,
-        IWindowPlacementStore placementStore,
-        IHostApplicationLifetime lifetime,
-        IDesktopLocalSettingsProvider desktopLocalSettingsProvider
-    )
+    public AppUIManager(LocalAccessService access, IServerUrlProvider urls, ILogger<AppUIManager> logger, IHostApplicationLifetime lifetime)
     {
-        _access = access;
-        _logger = logger;
-        _placementStore = placementStore;
-        _urlProvider = urlProvider;
-        _desktopLocalSettingsProvider = desktopLocalSettingsProvider;
-
-        if (OperatingSystem.IsWindows())
-            Environment.SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER", "./Data/WebView2");
-        else if (OperatingSystem.IsLinux())
+        _access = access; _urls = urls; _logger = logger;
+        _registration = lifetime.ApplicationStopping.Register(() => _ = StopAsync());
+    }
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Native UI launch failed: {ErrorType}")]
+    private static partial void LogLaunchFailed(ILogger logger, string errorType);
+    public void OpenUI() => _ = OpenAsync();
+    public void OpenUIInWindow() => OpenUI();
+    public void OpenUIInBrowser() => OpenUI(); // Old settings never launch a browser in the native build.
+    private async Task OpenAsync()
+    {
+        await _gate.WaitAsync().ConfigureAwait(false);
+        try
         {
-            Environment.SetEnvironmentVariable("XDG_DATA_HOME", "./Data/WebKitGTK/data");
-            Environment.SetEnvironmentVariable("XDG_CACHE_HOME", "./Data/WebKitGTK/cache");
+            if (_stopping.IsCancellationRequested) return;
+            if (_process is { HasExited: false }) { await WriteAsync(_process, new { type = "activate" }).ConfigureAwait(false); return; }
+            var path = Path.Combine(AppContext.BaseDirectory, "ScreenTimeTracker.Native.exe");
+            if (!File.Exists(path)) throw new FileNotFoundException("Publish the native UI beside the backend executable.");
+            var owner = Guid.NewGuid().ToString("N");
+            var process = new Process { StartInfo = new ProcessStartInfo(path) { UseShellExecute = false, CreateNoWindow = true, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true, WorkingDirectory = AppContext.BaseDirectory } };
+            if (!process.Start()) throw new InvalidOperationException("Native UI could not start.");
+            _process = process; _owner = owner;
+            _ = ObserveAsync(process, owner);
+            // Drain diagnostics without logging potentially sensitive child output.
+            _ = process.StandardError.ReadToEndAsync();
+            await WriteAsync(process, new { type = "initialize", baseUrl = _urls.GetServerUrl(), token = _access.CreateNativeBootstrap(owner) }).ConfigureAwait(false);
         }
-
-        lifetime.ApplicationStopping.Register(() =>
+        catch (Exception ex) { LogLaunchFailed(_logger, ex.GetType().Name); }
+        finally { _gate.Release(); }
+    }
+    private async Task ObserveAsync(Process process, string owner)
+    {
+        try
         {
-            lock (_windowLock)
+            while (await process.StandardOutput.ReadLineAsync().ConfigureAwait(false) is { } line)
             {
-                if (_window is not null)
+                if (line.Length > 4096) break;
+                using var json = JsonDocument.Parse(line);
+                if (json.RootElement.GetProperty("type").GetString() == "reauthenticate")
                 {
+                    await _gate.WaitAsync().ConfigureAwait(false);
                     try
                     {
-                        _window.Invoke(() => _window.Close());
+                        if (ReferenceEquals(_process, process) && !_stopping.IsCancellationRequested)
+                            await WriteAsync(process, new { type = "credential", token = _access.CreateNativeBootstrap(owner) }).ConfigureAwait(false);
                     }
-                    catch { }
+                    finally { _gate.Release(); }
                 }
             }
-        });
-    }
-
-    public void OpenUI()
-    {
-        if (_desktopLocalSettingsProvider.DefaultUIOpenMode == UIOpenMode.Browser)
-            OpenUIInBrowser();
-        else
-            OpenUIInWindow();
-    }
-
-    public void OpenUIInBrowser()
-    {
-        string uiUrl = _urlProvider.GetServerUrl() + "/#bootstrap=" + _access.CreateBootstrap();
-        Process.Start(new ProcessStartInfo { FileName = uiUrl, UseShellExecute = true });
-    }
-
-    public void OpenUIInWindow()
-    {
-        string uiUrl = _urlProvider.GetServerUrl() + "/#bootstrap=" + _access.CreateBootstrap();
-
-        lock (_windowLock)
+            await process.WaitForExitAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is IOException or InvalidOperationException or JsonException) { }
+        finally
         {
-            if (_window is null)
-            {
-                ResetPhotinoMessageLoop();
-                var uiThread = new Thread(() =>
-                {
-                    try
-                    {
-                        var placement = _placementStore.Load();
-
-                        _window = new PhotinoWindow()
-                            .SetTitle("Screen Time Tracker")
-                            .SetUseOsDefaultSize(false)
-                            .SetUseOsDefaultLocation(false)
-                            .SetSize(new Size((int)placement.Width, (int)placement.Height));
-                        if (double.IsNaN(placement.Left) || double.IsNaN(placement.Top))
-                            _window.Center();
-                        else
-                        {
-                            _window.SetLeft((int)placement.Left);
-                            _window.SetTop((int)placement.Top);
-                        }
-
-                        var lastNormalPlacement = new WindowPlacement
-                        {
-                            Left = _window.Location.X,
-                            Top = _window.Location.Y,
-                            Width = _window.Size.Width,
-                            Height = _window.Size.Height,
-                        };
-
-                        // 监听位置大小变化并保存
-                        _window.RegisterLocationChangedHandler(
-                            (sender, _) =>
-                            {
-                                if (
-                                    sender is PhotinoWindow window
-                                    && !window.Maximized
-                                    && !window.Minimized
-                                )
-                                {
-                                    lastNormalPlacement.Left = window.Location.X;
-                                    lastNormalPlacement.Top = window.Location.Y;
-                                }
-                            }
-                        );
-                        _window.RegisterSizeChangedHandler(
-                            (sender, _) =>
-                            {
-                                if (
-                                    sender is PhotinoWindow window
-                                    && !window.Maximized
-                                    && !window.Minimized
-                                )
-                                {
-                                    lastNormalPlacement.Width = window.Size.Width;
-                                    lastNormalPlacement.Height = window.Size.Height;
-                                }
-                            }
-                        );
-
-                        _window.RegisterWindowClosingHandler(
-                            (sender, _) =>
-                            {
-                                _placementStore.Save(lastNormalPlacement);
-                                return false;
-                            }
-                        );
-
-                        _window.Load(uiUrl);
-                        _window.WaitForClose();
-                    }
-                    catch (Exception ex)
-                    {
-                        LogOpenUIInWindowFailed(_logger, ex.GetType().Name);
-                    }
-                    finally
-                    {
-                        lock (_windowLock)
-                            _window = null;
-                    }
-                })
-                {
-                    IsBackground = true,
-                };
-                if (OperatingSystem.IsWindows())
-                    uiThread.SetApartmentState(ApartmentState.STA);
-
-                uiThread.Start();
-            }
-            else
-            {
-                // 窗口已经存在，将其唤醒/带到前台
-                _window.Invoke(() =>
-                {
-                    _window.Load(uiUrl);
-                    if (_window.Minimized)
-                        _window.SetMinimized(false);
-                    else
-                    {
-                        _window.SetTopMost(true);
-                        _window.SetTopMost(false);
-                    }
-                });
-            }
+            _access.RevokeNativeOwner(owner);
+            await _gate.WaitAsync().ConfigureAwait(false);
+            try { if (ReferenceEquals(_process, process)) { _process = null; _owner = null; } }
+            finally { _gate.Release(); }
+            process.Dispose();
         }
     }
-
-    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to open UI in window: {ErrorType}.")]
-    private static partial void LogOpenUIInWindowFailed(ILogger logger, string errorType);
-
-    // https://github.com/tryphotino/photino.NET/issues/59
-    // Photino.NET 的 bug 导致无法在 WaitForClose() 返回后创建第二个窗口
-    private static void ResetPhotinoMessageLoop()
+    private static async Task WriteAsync(Process process, object message)
     {
-        var field = typeof(PhotinoWindow).GetField(
-            "_messageLoopIsStarted",
-            BindingFlags.Static | BindingFlags.NonPublic
-        );
-        field?.SetValue(null, false);
+        await process.StandardInput.WriteLineAsync(JsonSerializer.Serialize(message)).ConfigureAwait(false);
+        await process.StandardInput.FlushAsync().ConfigureAwait(false);
     }
+    private async Task StopAsync()
+    {
+        _stopping.Cancel();
+        await _gate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            if (_owner is not null) _access.RevokeNativeOwner(_owner);
+            if (_process is { HasExited: false } process)
+            {
+                try { await WriteAsync(process, new { type = "shutdown" }).ConfigureAwait(false); process.StandardInput.Close(); }
+                catch (IOException) { }
+                try { await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(3)).ConfigureAwait(false); }
+                catch (TimeoutException) { process.Kill(); }
+            }
+        }
+        finally { _gate.Release(); }
+    }
+    public void Dispose() { _registration.Dispose(); StopAsync().GetAwaiter().GetResult(); _stopping.Dispose(); }
 }
+#endif

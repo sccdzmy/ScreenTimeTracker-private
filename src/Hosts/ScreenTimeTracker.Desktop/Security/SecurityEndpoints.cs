@@ -8,8 +8,14 @@ namespace ScreenTimeTracker.Desktop.Security;
 
 public static class SecurityEndpoints
 {
+    private static readonly string[] NativeCapabilities = ["native-session", "paged-management", "paged-timeline", "icons", "extension-pairing", "import-export"];
     public static void MapLocalSecurity(this WebApplication app)
     {
+        app.MapPost("/api/auth/native-session", (BootstrapRequest request, LocalAccessService access) =>
+            access.RedeemNativeBootstrap(request.Token) is { } token ? Results.Ok(new { token, expiresInSeconds = 43200 }) : Results.Unauthorized())
+            .WithName("NativeSession").WithSummary("Exchange a single-use native launch credential for a desktop-only session.");
+        app.MapGet("/api/system/info", () => Results.Ok(new { protocolVersion = 1, capabilities = NativeCapabilities }))
+            .WithName("SystemInfo").WithSummary("Authenticated API protocol version and capabilities.");
         app.MapPost("/api/auth/session", (BootstrapRequest request, HttpContext context, LocalAccessService access) =>
         {
             var session = access.RedeemBootstrap(request.Token);

@@ -166,15 +166,6 @@
         "resolved": "1.2.8",
         "contentHash": "n1uksXzWNVgZddyCJArLl9k9CNEE839pcShU1/XIz1EzN6GuGVXVYuNyhk9rX6CUHI8XvtzUNxFstfHEp3budA=="
       },
-      "Photino.NET": {
-        "type": "Direct",
-        "requested": "[4.0.16, )",
-        "resolved": "4.0.16",
-        "contentHash": "2oTFsxt8XpLlVvtChlBD8HzLw6MgfHF+DQ4aLEDfgc4GbYjumEywB1JMfWDChm2Whfkr4ZF7DV2deRrpitiBcw==",
-        "dependencies": {
-          "Photino.Native": "4.0.22"
-        }
-      },
       "Serilog": {
         "type": "Direct",
         "requested": "[4.4.0, )",
@@ -807,11 +798,6 @@
           "Newtonsoft.Json": "13.0.3"
         }
       },
-      "Photino.Native": {
-        "type": "Transitive",
-        "resolved": "4.0.22",
-        "contentHash": "VIHipEOe4CZ7HElZE8zTwcvANOsCZ2yak/4nQ4LXzjdlwIjdbY8htmHfNR6rRPgWlCfTfT349GCa6V6Id2/Xyg=="
-      },
       "Serilog.Extensions.Logging": {
         "type": "Transitive",
         "resolved": "10.0.0",
@@ -1028,11 +1014,6 @@
         "type": "Transitive",
         "resolved": "10.0.12",
         "contentHash": "kdj5cqOwgZCMltEhQ4+WVUoFkMHG08EJfy1MDyS9H+FBg66vTTFyX8YcNl8IQh5wRQv79P+iduQgDGY8ucBR+w=="
-      },
-      "Photino.Native": {
-        "type": "Transitive",
-        "resolved": "4.0.22",
-        "contentHash": "VIHipEOe4CZ7HElZE8zTwcvANOsCZ2yak/4nQ4LXzjdlwIjdbY8htmHfNR6rRPgWlCfTfT349GCa6V6Id2/Xyg=="
       },
       "SkiaSharp.NativeAssets.macOS": {
         "type": "Transitive",

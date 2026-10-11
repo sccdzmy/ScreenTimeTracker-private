@@ -74,14 +74,14 @@ public sealed class SecurityTests : IAsyncLifetime
         builder.Services.AddMediator(o => { o.Namespace = "SecurityTestMediator"; o.ServiceLifetime = ServiceLifetime.Scoped; });
         builder.Services.AddFastEndpoints(o => o.Assemblies = [typeof(ScreenTimeDbContext).Assembly]);
         _app = builder.Build();
-        _app.UseMiddleware<LocalSecurityMiddleware>(); _app.MapLocalSecurity();
+        _app.UseMiddleware<LocalSecurityMiddleware>(); _app.MapLocalSecurity(); _app.MapNativeQueries();
         _app.UseFastEndpoints(c => { c.Endpoints.RoutePrefix = "api"; c.Serializer.Options.Converters.Add(new JsonStringEnumConverter(null, false)); c.Serializer.Options.Converters.Add(new OptionalValueJsonConverterFactory()); });
         using (var scope = _app.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<ScreenTimeDbContext>();
             await db.Database.EnsureCreatedAsync();
             db.UserSettings.Add(UserSettings.CreateDefault());
-            await db.SaveChangesAsync();
+            await db.SaveChangesAsync(TestContext.Current.CancellationToken);
         }
         await _app.StartAsync(); _client = _app.GetTestClient(); _client.BaseAddress = new Uri("http://127.0.0.1:5124");
     }
@@ -440,6 +440,97 @@ public sealed class SecurityTests : IAsyncLifetime
     {
         Assert.False(ManagedIcons.IsSafePath(Path.Combine(ManagedIcons.Root.ToUpperInvariant(), "unsafe.html")));
         Assert.False(ManagedIcons.IsSafePath(Path.Combine(Path.GetFullPath("PrePreparedCategoryIcons").ToUpperInvariant(), "unsafe.svg")));
+    }
+
+    [Fact]
+    public void NativeCredentialsAreIsolatedSingleUseExpiringAndRevocable()
+    {
+        var launch = Access.CreateNativeBootstrap("ui-1");
+        Assert.Null(Access.RedeemBootstrap(launch));
+        var token = Access.RedeemNativeBootstrap(launch)!;
+        Assert.True(Access.IsNativeSession(token)); Assert.False(Access.IsExtension(token));
+        Assert.Null(Access.RedeemNativeBootstrap(launch));
+        Assert.Null(Access.RedeemNativeBootstrap(Access.CreateBootstrap()));
+        var second = Access.RedeemNativeBootstrap(Access.CreateNativeBootstrap("ui-2"))!;
+        Access.RevokeNativeOwner("ui-1"); Assert.False(Access.IsNativeSession(token)); Assert.True(Access.IsNativeSession(second));
+        var pending = Access.CreateNativeBootstrap("ui-2"); _clock.Advance(TimeSpan.FromSeconds(61)); Assert.Null(Access.RedeemNativeBootstrap(pending));
+        _clock.Advance(TimeSpan.FromHours(12)); Assert.False(Access.IsNativeSession(second));
+    }
+    [Fact]
+    public async Task NativeBootstrapAllowsRepeatedWindowReopensAndStillEnforcesRateLimit()
+    {
+        for (int i = 0; i < 120; ++i)
+        {
+            using var response = await _client.PostAsJsonAsync("/api/auth/native-session", new { token = Access.CreateNativeBootstrap("reopen") }, TestContext.Current.CancellationToken);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Access.RevokeNativeOwner("reopen");
+        }
+        using var limited = await _client.PostAsJsonAsync("/api/auth/native-session", new { token = Access.CreateNativeBootstrap("reopen") }, TestContext.Current.CancellationToken);
+        Assert.Equal(HttpStatusCode.TooManyRequests, limited.StatusCode);
+    }
+    private async Task NativeLogin()
+    {
+        using var response = await _client.PostAsJsonAsync("/api/auth/native-session", new { token = Access.CreateNativeBootstrap("integration-ui") }, TestContext.Current.CancellationToken);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var session = await response.Content.ReadFromJsonAsync<ScreenTimeTracker.ApiClient.NativeSession>(TestContext.Current.CancellationToken);
+        _client.DefaultRequestHeaders.Authorization = new("Bearer", session!.Token);
+        Assert.False(response.Headers.Contains("Set-Cookie"));
+    }
+    [Fact]
+    public async Task NativeSessionWorksWithoutBrowserHeadersAndRevocationRejectsIt()
+    {
+        await NativeLogin();
+        var info = await _client.GetFromJsonAsync<ScreenTimeTracker.ApiClient.SystemInfo>("/api/system/info", TestContext.Current.CancellationToken);
+        Assert.Equal(1, info!.ProtocolVersion);
+        using var patch = await _client.PatchAsJsonAsync("/api/screen-time/user-settings", new { timeBoundary = new { dayCutoffHour = 4 } }, TestContext.Current.CancellationToken);
+        Assert.Equal(HttpStatusCode.NoContent, patch.StatusCode);
+        Access.RevokeNativeOwner("integration-ui");
+        Assert.Equal(HttpStatusCode.Unauthorized, (await _client.GetAsync("/api/system/info", TestContext.Current.CancellationToken)).StatusCode);
+    }
+    [Fact]
+    public async Task NativeTokenCannotBeUsedFromBrowserAndExtensionCannotReadSystemInfo()
+    {
+        await NativeLogin(); _client.DefaultRequestHeaders.Add("Origin", "http://127.0.0.1:5124");
+        Assert.Equal(HttpStatusCode.Forbidden, (await _client.GetAsync("/api/system/info", TestContext.Current.CancellationToken)).StatusCode);
+        _client.DefaultRequestHeaders.Remove("Origin"); await ExtensionLogin();
+        Assert.Equal(HttpStatusCode.Forbidden, (await _client.GetAsync("/api/system/info", TestContext.Current.CancellationToken)).StatusCode);
+    }
+    [Fact]
+    public async Task PagedListsAndTimelinesKeepExactLegacyRecords()
+    {
+        await NativeLogin();
+        using (var scope = _app.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<ScreenTimeDbContext>();
+            var app = App.Import("Synthetic", "#123456", "synthetic", false, AppCategory.UncategorizedId, null);
+            db.Apps.Add(app);
+            db.AppUsageSessions.Add(AppUsageSession.Import(app.Id, new TimeRange(DateTimeOffset.Parse("2026-01-01T23:30:00Z", System.Globalization.CultureInfo.InvariantCulture), DateTimeOffset.Parse("2026-01-02T00:30:00Z", System.Globalization.CultureInfo.InvariantCulture))));
+            db.AppUsageSessions.Add(AppUsageSession.Import(app.Id, new TimeRange(DateTimeOffset.Parse("2026-01-02T03:30:00Z", System.Globalization.CultureInfo.InvariantCulture), DateTimeOffset.Parse("2026-01-02T04:30:00Z", System.Globalization.CultureInfo.InvariantCulture))));
+            await db.SaveChangesAsync(TestContext.Current.CancellationToken);
+        }
+        var all = await _client.GetFromJsonAsync<List<ScreenTimeTracker.ApiClient.EntityItem>>("/api/screen-time/apps", TestContext.Current.CancellationToken);
+        var paged = new List<ScreenTimeTracker.ApiClient.EntityItem>(); int? offset = 0;
+        do
+        {
+            var page = await _client.GetFromJsonAsync<ScreenTimeTracker.ApiClient.PageResult<ScreenTimeTracker.ApiClient.EntityItem>>($"/api/screen-time/apps/page?pageSize=1&offset={offset}", TestContext.Current.CancellationToken);
+            paged.AddRange(page!.Items); offset = page.NextOffset;
+        } while (offset is not null);
+        Assert.Equal(all!.Select(x => x.Id), paged.Select(x => x.Id));
+        foreach (int cutoff in new[] { 0, 4 })
+        {
+            await _client.PatchAsJsonAsync("/api/screen-time/user-settings", new { timeBoundary = new { dayCutoffHour = cutoff } }, TestContext.Current.CancellationToken);
+            const string query = "startDate=2026-01-02&endDate=2026-01-02&timeZoneId=UTC";
+            var legacy = await _client.GetFromJsonAsync<List<ScreenTimeTracker.ApiClient.TimelineItem>>("/api/screen-time/usage/apps/timeline?" + query, TestContext.Current.CancellationToken);
+            var records = new List<ScreenTimeTracker.ApiClient.TimelineItem>(); offset = 0;
+            do
+            {
+                var page = await _client.GetFromJsonAsync<ScreenTimeTracker.ApiClient.PageResult<ScreenTimeTracker.ApiClient.TimelineItem>>($"/api/screen-time/usage/apps/timeline/page?{query}&pageSize=1&offset={offset}", TestContext.Current.CancellationToken);
+                records.AddRange(page!.Items); offset = page.NextOffset;
+            } while (offset is not null);
+            Assert.Equal(legacy, records);
+        }
+        Assert.Equal(HttpStatusCode.BadRequest, (await _client.GetAsync("/api/screen-time/apps/page?pageSize=501", TestContext.Current.CancellationToken)).StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, (await _client.GetAsync("/api/screen-time/usage/apps/timeline/page?startDate=2026-01-01&endDate=2026-01-02&timeZoneId=UTC", TestContext.Current.CancellationToken)).StatusCode);
     }
 
 }

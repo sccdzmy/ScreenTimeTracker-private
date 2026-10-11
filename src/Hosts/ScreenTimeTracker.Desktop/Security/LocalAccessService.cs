@@ -8,6 +8,8 @@ public sealed class LocalAccessService(TimeProvider timeProvider)
     private readonly object _gate = new();
     private readonly Dictionary<string, DateTimeOffset> _bootstraps = [];
     private readonly Dictionary<string, (DateTimeOffset Expires, string Csrf)> _sessions = [];
+    private readonly Dictionary<string, (DateTimeOffset Expires, string Owner)> _nativeSessions = [];
+    private readonly Dictionary<string, (DateTimeOffset Expires, string Owner)> _nativeBootstraps = [];
     private readonly Dictionary<string, DateTimeOffset> _pairings = [];
     private readonly HashSet<string> _extensions = [];
     private readonly Dictionary<string, (DateTimeOffset Start, int Count)> _rates = [];
@@ -42,6 +44,37 @@ public sealed class LocalAccessService(TimeProvider timeProvider)
     {
         lock (_gate)
             return token is { Length: 64 } && _sessions.TryGetValue(Hash(token), out var value) && value.Expires > timeProvider.GetUtcNow() ? value.Csrf : null;
+    }
+    public string CreateNativeBootstrap(string owner)
+    {
+        lock (_gate)
+        {
+            foreach (var key in _nativeBootstraps.Where(x => x.Value.Expires <= timeProvider.GetUtcNow()).Select(x => x.Key).ToArray()) _nativeBootstraps.Remove(key);
+            if (_nativeBootstraps.Count >= 64) throw new InvalidOperationException("Too many pending native launches.");
+            var token = Token(); _nativeBootstraps[Hash(token)] = (timeProvider.GetUtcNow().AddSeconds(60), owner); return token;
+        }
+    }
+    public string? RedeemNativeBootstrap(string? bootstrap)
+    {
+        lock (_gate)
+        {
+            if (bootstrap is not { Length: 64 } || !_nativeBootstraps.Remove(Hash(bootstrap), out var value) || value.Expires <= timeProvider.GetUtcNow()) return null;
+            foreach (var key in _nativeSessions.Where(x => x.Value.Expires <= timeProvider.GetUtcNow()).Select(x => x.Key).ToArray()) _nativeSessions.Remove(key);
+            if (_nativeSessions.Count >= 128) return null;
+            var token = Token(); _nativeSessions[Hash(token)] = (timeProvider.GetUtcNow().AddHours(12), value.Owner); return token;
+        }
+    }
+    public bool IsNativeSession(string token)
+    {
+        lock (_gate) return token.Length == 64 && _nativeSessions.TryGetValue(Hash(token), out var value) && value.Expires > timeProvider.GetUtcNow();
+    }
+    public void RevokeNativeOwner(string owner)
+    {
+        lock (_gate)
+        {
+            foreach (var key in _nativeSessions.Where(x => x.Value.Owner == owner).Select(x => x.Key).ToArray()) _nativeSessions.Remove(key);
+            foreach (var key in _nativeBootstraps.Where(x => x.Value.Owner == owner).Select(x => x.Key).ToArray()) _nativeBootstraps.Remove(key);
+        }
     }
     public string CreatePairing()
     {
